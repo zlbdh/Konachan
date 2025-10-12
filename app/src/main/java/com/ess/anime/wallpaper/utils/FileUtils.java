@@ -526,7 +526,8 @@ public class FileUtils {
             if (!TextUtils.isEmpty(filePath)) {
                 String extension = getFileExtension(filePath).toLowerCase();
                 return extension.equals("bmp") || extension.equals("jpg") || extension.equals("jpeg")
-                        || extension.equals("png") || extension.equals("gif") || extension.equals("webp");
+                        || extension.equals("png") || extension.equals("gif") || extension.equals("webp")
+                        || extension.equals("avif");
             }
         } catch (Exception e) {
             e.printStackTrace();
