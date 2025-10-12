@@ -3,9 +3,14 @@ package com.ess.anime.wallpaper.pixiv.gif;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.arthenica.ffmpegkit.FFmpegKit;
+import com.arthenica.ffmpegkit.FFmpegSession;
+import com.arthenica.ffmpegkit.FFmpegSessionCompleteCallback;
+import com.arthenica.ffmpegkit.ReturnCode;
 import com.ess.anime.wallpaper.MyApp;
 import com.ess.anime.wallpaper.R;
 import com.ess.anime.wallpaper.http.OkHttp;
@@ -30,9 +35,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import nl.bravobit.ffmpeg.ExecuteBinaryResponseHandler;
-import nl.bravobit.ffmpeg.FFmpeg;
 
 public class PixivGifDlManager implements IConnectivityListener {
 
@@ -266,44 +268,33 @@ public class PixivGifDlManager implements IConnectivityListener {
             String outputPath = pixivGifBean.getGifSavedPath();
             String fps = String.valueOf(pixivGifBean.fps);
 
-            String[] cmd = new String[]{
+            String[] cmds = new String[]{
                     "-r", fps, "-i", inputPath,
                     "-r", fps, "-y", "-f", "gif", outputPath,
             };
+            String cmd = TextUtils.join(" ", cmds);
 
-            FFmpeg ffmpeg = FFmpeg.getInstance(MyApp.getInstance());
-            pixivGifBean.gifTask = ffmpeg.execute(cmd, new ExecuteBinaryResponseHandler() {
+            FFmpegSession session = FFmpegKit.executeAsync(cmd, new FFmpegSessionCompleteCallback() {
                 @Override
-                public void onStart() {
-                }
-
-                @Override
-                public void onProgress(String message) {
-//                    float progress = 0;
-//                    pixivGifBean.progress = progress;
-//                    notifyDataChanged(pixivGifBean);
-                }
-
-                @Override
-                public void onFailure(String message) {
-                    pixivGifBean.isError = true;
-                    notifyDataChanged(pixivGifBean);
-                }
-
-                @Override
-                public void onSuccess(String message) {
-                    pixivGifBean.state = PixivGifBean.PixivDlState.FINISH;
-                    pixivGifBean.progress = 0;
-                    pixivGifBean.isError = false;
-                    notifyDataChanged(pixivGifBean);
-                    BitmapUtils.insertToMediaStore(MyApp.getInstance(), new File(outputPath));
-                }
-
-                @Override
-                public void onFinish() {
+                public void apply(FFmpegSession session) {
                     IOUtils.delFileOrFolder(dirPath);
+                    mMainHandler.post(() -> {
+                        if (ReturnCode.isSuccess(session.getReturnCode())) {
+                            pixivGifBean.state = PixivGifBean.PixivDlState.FINISH;
+                            pixivGifBean.progress = 0;
+                            pixivGifBean.isError = false;
+                            notifyDataChanged(pixivGifBean);
+                            BitmapUtils.insertToMediaStore(MyApp.getInstance(), new File(outputPath));
+                        } else if (!ReturnCode.isCancel(session.getReturnCode())) {
+                            Log.w(TAG, String.format("FFmpeg command failed with state %s and rc %s.%s",
+                                    session.getState(), session.getReturnCode(), session.getFailStackTrace()));
+                            pixivGifBean.isError = true;
+                            notifyDataChanged(pixivGifBean);
+                        }
+                    });
                 }
             });
+            pixivGifBean.gifTaskId = session.getSessionId();
         }
     }
 
@@ -315,8 +306,9 @@ public class PixivGifDlManager implements IConnectivityListener {
                 pixivGifBean.progress = 0;
                 pixivGifBean.isError = true;
                 notifyDataChanged(pixivGifBean);
-                if (pixivGifBean.gifTask != null) {
-                    pixivGifBean.gifTask.sendQuitSignal();
+                if (pixivGifBean.gifTaskId != null) {
+                    FFmpegKit.cancel(pixivGifBean.gifTaskId);
+                    pixivGifBean.gifTaskId = null;
                 }
                 IOUtils.delFileOrFolder(pixivGifBean.getZipCacheDirPath());
             }
@@ -357,7 +349,7 @@ public class PixivGifDlManager implements IConnectivityListener {
 
     /*******************************************************************/
 
-    private Handler mMainHandler = new Handler(Looper.getMainLooper());
+    private final Handler mMainHandler = new Handler(Looper.getMainLooper());
 
     @Override
     public void onConnected() {

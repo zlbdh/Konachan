@@ -8,9 +8,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.ess.anime.wallpaper.MyApp;
 import com.ess.anime.wallpaper.R;
 import com.ess.anime.wallpaper.adapter.RecyclerPixivGifDlAdapter;
 import com.ess.anime.wallpaper.listener.OnTouchScaleListener;
@@ -30,7 +28,6 @@ import java.util.List;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
-import nl.bravobit.ffmpeg.FFmpeg;
 
 public class PixivGifActivity extends BaseActivity implements IPixivLoginListener {
 
@@ -56,11 +53,6 @@ public class PixivGifActivity extends BaseActivity implements IPixivLoginListene
         initViewClickListeners();
         initToolBarLayout();
         initRecyclerPixivGif();
-        if (!FFmpeg.getInstance(this).isSupported()) {
-            Toast.makeText(MyApp.getInstance(), R.string.not_support_ffmpeg, Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
 
         PermissionHelper.checkStoragePermissions(this, new PermissionHelper.RequestListener() {
             @Override

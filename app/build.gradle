@@ -6,7 +6,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.ess.anime.wallpaper"
-        minSdkVersion 19
+        minSdkVersion 24
         targetSdkVersion 28
         versionCode 32
         versionName "1.9.3"
@@ -166,8 +166,8 @@ dependencies {
     // zip (https://github.com/srikanth-lingala/zip4j)
     implementation 'net.lingala.zip4j:zip4j:2.5.2'
 
-    // ffmpeg (https://github.com/bravobit/FFmpeg-Android)
-    implementation 'nl.bravobit:android-ffmpeg:1.1.7'
+    // ffmpeg (https://github.com/arthenica/ffmpeg-kit/tree/main/android)
+    implementation 'com.arthenica:ffmpeg-kit-full:6.0-2'
 }
 
 greendao {

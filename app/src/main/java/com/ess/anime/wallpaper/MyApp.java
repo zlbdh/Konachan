@@ -15,8 +15,6 @@ import com.just.agentweb.AgentWebConfig;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.unity3d.services.core.properties.ClientProperties;
 
-import androidx.multidex.MultiDex;
-
 public class MyApp extends Application {
 
     private final static String BUGLY_APP_ID = "82daf92318";
@@ -48,12 +46,6 @@ public class MyApp extends Application {
 
     public static MyApp getInstance() {
         return sApplication;
-    }
-
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(this);
     }
 
 }

@@ -5,8 +5,6 @@ import com.ess.anime.wallpaper.global.Constants;
 
 import java.io.File;
 
-import nl.bravobit.ffmpeg.FFtask;
-
 public class PixivGifBean {
 
     public String id;
@@ -17,7 +15,7 @@ public class PixivGifBean {
 
     public float fps;
 
-    public FFtask gifTask;
+    public Long gifTaskId;
 
     private String gifSavedPath;
 
