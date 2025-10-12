@@ -150,6 +150,14 @@ public class SankakuParser extends HtmlParser {
                     ex.printStackTrace();
                 }
             }
+            JsonArray tagNames = item.getAsJsonArray("tag_names");
+            if (tagNames.size() > 0 && tagNames.size() > tagArray.size()) {
+                for (int i = tagArray.size(); i < tagNames.size(); i++) {
+                    String tagName = tagNames.get(i).getAsString();
+                    tags.append(tagName).append(" ");
+                    builder.addGeneralTags(tagName);
+                }
+            }
             builder.tags(tags.toString().trim());
         } catch (Exception e) {
             e.printStackTrace();

@@ -162,7 +162,7 @@ public class SankakuConfig extends WebsiteConfig<SankakuParser> {
 
     @Override
     public String getSearchAutoCompleteUrl(String tag) {
-        return getBaseUrl() + "tags/autosuggest/v2?tag=" + tag;
+        return "https://sankakuapi.com/tags/autosuggestCreating?lang=en&show_meta=1&target=post&tag=" + tag;
     }
 
     @Override
