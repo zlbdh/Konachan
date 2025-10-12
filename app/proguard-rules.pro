@@ -269,4 +269,4 @@ public static java.lang.String TABLENAME;
 ##############################
 #        WebsiteConfig       #
 ##############################
--keep class com.ess.anime.wallpaper.website.parser.** { *; }
+-keep class com.ess.anime.wallpaper.website.** { *; }
