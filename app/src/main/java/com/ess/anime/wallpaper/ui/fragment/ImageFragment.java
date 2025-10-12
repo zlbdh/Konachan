@@ -28,16 +28,12 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import butterknife.BindView;
 
 public class ImageFragment extends BaseFragment {
 
-    @BindView(R.id.view_touch)
-    View mTouchView;
-    @BindView(R.id.swipe_refresh_layout)
-    SwipeRefreshLayout mSwipeRefresh;
-    @BindView(R.id.layout_multiple_media)
-    MultipleMediaLayout mMediaLayout;
+    private View mTouchView;
+    private SwipeRefreshLayout mSwipeRefresh;
+    private MultipleMediaLayout mMediaLayout;
 
     private ImageDetailActivity mActivity;
     private ThumbBean mThumbBean;
@@ -95,12 +91,14 @@ public class ImageFragment extends BaseFragment {
     }
 
     private void initView() {
+        mTouchView = mRootView.findViewById(R.id.view_touch);
         FlingEffector.addFlingEffect(mTouchView, (e1, e2, velocityX, velocityY) -> {
             if (SystemUtils.isActivityActive(mActivity)) {
                 mActivity.flingToQuickSwitch(velocityX, velocityY);
             }
         });
 
+        mSwipeRefresh = mRootView.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefresh.setEnabled(false);
         mSwipeRefresh.setOnRefreshListener(this::loadMedia);
 
@@ -113,6 +111,7 @@ public class ImageFragment extends BaseFragment {
             mTouchView.setVisibility(View.VISIBLE);
         }
 
+        mMediaLayout = mRootView.findViewById(R.id.layout_multiple_media);
         mMediaLayout.setOnLongClickListener(v -> {
             downloadImage();
             return true;

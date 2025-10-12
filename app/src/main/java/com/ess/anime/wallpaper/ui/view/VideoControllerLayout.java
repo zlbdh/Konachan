@@ -12,22 +12,14 @@ import com.sprylab.android.widget.TextureVideoView;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class VideoControllerLayout extends ConstraintLayout implements Runnable {
 
-    @BindView(R.id.iv_play)
-    ToggleImageView mIvPlay;
-    @BindView(R.id.iv_volume)
-    ToggleImageView mIvVolume;
-    @BindView(R.id.tv_current)
-    TextView mTvCurrent;
-    @BindView(R.id.tv_total)
-    TextView mTvTotal;
-    @BindView(R.id.sb_progress)
-    SeekBar mSbProgress;
+    private ToggleImageView mIvPlay;
+    private ToggleImageView mIvVolume;
+    private TextView mTvCurrent;
+    private TextView mTvTotal;
+    private SeekBar mSbProgress;
 
     private MultipleMediaLayout mMediaLayout;
     private TextureVideoView mVideoView;
@@ -47,7 +39,17 @@ public class VideoControllerLayout extends ConstraintLayout implements Runnable 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        ButterKnife.bind(this);
+        mIvPlay = findViewById(R.id.iv_play);
+        mIvVolume = findViewById(R.id.iv_volume);
+        mTvCurrent = findViewById(R.id.tv_current);
+        mTvTotal = findViewById(R.id.tv_total);
+        mSbProgress = findViewById(R.id.sb_progress);
+        findViewById(R.id.iv_play).setOnClickListener(view -> {
+            togglePlay();
+        });
+        findViewById(R.id.iv_volume).setOnClickListener(view -> {
+            toggleVolume();
+        });
     }
 
     public void attachTo(MultipleMediaLayout mediaLayout) {
@@ -104,8 +106,7 @@ public class VideoControllerLayout extends ConstraintLayout implements Runnable 
         post(this);
     }
 
-    @OnClick(R.id.iv_play)
-    void togglePlay() {
+    private void togglePlay() {
         if (mVideoView != null) {
             if (mIvPlay.isChecked()) {
                 mVideoView.start();
@@ -115,8 +116,7 @@ public class VideoControllerLayout extends ConstraintLayout implements Runnable 
         }
     }
 
-    @OnClick(R.id.iv_volume)
-    void toggleVolume() {
+    private void toggleVolume() {
         if (mMediaLayout != null) {
             mMediaLayout.setVideoMute(mIvVolume.isChecked());
             mMediaLayout.updateVideoVolume();

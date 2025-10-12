@@ -2,14 +2,17 @@
 
 buildscript {
     repositories {
-//        maven {url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+        maven {
+            url 'http://maven.aliyun.com/nexus/content/groups/public/'
+            allowInsecureProtocol = true
+        }
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.0'
+        classpath 'com.android.tools.build:gradle:8.9.0'
 //        classpath 'com.google.gms:google-services:4.2.0'
-        classpath 'org.greenrobot:greendao-gradle-plugin:3.3.0'
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.3.1'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -17,7 +20,10 @@ buildscript {
 
 allprojects {
     repositories {
-//        maven {url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+        maven {
+            url 'http://maven.aliyun.com/nexus/content/groups/public/'
+            allowInsecureProtocol = true
+        }
         google()
         jcenter()
         maven { url "https://jitpack.io" }

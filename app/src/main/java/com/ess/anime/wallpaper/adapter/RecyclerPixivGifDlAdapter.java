@@ -4,11 +4,11 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.ess.anime.wallpaper.R;
-import com.ess.anime.wallpaper.glide.GlideApp;
 import com.ess.anime.wallpaper.glide.MyGlideModule;
 import com.ess.anime.wallpaper.pixiv.gif.IPixivDlListener;
 import com.ess.anime.wallpaper.pixiv.gif.PixivGifBean;
@@ -56,7 +56,7 @@ public class RecyclerPixivGifDlAdapter extends BaseQuickAdapter<PixivGifBean, Ba
         // 预览图
         Object url = TextUtils.isEmpty(pixivGifBean.thumbUrl) ? null
                 : MyGlideModule.makeGlideUrlWithReferer(pixivGifBean.thumbUrl, pixivGifBean.getRefererUrl());
-        GlideApp.with(mContext)
+        Glide.with(mContext)
                 .load(url)
                 .placeholder(R.drawable.ic_placeholder_download_thumb)
                 .priority(Priority.IMMEDIATE)

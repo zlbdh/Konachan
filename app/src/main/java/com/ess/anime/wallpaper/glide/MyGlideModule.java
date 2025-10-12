@@ -99,7 +99,7 @@ public class MyGlideModule extends AppGlideModule {
         if (TextUtils.isEmpty(oriUrl) || !FileUtils.isImageType(oriUrl)) {
             return;
         }
-        GlideApp.with(context)
+        Glide.with(context)
                 .load(MyGlideModule.makeGlideUrl(oriUrl, headerMap))
                 .listener(new RequestListener<Drawable>() {
                     @Override

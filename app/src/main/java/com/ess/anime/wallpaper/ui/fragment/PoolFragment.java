@@ -44,8 +44,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import butterknife.BindView;
-import butterknife.OnClick;
 
 public class PoolFragment extends BaseFragment implements
         WebsiteManager.OnWebsiteChangeListener,
@@ -53,16 +51,11 @@ public class PoolFragment extends BaseFragment implements
 
     public final static String TAG = PoolFragment.class.getName();
 
-    @BindView(R.id.tool_bar)
-    Toolbar mToolbar;
-    @BindView(R.id.swipe_refresh_layout)
-    SwipeRefreshLayout mSwipeRefresh;
-    @BindView(R.id.fl_pool_post)
-    FrameLayout mLayoutFragment;
-    @BindView(R.id.rv_pool)
-    GeneralRecyclerView mRvPools;
-    @BindView(R.id.iv_page)
-    ImageView mIvPage;
+    private Toolbar mToolbar;
+    private SwipeRefreshLayout mSwipeRefresh;
+    private FrameLayout mLayoutFragment;
+    private GeneralRecyclerView mRvPools;
+    private ImageView mIvPage;
 
     private MainActivity mActivity;
     private FragmentManager mFragmentManager;
@@ -92,6 +85,8 @@ public class PoolFragment extends BaseFragment implements
     @Override
     void init(Bundle savedInstanceState) {
         mFragmentManager = getChildFragmentManager();
+        initViewByIds();
+        initViewClickListeners();
         initToolBarLayout();
         initPopupPage();
         initSwipeRefreshLayout();
@@ -137,6 +132,21 @@ public class PoolFragment extends BaseFragment implements
         WebsiteManager.getInstance().unregisterWebsiteChangeListener(this);
     }
 
+    private void initViewByIds() {
+        mToolbar = mRootView.findViewById(R.id.tool_bar);
+        mSwipeRefresh = mRootView.findViewById(R.id.swipe_refresh_layout);
+        mLayoutFragment = mRootView.findViewById(R.id.fl_pool_post);
+        mRvPools = mRootView.findViewById(R.id.rv_pool);
+        mIvPage = mRootView.findViewById(R.id.iv_page);
+    }
+
+    private void initViewClickListeners() {
+        mRootView.findViewById(R.id.iv_page).setOnClickListener(this::gotoPage);
+        mRootView.findViewById(R.id.iv_search).setOnClickListener(view -> {
+            openSearch();
+        });
+    }
+
     private void initToolBarLayout() {
         mActivity.setSupportActionBar(mToolbar);
         DrawerLayout drawerLayout = mActivity.getDrawerLayout();
@@ -174,16 +184,14 @@ public class PoolFragment extends BaseFragment implements
     }
 
     // 弹出跳转页弹窗
-    @OnClick(R.id.iv_page)
-    void gotoPage(View view) {
+    private void gotoPage(View view) {
         mPopupPage.showAsDropDown(view);
         mEtGoto.selectAll();
         mEtGoto.post(() -> UIUtils.showSoftInput(mActivity, mEtGoto));
     }
 
     //搜索
-    @OnClick({R.id.iv_search})
-    void openSearch() {
+    private void openSearch() {
 //        Intent searchIntent = new Intent(mActivity, SearchActivity.class);
 //        startActivityForResult(searchIntent, Constants.SEARCH_CODE);
     }
@@ -253,7 +261,6 @@ public class PoolFragment extends BaseFragment implements
                 addPoolPostFragment(title, poolListBean.linkToShow);
             }
         });
-
     }
 
     private void updateRecyclerViewSpanCount() {

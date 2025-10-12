@@ -126,19 +126,6 @@
 -dontwarn androidx.**
 
 ##############################
-#         ButterKnife        #
-##############################
--keep class butterknife.** { *; }
--dontwarn butterknife.internal.**
--keep class **$$ViewBinder { *; }
--keepclasseswithmembernames class * {
-    @butterknife.* <fields>;
-}
--keepclasseswithmembernames class * {
-    @butterknife.* <methods>;
-}
-
-##############################
 #            Glide           #
 ##############################
 -keep public class * implements com.bumptech.glide.module.GlideModule
@@ -194,18 +181,21 @@
     @org.greenrobot.eventbus.Subscribe <methods>;
 }
 -keep enum org.greenrobot.eventbus.ThreadMode { *; }
-# Only required if you use AsyncExecutor
--keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+
+# If using AsyncExecutord, keep required constructor of default event used.
+# Adjust the class name if a custom failure event type is used.
+-keepclassmembers class org.greenrobot.eventbus.util.ThrowableFailureEvent {
     <init>(java.lang.Throwable);
 }
+
+# Accessed via reflection, avoid renaming or removal
+-keep class org.greenrobot.eventbus.android.AndroidComponentsImpl
 
 ##############################
 #          GreenDao          #
 ##############################
 -keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
-    public static java.lang.String TABLENAME;
-    public static void dropTable(org.greenrobot.greendao.database.Database, boolean);
-    public static void createTable(org.greenrobot.greendao.database.Database, boolean);
+public static java.lang.String TABLENAME;
 }
 -keep class **$Properties { *; }
 
@@ -214,6 +204,7 @@
 
 # If you do NOT use SQLCipher:
 -dontwarn net.sqlcipher.database.**
+-dontwarn net.sqlcipher.Cursor
 # If you do NOT use RxJava:
 -dontwarn rx.**
 

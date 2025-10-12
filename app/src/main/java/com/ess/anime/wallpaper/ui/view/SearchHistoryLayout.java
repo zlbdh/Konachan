@@ -24,15 +24,11 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class SearchHistoryLayout extends FrameLayout {
 
-    @BindView(R.id.layout_empty)
-    ViewGroup mLayoutEmpty;
-    @BindView(R.id.label_flow)
-    LabelFlowLayout mLabelFlow;
+    private ViewGroup mLayoutEmpty;
+    private LabelFlowLayout mLabelFlow;
 
     private LabelFlowAdapter<SearchTagBean> mLabelFlowAdapter;
     private boolean mIsEditing;
@@ -52,7 +48,6 @@ public class SearchHistoryLayout extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        ButterKnife.bind(this);
         initLabelFlowLayout();
         checkToShowEmptyView();
     }
@@ -62,6 +57,9 @@ public class SearchHistoryLayout extends FrameLayout {
     }
 
     private void initLabelFlowLayout() {
+        mLayoutEmpty = findViewById(R.id.layout_empty);
+        mLabelFlow = findViewById(R.id.label_flow);
+
         mLabelFlowAdapter = new LabelFlowAdapter<SearchTagBean>(
                 R.layout.recycler_item_search_history_label_flow, getHistoryData()) {
             @Override

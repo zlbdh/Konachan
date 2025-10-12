@@ -29,14 +29,8 @@ import java.util.concurrent.Executors;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
 
 public class SettingActivity extends BaseActivity {
-
-    @BindView(R.id.tool_bar)
-    Toolbar mToolbar;
-    @BindView(R.id.rv_setting)
-    RecyclerView mRvSetting;
 
     private SharedPreferences mPreferences;
     private RecyclerCommonSettingAdapter mSettingAdapter;
@@ -61,15 +55,17 @@ public class SettingActivity extends BaseActivity {
     }
 
     private void initToolBarLayout() {
-        setSupportActionBar(mToolbar);
+        Toolbar toolbar = findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mToolbar.setNavigationOnClickListener(v -> finish());
+        toolbar.setNavigationOnClickListener(v -> finish());
     }
 
     private void initRecyclerSetting() {
-        mRvSetting.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView rvSetting = findViewById(R.id.rv_setting);
+        rvSetting.setLayoutManager(new LinearLayoutManager(this));
         mSettingAdapter = new RecyclerCommonSettingAdapter();
-        mSettingAdapter.bindToRecyclerView(mRvSetting);
+        mSettingAdapter.bindToRecyclerView(rvSetting);
     }
 
     private void resetData() {

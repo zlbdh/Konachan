@@ -6,8 +6,8 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
-import com.ess.anime.wallpaper.glide.GlideApp;
 import com.ess.anime.wallpaper.utils.UIUtils;
 
 import androidx.annotation.NonNull;
@@ -44,7 +44,7 @@ public class SwitcherImage extends MyImageSwitcher {
 
     @Override
     void loadImage(int resId, ImageView imageView) {
-        GlideApp.with(getContext())
+        Glide.with(getContext())
                 .load(resId)
                 .priority(Priority.IMMEDIATE)
                 .into(imageView);

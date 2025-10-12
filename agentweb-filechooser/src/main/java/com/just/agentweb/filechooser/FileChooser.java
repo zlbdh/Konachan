@@ -41,6 +41,7 @@ import com.just.agentweb.AgentWebPermissions;
 import com.just.agentweb.AgentWebUtils;
 import com.just.agentweb.LogUtils;
 import com.just.agentweb.PermissionInterceptor;
+import com.just.agentweb.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

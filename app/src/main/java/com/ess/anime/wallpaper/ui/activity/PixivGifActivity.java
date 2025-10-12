@@ -30,24 +30,17 @@ import java.util.List;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
-import butterknife.BindView;
-import butterknife.OnClick;
 import nl.bravobit.ffmpeg.FFmpeg;
 
 public class PixivGifActivity extends BaseActivity implements IPixivLoginListener {
 
     public final static String TAG = PixivGifActivity.class.getName();
 
-    @BindView(R.id.tool_bar)
-    Toolbar mToolbar;
-    @BindView(R.id.iv_login_state)
-    ImageView mIvLoginState;
-    @BindView(R.id.tv_login_state)
-    TextView mTvLoginState;
-    @BindView(R.id.et_id)
-    EditText mEtId;
-    @BindView(R.id.rv_pixiv_gif)
-    GeneralRecyclerView mRvPixivGif;
+    private Toolbar mToolbar;
+    private ImageView mIvLoginState;
+    private TextView mTvLoginState;
+    private EditText mEtId;
+    private GeneralRecyclerView mRvPixivGif;
 
     private GridLayoutManager mLayoutManager;
     private RecyclerPixivGifDlAdapter mAdapter;
@@ -59,6 +52,8 @@ public class PixivGifActivity extends BaseActivity implements IPixivLoginListene
 
     @Override
     protected void init(Bundle savedInstanceState) {
+        initViewByIds();
+        initViewClickListeners();
         initToolBarLayout();
         initRecyclerPixivGif();
         if (!FFmpeg.getInstance(this).isSupported()) {
@@ -86,14 +81,33 @@ public class PixivGifActivity extends BaseActivity implements IPixivLoginListene
         updateRecyclerViewSpanCount();
     }
 
+    private void initViewByIds() {
+        mToolbar = findViewById(R.id.tool_bar);
+        mIvLoginState = findViewById(R.id.iv_login_state);
+        mTvLoginState = findViewById(R.id.tv_login_state);
+        mEtId = findViewById(R.id.et_id);
+        mRvPixivGif = findViewById(R.id.rv_pixiv_gif);
+    }
+
+    private void initViewClickListeners() {
+        findViewById(R.id.iv_clear_all).setOnClickListener(view -> {
+            clearAllFinished();
+        });
+        findViewById(R.id.iv_goto_collection).setOnClickListener(view -> {
+            gotoCollection();
+        });
+        findViewById(R.id.btn_download).setOnClickListener(view -> {
+            startDownload();
+        });
+    }
+
     private void initToolBarLayout() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToolbar.setNavigationOnClickListener(v -> finish());
     }
 
-    @OnClick(R.id.iv_clear_all)
-    void clearAllFinished() {
+    private void clearAllFinished() {
         CustomDialog.showClearAllDownloadFinishedDialog(this, new CustomDialog.SimpleDialogActionListener() {
             @Override
             public void onPositive() {
@@ -103,8 +117,7 @@ public class PixivGifActivity extends BaseActivity implements IPixivLoginListene
         });
     }
 
-    @OnClick(R.id.iv_goto_collection)
-    void gotoCollection() {
+    private void gotoCollection() {
         startActivity(new Intent(this, CollectionActivity.class));
     }
 
@@ -183,8 +196,7 @@ public class PixivGifActivity extends BaseActivity implements IPixivLoginListene
         mAdapter.setNewData(downloadList);
     }
 
-    @OnClick(R.id.btn_download)
-    void startDownload() {
+    private void startDownload() {
         String pixivId = mEtId.getText().toString();
         if (!TextUtils.isEmpty(pixivId)) {
             PixivGifDlManager.getInstance().execute(pixivId);

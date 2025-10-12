@@ -12,14 +12,8 @@ import java.util.List;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
 
 public class ReverseSearchActivity extends BaseActivity {
-
-    @BindView(R.id.tool_bar)
-    Toolbar mToolbar;
-    @BindView(R.id.rv_website)
-    RecyclerView mRvWebsite;
 
     @Override
     protected int layoutRes() {
@@ -33,14 +27,16 @@ public class ReverseSearchActivity extends BaseActivity {
     }
 
     private void initToolBarLayout() {
-        setSupportActionBar(mToolbar);
+        Toolbar toolbar = findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mToolbar.setNavigationOnClickListener(v -> finish());
+        toolbar.setNavigationOnClickListener(v -> finish());
     }
 
     private void initRecyclerWebsite() {
-        mRvWebsite.setLayoutManager(new LinearLayoutManager(this));
-        mRvWebsite.setAdapter(new RecyclerReverseSearchWebsiteAdapter(getWebsiteItemList()));
+        RecyclerView rvWebsite = findViewById(R.id.rv_website);
+        rvWebsite.setLayoutManager(new LinearLayoutManager(this));
+        rvWebsite.setAdapter(new RecyclerReverseSearchWebsiteAdapter(getWebsiteItemList()));
     }
 
     private List<ReverseSearchWebsiteItem> getWebsiteItemList() {

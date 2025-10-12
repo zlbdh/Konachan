@@ -5,12 +5,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.ess.anime.wallpaper.R;
 import com.ess.anime.wallpaper.bean.CommentBean;
-import com.ess.anime.wallpaper.glide.GlideApp;
 import com.ess.anime.wallpaper.glide.MyGlideModule;
 import com.ess.anime.wallpaper.ui.activity.web.HyperlinkActivity;
 import com.ess.anime.wallpaper.utils.WebLinkMethod;
@@ -28,7 +28,7 @@ public class RecyclerCommentAdapter extends BaseQuickAdapter<CommentBean, BaseVi
     protected void convert(BaseViewHolder holder, CommentBean commentBean) {
         //头像
         Map<String, String> headerMap = WebsiteManager.getInstance().getRequestHeaders();
-        GlideApp.with(mContext)
+        Glide.with(mContext)
                 .load(MyGlideModule.makeGlideUrl(commentBean.avatar, headerMap))
                 .placeholder(R.drawable.ic_placeholder_comment)
                 .circleCrop()

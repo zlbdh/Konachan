@@ -16,13 +16,13 @@ import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.ess.anime.wallpaper.R;
-import com.ess.anime.wallpaper.glide.GlideApp;
 import com.ess.anime.wallpaper.glide.MyGlideModule;
 import com.ess.anime.wallpaper.global.Constants;
 import com.ess.anime.wallpaper.ui.activity.CollectionActivity;
@@ -141,7 +141,7 @@ public class LongClickWebView extends WebView implements View.OnLongClickListene
         }
 
         final String[] finalFileName = {fileName};
-        GlideApp.with(getContext().getApplicationContext())
+        Glide.with(getContext().getApplicationContext())
                 .asFile()
                 .load(objToLoad)
                 .priority(Priority.IMMEDIATE)

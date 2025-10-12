@@ -44,16 +44,12 @@ import java.util.List;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import butterknife.BindView;
 
 public class DetailFragment extends BaseFragment {
 
-    @BindView(R.id.view_touch)
-    View mTouchView;
-    @BindView(R.id.swipe_refresh_layout)
-    SwipeRefreshLayout mSwipeRefresh;
-    @BindView(R.id.layout_detail_container)
-    ViewGroup mLayoutDetailContainer;
+    private View mTouchView;
+    private SwipeRefreshLayout mSwipeRefresh;
+    private ViewGroup mLayoutDetailContainer;
 
     private ImageDetailActivity mActivity;
     private ThumbBean mThumbBean;
@@ -100,6 +96,10 @@ public class DetailFragment extends BaseFragment {
     }
 
     private void initView() {
+        mTouchView = mRootView.findViewById(R.id.view_touch);
+        mSwipeRefresh = mRootView.findViewById(R.id.swipe_refresh_layout);
+        mLayoutDetailContainer = mRootView.findViewById(R.id.layout_detail_container);
+
         mSwipeRefresh.setEnabled(false);
         if (mImageBean == null) {
             mSwipeRefresh.setRefreshing(true);

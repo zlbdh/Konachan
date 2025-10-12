@@ -42,8 +42,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-import butterknife.BindView;
-import butterknife.OnClick;
 
 import static com.jiang.android.indicatordialog.IndicatorBuilder.GRAVITY_LEFT;
 
@@ -51,17 +49,11 @@ public class SearchActivity extends BaseActivity {
 
     public final static String TAG = SearchActivity.class.getName();
 
-    @BindView(R.id.et_search)
     EditText mEtSearch;
-    @BindView(R.id.rv_auto_complete_search)
     RecyclerView mRvCompleteSearch;
-    @BindView(R.id.tv_clear_all_search_history)
     TextView mTvClearAllSearchHistory;
-    @BindView(R.id.tv_sort_favorite_tag)
     TextView mTvSortFavoriteTag;
-    @BindView(R.id.smart_tab)
     SmartTabLayout mSmartTab;
-    @BindView(R.id.vp_search)
     ViewPager mVpSearch;
 
     SearchModeDocLayout mLayoutSearchModeDoc;
@@ -87,6 +79,8 @@ public class SearchActivity extends BaseActivity {
     @Override
     protected void init(Bundle savedInstanceState) {
         initData();
+        initViewByIds();
+        initViewClickListeners();
         initViewPager();
         initSlidingTabLayout();
         initEditSearch();
@@ -108,8 +102,34 @@ public class SearchActivity extends BaseActivity {
         mSelectedPos = mCurrentSearchMode - Constants.SEARCH_CODE - 1;
     }
 
-    @OnClick(R.id.tv_clear_all_search_history)
-    void clearAllSearchHistory() {
+    private void initViewByIds() {
+        mEtSearch = findViewById(R.id.et_search);
+        mRvCompleteSearch = findViewById(R.id.rv_auto_complete_search);
+        mTvClearAllSearchHistory = findViewById(R.id.tv_clear_all_search_history);
+        mTvSortFavoriteTag = findViewById(R.id.tv_sort_favorite_tag);
+        mSmartTab = findViewById(R.id.smart_tab);
+        mVpSearch = findViewById(R.id.vp_search);
+    }
+
+    private void initViewClickListeners() {
+        findViewById(R.id.tv_clear_all_search_history).setOnClickListener(view -> {
+            clearAllSearchHistory();
+        });
+        findViewById(R.id.tv_sort_favorite_tag).setOnClickListener(view -> {
+            sortFavoriteTag();
+        });
+        findViewById(R.id.iv_spinner).setOnClickListener(view -> {
+            changeSearchMode(view);
+        });
+        findViewById(R.id.iv_clear).setOnClickListener(view -> {
+            clearSearch();
+        });
+        findViewById(R.id.tv_cancel_search).setOnClickListener(view -> {
+            finish();
+        });
+    }
+
+    private void clearAllSearchHistory() {
         CustomDialog.showClearAllSearchHistoryDialog(this, new CustomDialog.SimpleDialogActionListener() {
             @Override
             public void onPositive() {
@@ -120,8 +140,7 @@ public class SearchActivity extends BaseActivity {
         });
     }
 
-    @OnClick(R.id.tv_sort_favorite_tag)
-    void sortFavoriteTag() {
+    private void sortFavoriteTag() {
         CustomDialog.showSortFavoriteTagsDialog(this, new CustomDialog.SimpleDialogActionListener() {
             @Override
             public void onPositive() {
@@ -207,15 +226,13 @@ public class SearchActivity extends BaseActivity {
     }
 
     // 下拉栏图标
-    @OnClick(R.id.iv_spinner)
-    void changeSearchMode(View view) {
+    private void changeSearchMode(View view) {
         mPopup.show(view);
         UIUtils.closeSoftInput(SearchActivity.this);
     }
 
     // 清空搜索内容
-    @OnClick(R.id.iv_clear)
-    void clearSearch() {
+    private void clearSearch() {
         mEtSearch.setText("");
     }
 
@@ -375,12 +392,6 @@ public class SearchActivity extends BaseActivity {
         } else {
             super.onBackPressed();
         }
-    }
-
-    @OnClick(R.id.tv_cancel_search)
-    @Override
-    public void finish() {
-        super.finish();
     }
 
     @Override

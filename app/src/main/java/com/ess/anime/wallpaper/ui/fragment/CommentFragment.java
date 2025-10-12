@@ -34,16 +34,13 @@ import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import butterknife.BindView;
 
 public class CommentFragment extends BaseFragment {
 
     public final String TAG = CommentFragment.class.getName() + UUID.randomUUID().toString();
 
-    @BindView(R.id.swipe_refresh_layout)
-    SwipeRefreshLayout mSwipeRefresh;
-    @BindView(R.id.rv_comment)
-    GeneralRecyclerView mRvComment;
+    private SwipeRefreshLayout mSwipeRefresh;
+    private GeneralRecyclerView mRvComment;
 
     private ImageDetailActivity mActivity;
     private ThumbBean mThumbBean;
@@ -93,11 +90,13 @@ public class CommentFragment extends BaseFragment {
     }
 
     private void initView() {
+        mSwipeRefresh = mRootView.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefresh.setOnRefreshListener(this::getCommentList);
         mSwipeRefresh.setRefreshing(true);
     }
 
     private void initRecyclerView() {
+        mRvComment = mRootView.findViewById(R.id.rv_comment);
         mLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
         mRvComment.setLayoutManager(mLayoutManager);
         mCommentAdapter = new RecyclerCommentAdapter();

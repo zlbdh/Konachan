@@ -35,23 +35,15 @@ import java.util.List;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
-import butterknife.BindView;
-import butterknife.OnClick;
 
-public class CollectionActivity extends BaseActivity implements View.OnClickListener, LocalCollectionsListener.OnFilesChangedListener {
+public class CollectionActivity extends BaseActivity implements LocalCollectionsListener.OnFilesChangedListener {
 
-    @BindView(R.id.tool_bar)
-    Toolbar mToolbar;
-    @BindView(R.id.tv_edit)
-    TextView mTvEdit;
-    @BindView(R.id.layout_editing)
-    ViewGroup mLayoutEditing;
-    @BindView(R.id.tv_choose_count)
-    TextView mTvChooseCount;
-    @BindView(R.id.cb_choose_all)
-    SmoothCheckBox mCbChooseAll;
-    @BindView(R.id.rv_collection)
-    GeneralRecyclerView mRvCollection;
+    private Toolbar mToolbar;
+    private TextView mTvEdit;
+    private ViewGroup mLayoutEditing;
+    private TextView mTvChooseCount;
+    private SmoothCheckBox mCbChooseAll;
+    private GeneralRecyclerView mRvCollection;
 
     private GridLayoutManager mLayoutManager;
     private RecyclerCollectionAdapter mCollectionAdapter;
@@ -65,6 +57,8 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
 
     @Override
     protected void init(Bundle savedInstanceState) {
+        initViewByIds();
+        initViewClickListeners();
         initToolBarLayout();
         initRecyclerView();
         PermissionHelper.checkStoragePermissions(this, new PermissionHelper.RequestListener() {
@@ -86,6 +80,39 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
         updateRecyclerViewSpanCount();
     }
 
+    private void initViewByIds() {
+        mToolbar = findViewById(R.id.tool_bar);
+        mTvEdit = findViewById(R.id.tv_edit);
+        mLayoutEditing = findViewById(R.id.layout_editing);
+        mTvChooseCount = findViewById(R.id.tv_choose_count);
+        mCbChooseAll = findViewById(R.id.cb_choose_all);
+        mRvCollection = findViewById(R.id.rv_collection);
+    }
+
+    private void initViewClickListeners() {
+        findViewById(R.id.layout_choose_all).setOnClickListener(view -> {
+            mCbChooseAll.toggle();
+        });
+        findViewById(R.id.cb_choose_all).setOnClickListener(view -> {
+            if (mCbChooseAll.isChecked()) {
+                mCollectionAdapter.selectAll();
+            } else {
+                mCollectionAdapter.deselectAll();
+            }
+        });
+        findViewById(R.id.tv_edit).setOnClickListener(view -> {
+            enterEditMode();
+        });
+        findViewById(R.id.tv_share).setOnClickListener(view -> {
+            shareImages();
+            exitEditMode(true);
+        });
+        findViewById(R.id.tv_delete).setOnClickListener(view -> {
+            List<CollectionBean> deleteList = new ArrayList<>(mCollectionAdapter.getSelectList());
+            showDeleteCollectionDialog(deleteList);
+        });
+    }
+
     private void initWhenPermissionGranted() {
         mCollectionAdapter.setNewData(CollectionBean.getCollectionImages());
         mFilesListener = new LocalCollectionsListener(this);
@@ -99,36 +126,6 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
         mToolbar.setNavigationIcon(R.drawable.ic_back);
         mToolbar.setNavigationOnClickListener(v -> finish());
         DoubleTapEffector.addDoubleTapEffect(mToolbar, this::scrollToTop);
-    }
-
-    @OnClick({R.id.layout_choose_all, R.id.cb_choose_all, R.id.tv_edit, R.id.tv_share, R.id.tv_delete})
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.layout_choose_all:
-                mCbChooseAll.toggle();
-            case R.id.cb_choose_all:
-                if (mCbChooseAll.isChecked()) {
-                    mCollectionAdapter.selectAll();
-                } else {
-                    mCollectionAdapter.deselectAll();
-                }
-                break;
-
-            case R.id.tv_edit:
-                enterEditMode();
-                break;
-
-            case R.id.tv_share:
-                shareImages();
-                exitEditMode(true);
-                break;
-
-            case R.id.tv_delete:
-                List<CollectionBean> deleteList = new ArrayList<>(mCollectionAdapter.getSelectList());
-                showDeleteCollectionDialog(deleteList);
-                break;
-        }
     }
 
     private void initRecyclerView() {

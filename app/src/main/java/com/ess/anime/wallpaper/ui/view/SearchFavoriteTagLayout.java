@@ -21,15 +21,11 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class SearchFavoriteTagLayout extends FrameLayout {
 
-    @BindView(R.id.layout_empty)
-    ViewGroup mLayoutEmpty;
-    @BindView(R.id.label_flow)
-    LabelFlowLayout mLabelFlow;
+    private ViewGroup mLayoutEmpty;
+    private LabelFlowLayout mLabelFlow;
 
     private boolean mHasInit;
     private LabelFlowAdapter<FavoriteTagBean> mLabelFlowAdapter;
@@ -49,7 +45,6 @@ public class SearchFavoriteTagLayout extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        ButterKnife.bind(this);
         initLabelFlowLayout();
         checkToShowEmptyView();
     }
@@ -59,6 +54,9 @@ public class SearchFavoriteTagLayout extends FrameLayout {
     }
 
     private void initLabelFlowLayout() {
+        mLayoutEmpty = findViewById(R.id.layout_empty);
+        mLabelFlow = findViewById(R.id.label_flow);
+
         mLabelFlowAdapter = new LabelFlowAdapter<FavoriteTagBean>(
                 R.layout.recycler_item_search_fav_tag_label_flow, new ArrayList<>()) {
             @Override

@@ -36,20 +36,14 @@ import java.io.File;
 
 import androidx.core.app.ActivityCompat;
 import androidx.viewpager2.widget.ViewPager2;
-import butterknife.BindView;
-import butterknife.OnClick;
 
 public class FullscreenActivity extends BaseActivity implements OnPhotoTapListener,
         OnOutsidePhotoTapListener, View.OnLongClickListener {
 
-    @BindView(R.id.layout_operate)
-    ViewGroup mLayoutOperate;
-    @BindView(R.id.tv_serial)
-    TextView mTvSerial;
-    @BindView(R.id.iv_menu)
-    ImageView mIvMenu;
-    @BindView(R.id.vp_full_screen)
-    ViewPager2 mVpFullScreen;
+    private ViewGroup mLayoutOperate;
+    private TextView mTvSerial;
+    private ImageView mIvMenu;
+    private ViewPager2 mVpFullScreen;
     private ActionSheetDialog mActionSheet;
 
     private RecyclerFullscreenAdapter mFullscreenAdapter;
@@ -77,6 +71,8 @@ public class FullscreenActivity extends BaseActivity implements OnPhotoTapListen
             return;
         }
 
+        initViewByIds();
+        initViewClickListeners();
         initFullScreenViewPager();
         initActionSheetDialog();
         initNormalViews();
@@ -116,6 +112,22 @@ public class FullscreenActivity extends BaseActivity implements OnPhotoTapListen
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         UIUtils.hideNavigationBar(this);
+    }
+
+    private void initViewByIds() {
+        mLayoutOperate = findViewById(R.id.layout_operate);
+        mTvSerial = findViewById(R.id.tv_serial);
+        mIvMenu = findViewById(R.id.iv_menu);
+        mVpFullScreen = findViewById(R.id.vp_full_screen);
+    }
+
+    private void initViewClickListeners() {
+        findViewById(R.id.iv_menu).setOnClickListener(view -> {
+            showMenu();
+        });
+        findViewById(R.id.iv_back).setOnClickListener(view -> {
+            onBackPressed();
+        });
     }
 
     private void initNormalViews() {
@@ -205,7 +217,6 @@ public class FullscreenActivity extends BaseActivity implements OnPhotoTapListen
         }
     }
 
-    @OnClick(R.id.iv_menu)
     void showMenu() {
         mActionSheet.show();
     }
@@ -261,7 +272,6 @@ public class FullscreenActivity extends BaseActivity implements OnPhotoTapListen
         super.finish();
     }
 
-    @OnClick(R.id.iv_back)
     @Override
     public void onBackPressed() {
         ActivityCompat.finishAfterTransition(this);

@@ -24,25 +24,16 @@ import java.util.List;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.OnClick;
 
-public class FavoriteTagActivity extends BaseActivity implements View.OnClickListener {
+public class FavoriteTagActivity extends BaseActivity {
 
-    @BindView(R.id.tool_bar)
-    Toolbar mToolbar;
-    @BindView(R.id.layout_normal)
-    ViewGroup mLayoutNormal;
-    @BindView(R.id.layout_editing)
-    ViewGroup mLayoutEditing;
-    @BindView(R.id.tv_choose_count)
-    TextView mTvChooseCount;
-    @BindView(R.id.layout_choose_all)
-    ViewGroup mLayoutChooseAll;
-    @BindView(R.id.cb_choose_all)
-    SmoothCheckBox mCbChooseAll;
-    @BindView(R.id.rv_tag)
-    RecyclerView mRvTag;
+    private  Toolbar mToolbar;
+    private  ViewGroup mLayoutNormal;
+    private  ViewGroup mLayoutEditing;
+    private   TextView mTvChooseCount;
+    private   ViewGroup mLayoutChooseAll;
+    private   SmoothCheckBox mCbChooseAll;
+    private   RecyclerView mRvTag;
 
     private LinearLayoutManager mLayoutManager;
     private RecyclerFavoriteTagAdapter mTagAdapter;
@@ -54,9 +45,67 @@ public class FavoriteTagActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     protected void init(Bundle savedInstanceState) {
+        initViewByIds();
+        initViewClickListeners();
         initToolBarLayout();
         initRecyclerWebsite();
         resetTagData();
+    }
+
+    private void initViewByIds() {
+        mToolbar = findViewById(R.id.tool_bar);
+        mLayoutNormal  = findViewById(R.id.layout_normal);
+        mLayoutEditing  = findViewById(R.id.layout_editing);
+        mTvChooseCount   = findViewById(R.id.tv_choose_count);
+        mLayoutChooseAll  = findViewById(R.id.layout_choose_all);
+        mCbChooseAll  = findViewById(R.id.cb_choose_all);
+        mRvTag = findViewById(R.id.rv_tag);
+    }
+
+    private void initViewClickListeners() {
+        findViewById(R.id.layout_choose_all).setOnClickListener(view -> {
+            mCbChooseAll.toggle();
+        });
+        findViewById(R.id.cb_choose_all).setOnClickListener(view -> {
+            if (mCbChooseAll.isChecked()) {
+                mTagAdapter.selectAll();
+            } else {
+                mTagAdapter.deselectAll();
+            }
+        });
+        findViewById(R.id.tv_sort).setOnClickListener(view -> {
+            CustomDialog.showSortFavoriteTagsDialog(this, new CustomDialog.SimpleDialogActionListener() {
+                @Override
+                public void onPositive() {
+                    resetTagData();
+                }
+            });
+        });
+        findViewById(R.id.tv_edit).setOnClickListener(view -> {
+            enterEditMode();
+        });
+        findViewById(R.id.tv_delete).setOnClickListener(view -> {
+            List<FavoriteTagBean> deleteList = new ArrayList<>(mTagAdapter.getSelectList());
+            CustomDialog.showDeleteFavoriteTagsDialog(this, new CustomDialog.SimpleDialogActionListener() {
+                @Override
+                public void onPositive() {
+                    exitEditMode(false);
+                    mTagAdapter.removeDatas(deleteList);
+                    List<FavoriteTagBean> hasAnnotationTags = new ArrayList<>();
+                    List<FavoriteTagBean> emptyAnnotationTags = new ArrayList<>();
+                    for (FavoriteTagBean tagBean : deleteList) {
+                        tagBean.setIsFavorite(false);
+                        if (TextUtils.isEmpty(tagBean.getAnnotation())) {
+                            emptyAnnotationTags.add(tagBean);
+                        } else {
+                            hasAnnotationTags.add(tagBean);
+                        }
+                    }
+                    GreenDaoUtils.updateFavoriteTags(hasAnnotationTags);
+                    GreenDaoUtils.deleteFavoriteTags(emptyAnnotationTags);
+                }
+            });
+        });
     }
 
     private void initToolBarLayout() {
@@ -66,58 +115,6 @@ public class FavoriteTagActivity extends BaseActivity implements View.OnClickLis
         mToolbar.setNavigationIcon(R.drawable.ic_back);
         mToolbar.setNavigationOnClickListener(v -> finish());
         DoubleTapEffector.addDoubleTapEffect(mToolbar, () -> scrollToTop(true));
-    }
-
-    @OnClick({R.id.layout_choose_all, R.id.cb_choose_all, R.id.tv_sort, R.id.tv_edit, R.id.tv_delete})
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.layout_choose_all:
-                mCbChooseAll.toggle();
-            case R.id.cb_choose_all:
-                if (mCbChooseAll.isChecked()) {
-                    mTagAdapter.selectAll();
-                } else {
-                    mTagAdapter.deselectAll();
-                }
-                break;
-
-            case R.id.tv_sort:
-                CustomDialog.showSortFavoriteTagsDialog(this, new CustomDialog.SimpleDialogActionListener() {
-                    @Override
-                    public void onPositive() {
-                        resetTagData();
-                    }
-                });
-                break;
-
-            case R.id.tv_edit:
-                enterEditMode();
-                break;
-
-            case R.id.tv_delete:
-                List<FavoriteTagBean> deleteList = new ArrayList<>(mTagAdapter.getSelectList());
-                CustomDialog.showDeleteFavoriteTagsDialog(this, new CustomDialog.SimpleDialogActionListener() {
-                    @Override
-                    public void onPositive() {
-                        exitEditMode(false);
-                        mTagAdapter.removeDatas(deleteList);
-                        List<FavoriteTagBean> hasAnnotationTags = new ArrayList<>();
-                        List<FavoriteTagBean> emptyAnnotationTags = new ArrayList<>();
-                        for (FavoriteTagBean tagBean : deleteList) {
-                            tagBean.setIsFavorite(false);
-                            if (TextUtils.isEmpty(tagBean.getAnnotation())) {
-                                emptyAnnotationTags.add(tagBean);
-                            } else {
-                                hasAnnotationTags.add(tagBean);
-                            }
-                        }
-                        GreenDaoUtils.updateFavoriteTags(hasAnnotationTags);
-                        GreenDaoUtils.deleteFavoriteTags(emptyAnnotationTags);
-                    }
-                });
-                break;
-        }
     }
 
     private void initRecyclerWebsite() {

@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -16,7 +17,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.ess.anime.wallpaper.R;
 import com.ess.anime.wallpaper.bean.MsgBean;
-import com.ess.anime.wallpaper.glide.GlideApp;
 import com.ess.anime.wallpaper.glide.MyGlideModule;
 import com.ess.anime.wallpaper.glide.glide_url.ProgressInterceptor;
 import com.ess.anime.wallpaper.global.Constants;
@@ -34,16 +34,13 @@ import org.greenrobot.eventbus.Subscribe;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
 
 public class MultipleMediaLayout extends FrameLayout implements RequestListener<Drawable>,
         MediaPlayer.OnPreparedListener, MediaPlayer.OnInfoListener, MediaPlayer.OnErrorListener {
 
-    @BindView(R.id.loading_view)
-    CircleLoadingView mLoadingView;
+    private CircleLoadingView mLoadingView;
 
     public MultipleMediaLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -56,7 +53,10 @@ public class MultipleMediaLayout extends FrameLayout implements RequestListener<
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        ButterKnife.bind(this);
+        mLoadingView = findViewById(R.id.loading_view);
+        mPhotoView = findViewById(R.id.photo_view);
+        mVideoView = findViewById(R.id.video_view);
+        mLayoutVideoController = findViewById(R.id.layout_video_controller);
     }
 
     private void showLoadingView() {
@@ -106,8 +106,7 @@ public class MultipleMediaLayout extends FrameLayout implements RequestListener<
 
 
     /***********************************  Image  ***********************************/
-    @BindView(R.id.photo_view)
-    PhotoView mPhotoView;
+    private PhotoView mPhotoView;
 
     public PhotoView getPhotoView() {
         return mPhotoView;
@@ -128,7 +127,7 @@ public class MultipleMediaLayout extends FrameLayout implements RequestListener<
         Object url = isWebPath() ? MyGlideModule.makeGlideUrl(mMediaPath, WebsiteManager.getInstance().getRequestHeaders()) : mMediaPath;
         Activity activity = (Activity) getContext();
         if (SystemUtils.isActivityActive(activity)) {
-            GlideApp.with(getContext())
+            Glide.with(getContext())
                     .load(url)
                     .listener(this)
                     .priority(Priority.IMMEDIATE)
@@ -158,10 +157,8 @@ public class MultipleMediaLayout extends FrameLayout implements RequestListener<
 
 
     /***********************************  Video  ***********************************/
-    @BindView(R.id.video_view)
-    TextureVideoView mVideoView;
-    @BindView(R.id.layout_video_controller)
-    VideoControllerLayout mLayoutVideoController;
+    private TextureVideoView mVideoView;
+    private VideoControllerLayout mLayoutVideoController;
 
     private boolean mAutoPlay;
     private MediaPlayer mMediaPlayer;

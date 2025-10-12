@@ -33,13 +33,10 @@ import java.util.List;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import butterknife.BindView;
-import butterknife.OnClick;
 
 public abstract class BaseWebActivity extends BaseActivity {
 
-    @BindView(R.id.tool_bar)
-    Toolbar mToolbar;
+    private Toolbar mToolbar;
 
     AgentWeb mAgentWeb;
     private LongClickWebView mWebView;
@@ -53,7 +50,6 @@ public abstract class BaseWebActivity extends BaseActivity {
 
     abstract MiddlewareWebClientBase customWebViewClient();
 
-    @OnClick(R.id.iv_help)
     abstract void showHelpDialog();
 
     abstract boolean hasHelpDialog();
@@ -75,6 +71,8 @@ public abstract class BaseWebActivity extends BaseActivity {
             }
         });
         findViewById(R.id.iv_help).setVisibility(hasHelpDialog() ? View.VISIBLE : View.GONE);
+        findViewById(R.id.iv_help).setOnClickListener(view -> showHelpDialog());
+        findViewById(R.id.iv_more).setOnClickListener(this::showMore);
     }
 
     @Override
@@ -85,6 +83,7 @@ public abstract class BaseWebActivity extends BaseActivity {
     }
 
     private void initToolBarLayout() {
+        mToolbar = findViewById(R.id.tool_bar);
         mToolbar.setTitle(title());
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -202,8 +201,7 @@ public abstract class BaseWebActivity extends BaseActivity {
         }
     }
 
-    @OnClick(R.id.iv_more)
-    void showMore(View view) {
+    private void showMore(View view) {
         mPopup.show(view);
     }
 

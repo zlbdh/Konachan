@@ -25,8 +25,6 @@ import java.io.File;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
-import butterknife.BindView;
-import butterknife.OnClick;
 
 public class CropWallpaperActivity extends BaseActivity implements UCropFragmentCallback {
 
@@ -36,8 +34,7 @@ public class CropWallpaperActivity extends BaseActivity implements UCropFragment
 
     public final static String FILE_URI = "FILE_URI";
 
-    @BindView(R.id.tool_bar)
-    Toolbar mToolbar;
+    private Toolbar mToolbar;
 
     private UCropFragment mUCropFragment;
     private ActionSheetDialog mActionSheet;
@@ -72,6 +69,7 @@ public class CropWallpaperActivity extends BaseActivity implements UCropFragment
             return;
         }
 
+        initViewClickListeners();
         initToolBarLayout();
         initCropFragment(sourceUri);
         CustomDialog.checkToShowCannotCustomLockscreenWallpaperDialog(this);
@@ -83,7 +81,14 @@ public class CropWallpaperActivity extends BaseActivity implements UCropFragment
         updateActionSheetWidth();
     }
 
+    private void initViewClickListeners() {
+        findViewById(R.id.iv_crop).setOnClickListener(view -> {
+            cropImage();
+        });
+    }
+
     private void initToolBarLayout() {
+        mToolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToolbar.setNavigationOnClickListener(v -> finish());
@@ -113,8 +118,7 @@ public class CropWallpaperActivity extends BaseActivity implements UCropFragment
         mUCropFragment = UCropFragment.newInstance(bundle);
     }
 
-    @OnClick(R.id.iv_crop)
-    void cropImage() {
+    private void cropImage() {
         mUCropFragment.cropAndSaveImage();
     }
 

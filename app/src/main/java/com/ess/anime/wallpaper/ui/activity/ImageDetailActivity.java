@@ -43,23 +43,16 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.Group;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
-import butterknife.BindView;
-import butterknife.OnClick;
 
 public class ImageDetailActivity extends BaseActivity {
 
     public final String TAG = ImageDetailActivity.class.getName() + UUID.randomUUID().toString();
 
-    @BindView(R.id.tv_id)
-    TextView mTvId;
-    @BindView(R.id.smart_tab)
-    SmartTabLayout mSmartTab;
-    @BindView(R.id.vp_image_detail)
-    ViewPager mVpImageDetail;
-    @BindView(R.id.iv_previous)
-    ImageView mIvPrevious;
-    @BindView(R.id.iv_next)
-    ImageView mIvNext;
+    private TextView mTvId;
+    private SmartTabLayout mSmartTab;
+    private ViewPager mVpImageDetail;
+    private ImageView mIvPrevious;
+    private ImageView mIvNext;
 
     private ThumbBean mThumbBean;
     private ImageBean mImageBean;
@@ -195,8 +188,18 @@ public class ImageDetailActivity extends BaseActivity {
                 }
             }
         };
+        mIvPrevious = findViewById(R.id.iv_previous);
         mIvPrevious.setOnTouchListener(touchMoveListener);
+        mIvNext = findViewById(R.id.iv_next);
         mIvNext.setOnTouchListener(touchMoveListener);
+
+        mTvId = findViewById(R.id.tv_id);
+        findViewById(R.id.tv_save).setOnClickListener(view -> {
+            saveImage();
+        });
+        findViewById(R.id.fl_back).setOnClickListener(view -> {
+            finish();
+        });
     }
 
     private void saveSwitchButtonPosition() {
@@ -234,12 +237,14 @@ public class ImageDetailActivity extends BaseActivity {
                 .add(R.string.image_detail_detail, DetailFragment.class)
                 .add(R.string.image_detail_comment, CommentFragment.class)
                 .create());
+        mVpImageDetail = findViewById(R.id.vp_image_detail);
         mVpImageDetail.setAdapter(adapter);
         mVpImageDetail.setOffscreenPageLimit(adapter.getCount());
         mVpImageDetail.setCurrentItem(mCurrentPage);
     }
 
     private void initSlidingTabLayout() {
+        mSmartTab = findViewById(R.id.smart_tab);
         mSmartTab.setViewPager(mVpImageDetail);
     }
 
@@ -311,8 +316,7 @@ public class ImageDetailActivity extends BaseActivity {
     }
 
     // 下载图片点击事件
-    @OnClick(R.id.tv_save)
-    void saveImage() {
+    private void saveImage() {
         PermissionHelper.checkStoragePermissions(this, new PermissionHelper.SimpleRequestListener() {
             @Override
             public void onGranted() {
@@ -379,12 +383,6 @@ public class ImageDetailActivity extends BaseActivity {
                 showChooseToDownloadDialog();
             }
         }
-    }
-
-    @OnClick(R.id.fl_back)
-    @Override
-    public void finish() {
-        super.finish();
     }
 
     private void showGestureGuideIfNeed() {

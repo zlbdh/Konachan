@@ -5,11 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.ess.anime.wallpaper.R;
 import com.ess.anime.wallpaper.bean.CollectionBean;
-import com.ess.anime.wallpaper.glide.GlideApp;
 import com.ess.anime.wallpaper.global.Constants;
 import com.ess.anime.wallpaper.listener.OnTouchScaleListener;
 import com.ess.anime.wallpaper.model.holder.ImageDataHolder;
@@ -90,7 +90,7 @@ public class RecyclerCollectionAdapter extends BaseRecyclerEditAdapter<Collectio
         ImageView ivCollection = holder.getView(R.id.iv_collection);
         ivCollection.getLayoutParams().width = getImageSlideLength();
         ivCollection.getLayoutParams().height = getImageSlideLength();
-        GlideApp.with(mContext)
+        Glide.with(mContext)
                 .asBitmap()
                 .load(imageUrl)
                 .priority(Priority.IMMEDIATE)

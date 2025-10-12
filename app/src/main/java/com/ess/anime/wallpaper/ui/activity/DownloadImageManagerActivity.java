@@ -17,15 +17,11 @@ import java.util.List;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
-import butterknife.BindView;
-import butterknife.OnClick;
 
 public class DownloadImageManagerActivity extends BaseActivity {
 
-    @BindView(R.id.tool_bar)
-    Toolbar mToolbar;
-    @BindView(R.id.rv_download)
-    GeneralRecyclerView mRvDownload;
+    private Toolbar mToolbar;
+    private GeneralRecyclerView mRvDownload;
 
     private GridLayoutManager mLayoutManager;
 
@@ -36,6 +32,7 @@ public class DownloadImageManagerActivity extends BaseActivity {
 
     @Override
     protected void init(Bundle savedInstanceState) {
+        initViewClickListeners();
         initToolBarLayout();
         initRecyclerDownload();
     }
@@ -46,14 +43,23 @@ public class DownloadImageManagerActivity extends BaseActivity {
         updateRecyclerViewSpanCount();
     }
 
+    private void initViewClickListeners() {
+        findViewById(R.id.iv_clear_all).setOnClickListener(view -> {
+            clearAllFinished();
+        });
+        findViewById(R.id.iv_goto_collection).setOnClickListener(view -> {
+            gotoCollection();
+        });
+    }
+
     private void initToolBarLayout() {
+        mToolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToolbar.setNavigationOnClickListener(v -> finish());
     }
 
-    @OnClick(R.id.iv_clear_all)
-    void clearAllFinished() {
+    private void clearAllFinished() {
         CustomDialog.showClearAllDownloadFinishedDialog(this, new CustomDialog.SimpleDialogActionListener() {
             @Override
             public void onPositive() {
@@ -63,8 +69,7 @@ public class DownloadImageManagerActivity extends BaseActivity {
         });
     }
 
-    @OnClick(R.id.iv_goto_collection)
-    void gotoCollection() {
+    private void gotoCollection() {
         startActivity(new Intent(this, CollectionActivity.class));
     }
 
@@ -73,6 +78,7 @@ public class DownloadImageManagerActivity extends BaseActivity {
         Collections.reverse(downloadList);
 
         mLayoutManager = new GridLayoutManager(this, 1);
+        mRvDownload = findViewById(R.id.rv_download);
         mRvDownload.setLayoutManager(mLayoutManager);
         RecyclerDownloadImageAdapter adapter = new RecyclerDownloadImageAdapter(downloadList);
         adapter.bindToRecyclerView(mRvDownload);

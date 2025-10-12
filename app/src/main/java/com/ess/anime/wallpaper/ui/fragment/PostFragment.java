@@ -59,8 +59,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import butterknife.BindView;
-import butterknife.OnClick;
 
 public class PostFragment extends BaseFragment implements
         WebsiteManager.OnWebsiteChangeListener,
@@ -68,14 +66,10 @@ public class PostFragment extends BaseFragment implements
 
     public final static String TAG = PostFragment.class.getName();
 
-    @BindView(R.id.tool_bar)
-    Toolbar mToolbar;
-    @BindView(R.id.floating_action_menu)
-    FloatingActionMenu mFloatingMenu;
-    @BindView(R.id.swipe_refresh_layout)
-    SwipeRefreshLayout mSwipeRefresh;
-    @BindView(R.id.rv_post)
-    GeneralRecyclerView mRvPosts;
+    private Toolbar mToolbar;
+    private FloatingActionMenu mFloatingMenu;
+    private SwipeRefreshLayout mSwipeRefresh;
+    private GeneralRecyclerView mRvPosts;
 
     private MainActivity mActivity;
     private StaggeredGridLayoutManager mLayoutManager;
@@ -103,6 +97,8 @@ public class PostFragment extends BaseFragment implements
 
     @Override
     void init(Bundle savedInstanceState) {
+        initViewByIds();
+        initViewClickListeners();
         initToolBarLayout();
         initPopupPage();
         initSwipeRefreshLayout();
@@ -129,6 +125,34 @@ public class PostFragment extends BaseFragment implements
         super.onDestroyView();
         OkHttp.cancel(TAG);
         WebsiteManager.getInstance().unregisterWebsiteChangeListener(this);
+    }
+
+    private void initViewByIds() {
+        mToolbar = mRootView.findViewById(R.id.tool_bar);
+        mFloatingMenu = mRootView.findViewById(R.id.floating_action_menu);
+        mSwipeRefresh = mRootView.findViewById(R.id.swipe_refresh_layout);
+        mRvPosts = mRootView.findViewById(R.id.rv_post);
+    }
+
+    private void initViewClickListeners() {
+        mRootView.findViewById(R.id.iv_format).setOnClickListener(view -> {
+            toggleImageShownFormat();
+        });
+        mRootView.findViewById(R.id.iv_page).setOnClickListener(view -> {
+            gotoPage(view);
+        });
+        mRootView.findViewById(R.id.iv_search).setOnClickListener(view -> {
+            openSearch();
+        });
+        mRootView.findViewById(R.id.fab_home).setOnClickListener(view -> {
+            searchHome();
+        });
+        mRootView.findViewById(R.id.fab_random).setOnClickListener(view -> {
+            searchRandom();
+        });
+        mRootView.findViewById(R.id.fab_popular).setOnClickListener(view -> {
+            searchPopular();
+        });
     }
 
     private void initToolBarLayout() {
@@ -165,8 +189,7 @@ public class PostFragment extends BaseFragment implements
     }
 
     // 切换图片显示方式（方格/瀑布流）
-    @OnClick({R.id.iv_format})
-    void toggleImageShownFormat() {
+    private void toggleImageShownFormat() {
         boolean newFormat = !isPostImageShownRectangular();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         preferences.edit().putBoolean(Constants.IS_POST_IMAGE_SHOWN_RECTANGULAR, newFormat).apply();
@@ -181,16 +204,14 @@ public class PostFragment extends BaseFragment implements
     }
 
     // 弹出跳转页弹窗
-    @OnClick(R.id.iv_page)
-    void gotoPage(View view) {
+    private void gotoPage(View view) {
         mPopupPage.showAsDropDown(view);
         mEtGoto.selectAll();
         mEtGoto.post(() -> UIUtils.showSoftInput(mActivity, mEtGoto));
     }
 
     //搜索
-    @OnClick({R.id.iv_search})
-    void openSearch() {
+    private void openSearch() {
         mFloatingMenu.close(true);
         Intent searchIntent = new Intent(mActivity, SearchActivity.class);
         startActivityForResult(searchIntent, Constants.SEARCH_CODE);
@@ -345,16 +366,14 @@ public class PostFragment extends BaseFragment implements
         }
     }
 
-    @OnClick(R.id.fab_home)
-    void searchHome() {
+    private void searchHome() {
         mFloatingMenu.close(true);
         Intent intent = new Intent();
         intent.putExtra(Constants.SEARCH_MODE, Constants.SEARCH_MODE_HOME);
         onActivityResult(Constants.SEARCH_CODE, Constants.SEARCH_CODE, intent);
     }
 
-    @OnClick(R.id.fab_random)
-    void searchRandom() {
+    private void searchRandom() {
         mFloatingMenu.close(true);
         if (WebsiteManager.getInstance().getWebsiteConfig().isSupportRandomPost()) {
             Intent intent = new Intent();
@@ -366,8 +385,7 @@ public class PostFragment extends BaseFragment implements
         }
     }
 
-    @OnClick(R.id.fab_popular)
-    void searchPopular() {
+    private void searchPopular() {
         mFloatingMenu.close(true);
         Intent intent = new Intent(mActivity, PopularActivity.class);
         startActivity(intent);

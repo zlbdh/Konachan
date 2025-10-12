@@ -20,7 +20,6 @@ import java.lang.reflect.Method;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
-import butterknife.ButterKnife;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
@@ -38,7 +37,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(layoutRes());
         getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
-        ButterKnife.bind(this);
 
         Method[] methods = getClass().getMethods();
         for (Method method : methods) {

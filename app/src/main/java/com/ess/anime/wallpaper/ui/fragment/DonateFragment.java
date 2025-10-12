@@ -25,27 +25,15 @@ import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
 
 public class DonateFragment extends DialogFragment {
 
-    private Unbinder mUnbinder;
-
-    @BindView(R.id.switcher_title)
-    MyImageSwitcher mSwitcherTitle;
-    @BindView(R.id.switcher_image)
-    MyImageSwitcher mSwitcherImage;
-    @BindView(R.id.layout_donate)
-    ViewGroup mLayoutDonate;
-    @BindView(R.id.iv_alipay)
-    ImageView mIvAlipay;
-    @BindView(R.id.iv_wechat)
-    ImageView mIvWechat;
-    @BindView(R.id.iv_close)
-    ImageView mIvClose;
+    private MyImageSwitcher mSwitcherTitle;
+    private MyImageSwitcher mSwitcherImage;
+    private ViewGroup mLayoutDonate;
+    private ImageView mIvAlipay;
+    private ImageView mIvWechat;
+    private ImageView mIvClose;
 
     private boolean mHasClickedDonateButton;
     private boolean mHasDonated;
@@ -54,11 +42,33 @@ public class DonateFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_donate, container, false);
-        mUnbinder = ButterKnife.bind(this, rootView);
 
+        initViewByIds(rootView);
+        initViewClickListeners(rootView);
         initViews();
         rootView.post(this::startAnim);
         return rootView;
+    }
+
+    private void initViewByIds(View rootView) {
+        mSwitcherTitle = rootView.findViewById(R.id.switcher_title);
+        mSwitcherImage = rootView.findViewById(R.id.switcher_image);
+        mLayoutDonate = rootView.findViewById(R.id.layout_donate);
+        mIvAlipay = rootView.findViewById(R.id.iv_alipay);
+        mIvWechat = rootView.findViewById(R.id.iv_wechat);
+        mIvClose = rootView.findViewById(R.id.iv_close);
+    }
+
+    private void initViewClickListeners(View rootView) {
+        rootView.findViewById(R.id.iv_alipay).setOnClickListener(view -> {
+            donateViaAlipay();
+        });
+        rootView.findViewById(R.id.iv_wechat).setOnClickListener(view -> {
+            donateViaWechat();
+        });
+        rootView.findViewById(R.id.iv_close).setOnClickListener(view -> {
+            dismissAllowingStateLoss();
+        });
     }
 
     private void initViews() {
@@ -125,16 +135,14 @@ public class DonateFragment extends DialogFragment {
     }
 
 
-    @OnClick(R.id.iv_alipay)
-    void donateViaAlipay() {
+    private void donateViaAlipay() {
         if (SystemUtils.isActivityActive(getActivity())) {
             mHasClickedDonateButton = true;
             DonateHelper.donateViaAlipay(getActivity());
         }
     }
 
-    @OnClick(R.id.iv_wechat)
-    void donateViaWechat() {
+    private void donateViaWechat() {
         if (SystemUtils.isActivityActive(getActivity())) {
             mHasClickedDonateButton = true;
             DonateHelper.donateViaWechat(getActivity());
@@ -175,13 +183,6 @@ public class DonateFragment extends DialogFragment {
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mUnbinder.unbind();
-    }
-
-    @OnClick(R.id.iv_close)
     @Override
     public void dismissAllowingStateLoss() {
         super.dismissAllowingStateLoss();

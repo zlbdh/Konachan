@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.ess.anime.wallpaper.download.BaseDownloadProgressListener;
-import com.ess.anime.wallpaper.glide.GlideApp;
 import com.ess.anime.wallpaper.glide.MyGlideModule;
 import com.ess.anime.wallpaper.ui.activity.CollectionActivity;
 import com.ess.anime.wallpaper.utils.UIUtils;
@@ -60,7 +60,7 @@ public class DownloadImageProgressListener extends BaseDownloadProgressListener<
         mNeedToReloadThumbnail = false;
         int size = UIUtils.dp2px(mContext, 64);
         Map<String, String> headerMap = WebsiteManager.getInstance().getRequestHeaders();
-        GlideApp.with(mContext)
+        Glide.with(mContext)
                 .asBitmap()
                 .load(MyGlideModule.makeGlideUrl(mDownloadBean.thumbUrl, headerMap))
                 .listener(this)

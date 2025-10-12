@@ -15,17 +15,13 @@ import com.ess.anime.wallpaper.R;
 import com.ess.anime.wallpaper.utils.UIUtils;
 
 import androidx.annotation.Nullable;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class TagAnnotationEditLayout extends FrameLayout {
 
     private final static int ANNOTATION_MAX_LENGTH = 100;
 
-    @BindView(R.id.et_annotation)
-    EditText mEtAnnotation;
-    @BindView(R.id.tv_limit)
-    TextView mTvLimit;
+    private EditText mEtAnnotation;
+    private TextView mTvLimit;
 
     private boolean mIsEditing = true;
     private OnEditModeChangeListener mOnEditModeChangeListener;
@@ -45,12 +41,14 @@ public class TagAnnotationEditLayout extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        ButterKnife.bind(this);
         initEditView();
         exitEditMode();
     }
 
     private void initEditView() {
+        mTvLimit = findViewById(R.id.tv_limit);
+        mEtAnnotation = findViewById(R.id.et_annotation);
+
         InputFilter.LengthFilter lengthFilter = new InputFilter.LengthFilter(ANNOTATION_MAX_LENGTH);
         InputFilter customFilter = (source, start, end, dest, dstart, dend) -> {
             return source.toString().replaceAll("[\n\r]", "");

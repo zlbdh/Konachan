@@ -20,13 +20,10 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class SearchModeDocLayout extends NestedScrollView {
 
-    @BindView(R.id.layout_doc_search_mode)
-    LinearLayout mLayoutDocSearchMode;
+    private LinearLayout mLayoutDocSearchMode;
 
     public SearchModeDocLayout(@NonNull Context context) {
         super(context);
@@ -43,7 +40,7 @@ public class SearchModeDocLayout extends NestedScrollView {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        ButterKnife.bind(this);
+        mLayoutDocSearchMode = findViewById(R.id.layout_doc_search_mode);
         initViews();
     }
 

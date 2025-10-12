@@ -10,10 +10,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.ess.anime.wallpaper.R;
 import com.ess.anime.wallpaper.bean.MsgBean;
 import com.ess.anime.wallpaper.download.apk.ApkBean;
-import com.ess.anime.wallpaper.glide.GlideApp;
 import com.ess.anime.wallpaper.global.Constants;
 import com.ess.anime.wallpaper.http.FireBase;
 import com.ess.anime.wallpaper.model.helper.SoundHelper;
@@ -40,17 +40,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import butterknife.BindView;
 
 public class MainActivity extends BaseActivity {
 
     private final static String TAG_FRG_POST = PostFragment.TAG;
     private final static String TAG_FRG_POOL = PoolFragment.TAG;
 
-    @BindView(R.id.drawer_layout)
-    DrawerLayout mDrawerLayout;
-    @BindView(R.id.nav_view)
-    NavigationView mNavigation;
+    private DrawerLayout mDrawerLayout;
+    private NavigationView mNavigation;
 
     private FragmentManager mFragmentManager;
     private PostFragment mFrgPost;
@@ -134,51 +131,39 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initDrawerLayout() {
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                switch (mCurrentNavId) {
-                    case R.id.nav_post:
-                        changeContentMainFragment(mFrgPost);
-                        break;
-                    case R.id.nav_pool:
-                        changeContentMainFragment(mFrgPool);
-                        break;
-                    case R.id.nav_collection:
-                        startActivity(new Intent(MainActivity.this, CollectionActivity.class));
-                        break;
-                    case R.id.nav_favorite_tag:
-                        startActivity(new Intent(MainActivity.this, FavoriteTagActivity.class));
-                        break;
-                    case R.id.nav_download_manager:
-                        startActivity(new Intent(MainActivity.this, DownloadImageManagerActivity.class));
-                        break;
-                    case R.id.nav_pixiv_gif:
-                        startActivity(new Intent(MainActivity.this, PixivGifActivity.class));
-                        break;
-                    case R.id.nav_reverse_search:
-                        startActivity(new Intent(MainActivity.this, ReverseSearchActivity.class));
-                        break;
-                    case R.id.nav_game:
-                        startActivity(new Intent(MainActivity.this, GameActivity.class));
-                        break;
-                    case R.id.nav_github:
-                        String url = "https://github.com/EternalSoySauce/Konachan";
-                        HyperlinkActivity.launch(MainActivity.this, url);
-                        break;
-                    case R.id.nav_feedback:
-                        CustomDialog.showFeedbackDialog(MainActivity.this);
-                        break;
-                    case R.id.nav_setting:
-                        startActivity(new Intent(MainActivity.this, SettingActivity.class));
-                        break;
-                    case R.id.nav_donate:
-                        FragmentManager manager = getSupportFragmentManager();
-                        if (!manager.isDestroyed() && !manager.isStateSaved()) {
-                            new DonateFragment().show(manager, null);
-                        }
-                        break;
+                if (mCurrentNavId == R.id.nav_post) {
+                    changeContentMainFragment(mFrgPost);
+                } else if (mCurrentNavId == R.id.nav_pool) {
+                    changeContentMainFragment(mFrgPool);
+                } else if (mCurrentNavId == R.id.nav_collection) {
+                    startActivity(new Intent(MainActivity.this, CollectionActivity.class));
+                } else if (mCurrentNavId == R.id.nav_favorite_tag) {
+                    startActivity(new Intent(MainActivity.this, FavoriteTagActivity.class));
+                } else if (mCurrentNavId == R.id.nav_download_manager) {
+                    startActivity(new Intent(MainActivity.this, DownloadImageManagerActivity.class));
+                } else if (mCurrentNavId == R.id.nav_pixiv_gif) {
+                    startActivity(new Intent(MainActivity.this, PixivGifActivity.class));
+                } else if (mCurrentNavId == R.id.nav_reverse_search) {
+                    startActivity(new Intent(MainActivity.this, ReverseSearchActivity.class));
+                } else if (mCurrentNavId == R.id.nav_game) {
+                    startActivity(new Intent(MainActivity.this, GameActivity.class));
+                } else if (mCurrentNavId == R.id.nav_github) {
+                    String url = "https://github.com/EternalSoySauce/Konachan";
+                    HyperlinkActivity.launch(MainActivity.this, url);
+                } else if (mCurrentNavId == R.id.nav_feedback) {
+                    CustomDialog.showFeedbackDialog(MainActivity.this);
+                } else if (mCurrentNavId == R.id.nav_setting) {
+                    startActivity(new Intent(MainActivity.this, SettingActivity.class));
+                } else if (mCurrentNavId == R.id.nav_donate) {
+                    FragmentManager manager = getSupportFragmentManager();
+                    if (!manager.isDestroyed() && !manager.isStateSaved()) {
+                        new DonateFragment().show(manager, null);
+                    }
                 }
                 mCurrentNavId = 0;
             }
@@ -189,6 +174,7 @@ public class MainActivity extends BaseActivity {
         mCurrentNavId = mCurrentNavId == 0 ? R.id.nav_post : mCurrentNavId;
         ColorStateList colorStateList = ResourcesCompat.getColorStateList(
                 getResources(), R.color.nav_menu_text_color, null);
+        mNavigation = findViewById(R.id.nav_view);
         mNavigation.setItemTextColor(colorStateList);
         mNavigation.setItemIconTintList(colorStateList);
         mNavigation.setItemBackgroundResource(R.drawable.bg_nav_menu);
@@ -230,7 +216,7 @@ public class MainActivity extends BaseActivity {
 
         // 图片对应一周7天
         ImageView ivExtra = navHeader.findViewById(R.id.iv_extra);
-        GlideApp.with(this).load(getExtraImageSrcId()).into(ivExtra);
+        Glide.with(this).load(getExtraImageSrcId()).into(ivExtra);
     }
 
     private int getExtraImageSrcId() {

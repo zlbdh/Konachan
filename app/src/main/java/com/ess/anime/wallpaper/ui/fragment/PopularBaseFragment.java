@@ -48,7 +48,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import butterknife.BindView;
 
 public abstract class PopularBaseFragment extends BaseFragment implements
         WebsiteManager.OnWebsiteChangeListener,
@@ -56,10 +55,8 @@ public abstract class PopularBaseFragment extends BaseFragment implements
 
     public final String TAG = PopularBaseFragment.class.getName() + UUID.randomUUID().toString();
 
-    @BindView(R.id.swipe_refresh_layout)
-    SwipeRefreshLayout mSwipeRefresh;
-    @BindView(R.id.rv_post)
-    GeneralRecyclerView mRvPosts;
+    private SwipeRefreshLayout mSwipeRefresh;
+    private GeneralRecyclerView mRvPosts;
 
     private Activity mActivity;
     private PopularWebsiteViewModel mViewModel;
@@ -137,6 +134,7 @@ public abstract class PopularBaseFragment extends BaseFragment implements
     }
 
     private void initSwipeRefreshLayout() {
+        mSwipeRefresh = mRootView.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefresh.setEnabled(supportWebsitePopular());
         mSwipeRefresh.setRefreshing(false);
         //下拉刷新
@@ -150,6 +148,7 @@ public abstract class PopularBaseFragment extends BaseFragment implements
 
     private void initRecyclerView() {
         mLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+        mRvPosts = mRootView.findViewById(R.id.rv_post);
         mRvPosts.setLayoutManager(mLayoutManager);
 
         mPostAdapter = new RecyclerPostAdapter(TAG);

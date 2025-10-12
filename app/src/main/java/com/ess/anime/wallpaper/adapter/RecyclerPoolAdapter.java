@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.ess.anime.wallpaper.R;
 import com.ess.anime.wallpaper.bean.PoolListBean;
-import com.ess.anime.wallpaper.glide.GlideApp;
 import com.ess.anime.wallpaper.glide.MyGlideModule;
 import com.ess.anime.wallpaper.utils.SystemUtils;
 import com.ess.anime.wallpaper.website.WebsiteManager;
@@ -30,7 +30,7 @@ public class RecyclerPoolAdapter extends BaseQuickAdapter<PoolListBean, BaseView
         Object imgUrl = TextUtils.isEmpty(poolListBean.thumbUrl)
                 ? poolListBean
                 : MyGlideModule.makeGlideUrl(poolListBean.thumbUrl, headerMap);
-        GlideApp.with(mContext)
+        Glide.with(mContext)
                 .load(imgUrl)
                 .placeholder(R.drawable.ic_placeholder_pool)
                 .priority(Priority.HIGH)

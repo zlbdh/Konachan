@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -12,7 +13,6 @@ import com.ess.anime.wallpaper.download.image.DownloadBean;
 import com.ess.anime.wallpaper.download.image.DownloadImageManager;
 import com.ess.anime.wallpaper.download.image.DownloadImageService;
 import com.ess.anime.wallpaper.download.image.IDownloadImageListener;
-import com.ess.anime.wallpaper.glide.GlideApp;
 import com.ess.anime.wallpaper.glide.MyGlideModule;
 import com.ess.anime.wallpaper.global.Constants;
 import com.ess.anime.wallpaper.http.OkHttp;
@@ -57,7 +57,7 @@ public class RecyclerDownloadImageAdapter extends BaseQuickAdapter<DownloadBean,
     private void updateItemState(@NonNull BaseViewHolder holder, DownloadBean downloadBean) {
         // 预览图
         Map<String, String> headerMap = WebsiteManager.getInstance().getRequestHeaders();
-        GlideApp.with(mContext)
+        Glide.with(mContext)
                 .load(MyGlideModule.makeGlideUrl(downloadBean.thumbUrl, headerMap))
                 .placeholder(R.drawable.ic_placeholder_download_thumb)
                 .priority(Priority.IMMEDIATE)

@@ -26,17 +26,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-import butterknife.BindView;
-import butterknife.OnClick;
 
 public class PopularActivity extends BaseActivity {
 
-    @BindView(R.id.tool_bar)
-    ViewGroup mToolbar;
-    @BindView(R.id.smart_tab)
-    SmartTabLayout mSmartTab;
-    @BindView(R.id.vp_popular)
-    ViewPager mVpPopular;
+    private ViewGroup mToolbar;
+    private SmartTabLayout mSmartTab;
+    private ViewPager mVpPopular;
 
     private PopularWebsiteViewModel mViewModel;
 
@@ -51,6 +46,7 @@ public class PopularActivity extends BaseActivity {
         initToolBarLayout();
         initViewPager();
         initSlidingTabLayout();
+        initViewClickListeners();
     }
 
     private void initData() {
@@ -60,6 +56,7 @@ public class PopularActivity extends BaseActivity {
 
     private void initToolBarLayout() {
         //双击返回顶部
+        mToolbar = findViewById(R.id.tool_bar);
         DoubleTapEffector.addDoubleTapEffect(mToolbar, () -> {
             PagerAdapter adapter = mVpPopular.getAdapter();
             if (adapter instanceof FragmentPagerItemAdapter) {
@@ -79,6 +76,7 @@ public class PopularActivity extends BaseActivity {
                 .add(R.string.popular_title_monthly, PopularMonthlyFragment.class)
                 .add(R.string.popular_title_overall, PopularOverallFragment.class)
                 .create());
+        mVpPopular = findViewById(R.id.vp_popular);
         mVpPopular.setAdapter(adapter);
         mVpPopular.setOffscreenPageLimit(adapter.getCount());
         for (int i = 0; i < adapter.getCount(); i++) {
@@ -91,6 +89,7 @@ public class PopularActivity extends BaseActivity {
     }
 
     private void initSlidingTabLayout() {
+        mSmartTab = findViewById(R.id.smart_tab);
         ViewGroup.LayoutParams layoutParams = mSmartTab.getLayoutParams();
         if (getResources().getConfiguration().locale.getLanguage().equals(Locale.CHINESE.getLanguage())) {
             layoutParams.width = UIUtils.dp2px(this, 300);
@@ -101,8 +100,16 @@ public class PopularActivity extends BaseActivity {
         mSmartTab.setViewPager(mVpPopular);
     }
 
-    @OnClick(R.id.iv_calendar)
-    void selectCalenderData() {
+    private void initViewClickListeners() {
+        findViewById(R.id.iv_calendar).setOnClickListener(view -> {
+            selectCalenderData();
+        });
+        findViewById(R.id.iv_back).setOnClickListener(view -> {
+            finish();
+        });
+    }
+
+    private void selectCalenderData() {
         int year = mViewModel.getCalenderYear();
         int month = mViewModel.getCalenderMonth();
         int day = mViewModel.getCalenderDay();
@@ -119,12 +126,6 @@ public class PopularActivity extends BaseActivity {
         datePickerDialog.setMaxDate(Calendar.getInstance());
         datePickerDialog.setAccentColor(Color.parseColor("#3A4045"));
         datePickerDialog.show(getSupportFragmentManager(), "DatePickerDialog");
-    }
-
-    @OnClick(R.id.iv_back)
-    @Override
-    public void finish() {
-        super.finish();
     }
 
 }

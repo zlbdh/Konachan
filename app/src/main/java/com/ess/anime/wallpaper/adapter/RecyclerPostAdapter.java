@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -15,7 +16,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.ess.anime.wallpaper.R;
 import com.ess.anime.wallpaper.bean.ThumbBean;
-import com.ess.anime.wallpaper.glide.GlideApp;
 import com.ess.anime.wallpaper.glide.MyGlideModule;
 import com.ess.anime.wallpaper.global.Constants;
 import com.ess.anime.wallpaper.model.holder.ImageDataHolder;
@@ -62,7 +62,7 @@ public class RecyclerPostAdapter extends BaseQuickAdapter<ThumbBean, BaseViewHol
         //缩略图
         Map<String, String> headerMap = WebsiteManager.getInstance().getRequestHeaders();
         ivThumb.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        GlideApp.with(mContext)
+        Glide.with(mContext)
                 .load(MyGlideModule.makeGlideUrl(thumbBean.thumbUrl, headerMap))
                 .placeholder(R.drawable.ic_placeholder_post)
                 .priority(Priority.HIGH)

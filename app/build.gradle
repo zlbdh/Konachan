@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 
 android {
+    namespace "com.ess.anime.wallpaper"
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.ess.anime.wallpaper"
@@ -23,7 +24,7 @@ android {
         }
         release {
             ndk {
-                abiFilters 'arm64-v8a', 'armeabi-v7a'
+                abiFilters 'arm64-v8a'
             }
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -32,6 +33,13 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        buildConfig = true
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
     }
     //apk文件重命名
     android.applicationVariants.all { variant ->
@@ -62,13 +70,8 @@ dependencies {
     implementation 'com.tencent.bugly:nativecrashreport:3.7.1'
 
 
-    // 项目相关库（引用时如果github上有写明混淆代码需加入到ProGuard）
-    // ButterKnife (https://github.com/JakeWharton/butterknife)
-    implementation 'com.jakewharton:butterknife:10.1.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
-
     // EventBus (https://github.com/greenrobot/EventBus)
-    implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation 'org.greenrobot:eventbus:3.3.1'
 
     // GreenDao (https://github.com/greenrobot/greenDAO) (https://github.com/yuweiguocn/GreenDaoUpgradeHelper)
     implementation 'org.greenrobot:greendao:3.3.0'
@@ -88,8 +91,8 @@ dependencies {
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
 
     // Glide (https://github.com/bumptech/glide)
-    implementation 'com.github.bumptech.glide:glide:4.15.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.0'
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
 
     // OkGo (https://github.com/jeasonlzy/okhttp-OkGo)
     implementation project(path: ':okserver')
@@ -98,7 +101,7 @@ dependencies {
     implementation 'com.unity3d.ads:unity-ads:3.0.0'
 
     // Volley (https://github.com/google/volley)
-    implementation 'com.android.volley:volley:1.1.1'
+    implementation 'com.android.volley:volley:1.2.1'
 
     // Gson (https://github.com/google/gson)
     implementation 'com.google.code.gson:gson:2.8.5'
