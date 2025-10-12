@@ -102,6 +102,7 @@ public class ImageFragment extends BaseFragment {
         mSwipeRefresh.setEnabled(false);
         mSwipeRefresh.setOnRefreshListener(this::loadMedia);
 
+        mMediaLayout = mRootView.findViewById(R.id.layout_multiple_media);
         if (mImageBean != null) {
             loadMedia();
             mTouchView.setVisibility(View.GONE);
@@ -111,7 +112,6 @@ public class ImageFragment extends BaseFragment {
             mTouchView.setVisibility(View.VISIBLE);
         }
 
-        mMediaLayout = mRootView.findViewById(R.id.layout_multiple_media);
         mMediaLayout.setOnLongClickListener(v -> {
             downloadImage();
             return true;
