@@ -124,7 +124,7 @@ public abstract class BaseDownloadProgressListener<T> {
         Intent reloadIntent = new Intent(mContext, getClassToReload());
         reloadIntent.putExtras(intent);
         mReloadIntent = PendingIntent.getService(mContext, (int) System.currentTimeMillis(),
-                reloadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                reloadIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
     protected abstract Class<?> getClassToReload();

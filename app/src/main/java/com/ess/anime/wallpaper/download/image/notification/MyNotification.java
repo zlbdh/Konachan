@@ -45,7 +45,7 @@ public class MyNotification {
         }
 
         Intent intent = new Intent(mService, DownloadImageManagerActivity.class);
-        PendingIntent pd = PendingIntent.getActivity(mService, 1000, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pd = PendingIntent.getActivity(mService, 1000, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         builder.setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(mService.getString(R.string.foreground_notify_title))
                 .setContentText(mService.getString(R.string.foreground_notify_msg))

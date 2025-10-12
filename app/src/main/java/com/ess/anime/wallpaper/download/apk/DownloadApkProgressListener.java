@@ -50,7 +50,7 @@ public class DownloadApkProgressListener extends BaseDownloadProgressListener<Ap
             Intent installIntent = SystemUtils.installApk(mContext, apkFile, false);
             if (installIntent != null) {
                 mOperateIntent = PendingIntent.getActivity(mContext, mNotifyId,
-                        installIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        installIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             }
         }
     }

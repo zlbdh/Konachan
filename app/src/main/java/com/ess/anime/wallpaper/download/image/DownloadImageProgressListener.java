@@ -101,7 +101,7 @@ public class DownloadImageProgressListener extends BaseDownloadProgressListener<
         if (mOperateIntent == null) {
             Intent jumpIntent = new Intent(mContext, CollectionActivity.class);
             mOperateIntent = PendingIntent.getActivity(mContext, mNotifyId,
-                    jumpIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    jumpIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         }
     }
 
