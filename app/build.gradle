@@ -10,7 +10,6 @@ android {
         targetSdkVersion 28
         versionCode 32
         versionName "1.9.3"
-        multiDexEnabled true
         resConfigs('zh-rCN', 'zh-rHK', 'zh-rTW')
         vectorDrawables.useSupportLibrary = true
         aaptOptions {
@@ -167,7 +166,7 @@ dependencies {
     implementation 'net.lingala.zip4j:zip4j:2.5.2'
 
     // ffmpeg (https://github.com/arthenica/ffmpeg-kit/tree/main/android)
-    implementation 'com.arthenica:ffmpeg-kit-full:6.0-2'
+    implementation 'com.arthenica:ffmpeg-kit-min:6.0-2'
 }
 
 greendao {
