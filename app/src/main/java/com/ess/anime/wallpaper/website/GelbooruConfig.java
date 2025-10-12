@@ -14,6 +14,8 @@ import java.util.List;
 
 public class GelbooruConfig extends WebsiteConfig<GelbooruParser> {
 
+    private final static String SUFFIX_API_KEY = "&api_key=54cd6cb43f920687baaf9fe3748dd418735c802287d6614dafe1c6d8dafc3cd702525ef2653ba26193da00cec72aac63e2991d627a533f998ecd45d0d33baa3b&user_id=1827525";
+
     @Override
     public String getWebsiteName() {
         return "Gelbooru";
@@ -67,7 +69,7 @@ public class GelbooruConfig extends WebsiteConfig<GelbooruParser> {
             tags.append(tag).append("+");
         }
 
-        return getBaseUrl() + "index.php?page=dapi&s=post&q=index&pid=" + (page - 1) + "&tags=" + tags + "&limit=42";
+        return getBaseUrl() + "index.php?page=dapi&s=post&q=index&pid=" + (page - 1) + "&tags=" + tags + "&limit=42" + SUFFIX_API_KEY;
     }
 
     @Override
