@@ -124,29 +124,34 @@ public class SafebooruParser extends HtmlParser {
 
             // tags
             for (Element copyright : doc.getElementsByClass("tag-type-copyright")) {
-                builder.addCopyrightTags(copyright.getElementsByTag("a")
-                        .first().text().replace(" ", "_"));
+                builder.addCopyrightTags(parseImageTagFromElement(copyright));
             }
             for (Element character : doc.getElementsByClass("tag-type-character")) {
-                builder.addCharacterTags(character.getElementsByTag("a")
-                        .first().text().replace(" ", "_"));
+                builder.addCharacterTags(parseImageTagFromElement(character));
             }
             for (Element artist : doc.getElementsByClass("tag-type-artist")) {
-                builder.addArtistTags(artist.getElementsByTag("a")
-                        .first().text().replace(" ", "_"));
+                builder.addArtistTags(parseImageTagFromElement(artist));
             }
             for (Element general : doc.getElementsByClass("tag-type-metadata")) {
-                builder.addGeneralTags(general.getElementsByTag("a")
-                        .first().text().replace(" ", "_"));
+                builder.addGeneralTags(parseImageTagFromElement(general));
             }
             for (Element general : doc.getElementsByClass("tag-type-general")) {
-                builder.addGeneralTags(general.getElementsByTag("a")
-                        .first().text().replace(" ", "_"));
+                builder.addGeneralTags(parseImageTagFromElement(general));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return builder.build();
+    }
+
+    private String parseImageTagFromElement(Element element) {
+        try {
+            Elements selects = element.getElementsByTag("a").select("a:not(:matchesOwn(^\\?$))");
+            return selects.text().replace(" ", "_");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     @Override
