@@ -2,15 +2,13 @@ package com.ess.anime.wallpaper.ui.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.util.Base64;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
@@ -28,15 +26,16 @@ import com.ess.anime.wallpaper.global.Constants;
 import com.ess.anime.wallpaper.ui.activity.CollectionActivity;
 import com.ess.anime.wallpaper.utils.BitmapUtils;
 import com.ess.anime.wallpaper.utils.FileUtils;
+import com.google.android.material.snackbar.Snackbar;
 import com.qmuiteam.qmui.util.QMUIStatusBarHelper;
 import com.zyyoona7.popup.EasyPopup;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 
 public class LongClickWebView extends WebView implements View.OnLongClickListener {
 
@@ -168,32 +167,13 @@ public class LongClickWebView extends WebView implements View.OnLongClickListene
 
     private void toastSaveSuccessfully() {
         post(() -> {
-            Toast toast = new Toast(getContext());
-            try {
-                // 使Toast可接收点击事件
-                Field field = toast.getClass().getDeclaredField("mTN");
-                field.setAccessible(true);
-                Object mTN = field.get(toast);
-                field = mTN.getClass().getDeclaredField("mParams");
-                field.setAccessible(true);
-                WindowManager.LayoutParams mParams = (WindowManager.LayoutParams) field.get(mTN);
-                mParams.flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                        | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_toast_save_image_successfully, null);
-            TextView tvLink = view.findViewById(R.id.tv_link);
-            tvLink.setMovementMethod(LinkMovementMethod.getInstance());
-            tvLink.setOnClickListener(v -> {
-                toast.cancel();
+            Snackbar snackbar = Snackbar.make(this, R.string.save_successfully, Snackbar.LENGTH_LONG);
+            snackbar.setTextColor(Color.WHITE);
+            snackbar.setActionTextColor(ResourcesCompat.getColor(getResources(), R.color.color_link, null));
+            snackbar.setAction(R.string.click_to_view, v -> {
                 getContext().startActivity(new Intent(getContext(), CollectionActivity.class));
             });
-
-            toast.setView(view);
-            toast.setDuration(Toast.LENGTH_LONG);
-            toast.show();
+            snackbar.show();
         });
     }
 
