@@ -149,34 +149,46 @@ public class ZerochanParser extends HtmlParser {
     private List<ThumbBean> parseThumbListByPopularDailyJson(Document doc) {
         List<ThumbBean> thumbList = new ArrayList<>();
         try {
-            Elements elements = doc.getElementsByClass(" ");
+            Elements elements = doc.getElementsByTag("li");
             for (Element element : elements) {
-                if (!TextUtils.equals("li", element.tag().getName())) {
-                    continue;
+                try {
+                    String id = element.getElementsByClass("fav").attr("data-id");
+                    Element img = element.getElementsByTag("img").first();
+                    String thumbUrl = img.attr("src");  // 未登录时网站代码
+                    if (TextUtils.isEmpty(thumbUrl)) {
+                        thumbUrl = img.attr("data-src");  // 登录后网站代码
+                    }
+                    int thumbWidth = Integer.parseInt(img.attr("width"));
+                    int thumbHeight = Integer.parseInt(img.attr("height"));
+                    String realSize = img.attr("title");
+                    String parseRealSize = parseRealSize(realSize, "(\\d+)x(\\d+)");
+                    if (TextUtils.isEmpty(parseRealSize)) {
+                        parseRealSize = parseRealSize(realSize, "(\\d+)✕(\\d+)");
+                    }
+                    if (!TextUtils.isEmpty(parseRealSize)) {
+                        realSize = parseRealSize;
+                    }
+                    String linkToShow = mWebsiteConfig.getPostDetailUrl(id);
+                    thumbList.add(new ThumbBean(id, thumbWidth, thumbHeight, thumbUrl, realSize, linkToShow));
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                String id = element.getElementsByClass("fav").attr("data-id");
-                Element img = element.getElementsByTag("img").first();
-                String thumbUrl = img.attr("src");  // 未登录时网站代码
-                if (TextUtils.isEmpty(thumbUrl)) {
-                    thumbUrl = img.attr("data-src");  // 登录后网站代码
-                }
-                int thumbWidth = Integer.parseInt(img.attr("width"));
-                int thumbHeight = Integer.parseInt(img.attr("height"));
-                String realSize = img.attr("title");
-                Pattern pattern = Pattern.compile("(\\d+)x(\\d+)");
-                Matcher matcher = pattern.matcher(realSize);
-                if (matcher.find()) {
-                    int realWidth = Integer.parseInt(matcher.group(1));
-                    int realHeight = Integer.parseInt(matcher.group(2));
-                    realSize = realWidth + " x " + realHeight;
-                }
-                String linkToShow = mWebsiteConfig.getPostDetailUrl(id);
-                thumbList.add(new ThumbBean(id, thumbWidth, thumbHeight, thumbUrl, realSize, linkToShow));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return thumbList;
+    }
+
+    private String parseRealSize(String realSize, String regex) {
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(realSize);
+        if (matcher.find()) {
+            int realWidth = Integer.parseInt(matcher.group(1));
+            int realHeight = Integer.parseInt(matcher.group(2));
+            return realWidth + " x " + realHeight;
+        }
+        return "";
     }
 
     @Override
