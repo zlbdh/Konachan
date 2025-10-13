@@ -27,13 +27,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class FavoriteTagActivity extends BaseActivity {
 
-    private  Toolbar mToolbar;
-    private  ViewGroup mLayoutNormal;
-    private  ViewGroup mLayoutEditing;
-    private   TextView mTvChooseCount;
-    private   ViewGroup mLayoutChooseAll;
-    private   SmoothCheckBox mCbChooseAll;
-    private   RecyclerView mRvTag;
+    private Toolbar mToolbar;
+    private ViewGroup mLayoutNormal;
+    private ViewGroup mLayoutEditing;
+    private TextView mTvChooseCount;
+    private ViewGroup mLayoutChooseAll;
+    private SmoothCheckBox mCbChooseAll;
+    private RecyclerView mRvTag;
 
     private LinearLayoutManager mLayoutManager;
     private RecyclerFavoriteTagAdapter mTagAdapter;
@@ -54,11 +54,11 @@ public class FavoriteTagActivity extends BaseActivity {
 
     private void initViewByIds() {
         mToolbar = findViewById(R.id.tool_bar);
-        mLayoutNormal  = findViewById(R.id.layout_normal);
-        mLayoutEditing  = findViewById(R.id.layout_editing);
-        mTvChooseCount   = findViewById(R.id.tv_choose_count);
-        mLayoutChooseAll  = findViewById(R.id.layout_choose_all);
-        mCbChooseAll  = findViewById(R.id.cb_choose_all);
+        mLayoutNormal = findViewById(R.id.layout_normal);
+        mLayoutEditing = findViewById(R.id.layout_editing);
+        mTvChooseCount = findViewById(R.id.tv_choose_count);
+        mLayoutChooseAll = findViewById(R.id.layout_choose_all);
+        mCbChooseAll = findViewById(R.id.cb_choose_all);
         mRvTag = findViewById(R.id.rv_tag);
     }
 

@@ -49,16 +49,16 @@ public class SearchActivity extends BaseActivity {
 
     public final static String TAG = SearchActivity.class.getName();
 
-    EditText mEtSearch;
-    RecyclerView mRvCompleteSearch;
-    TextView mTvClearAllSearchHistory;
-    TextView mTvSortFavoriteTag;
-    SmartTabLayout mSmartTab;
-    ViewPager mVpSearch;
+    private EditText mEtSearch;
+    private RecyclerView mRvCompleteSearch;
+    private TextView mTvClearAllSearchHistory;
+    private TextView mTvSortFavoriteTag;
+    private SmartTabLayout mSmartTab;
+    private ViewPager mVpSearch;
 
-    SearchModeDocLayout mLayoutSearchModeDoc;
-    SearchHistoryLayout mLayoutSearchHistory;
-    SearchFavoriteTagLayout mLayoutSearchFavoriteTag;
+    private SearchModeDocLayout mLayoutSearchModeDoc;
+    private SearchHistoryLayout mLayoutSearchHistory;
+    private SearchFavoriteTagLayout mLayoutSearchFavoriteTag;
 
     private RecyclerCompleteSearchAdapter mCompleteSearchAdapter;
 

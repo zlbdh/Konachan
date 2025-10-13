@@ -33,13 +33,15 @@ public class RecyclerFavoriteTagAdapter extends BaseRecyclerEditAdapter<Favorite
         holder.setChecked(R.id.cb_choose, isSelected(tagBean));
         holder.setGone(R.id.cb_choose, isEditMode());
         holder.itemView.setOnClickListener(v -> {
-            boolean select = !((SmoothCheckBox) holder.getView(R.id.cb_choose)).isChecked();
-            if (select) {
-                select(tagBean);
-            } else {
-                deselect(tagBean);
+            if (isEditMode()) {
+                boolean select = !((SmoothCheckBox) holder.getView(R.id.cb_choose)).isChecked();
+                if (select) {
+                    select(tagBean);
+                } else {
+                    deselect(tagBean);
+                }
+                holder.setChecked(R.id.cb_choose, select);
             }
-            holder.setChecked(R.id.cb_choose, select);
         });
 
         // 标签内容
