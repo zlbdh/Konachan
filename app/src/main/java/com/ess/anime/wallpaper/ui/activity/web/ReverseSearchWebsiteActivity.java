@@ -1,9 +1,13 @@
 package com.ess.anime.wallpaper.ui.activity.web;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.net.http.SslError;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebView;
 
 import com.ess.anime.wallpaper.model.entity.ReverseSearchWebsiteItem;
 import com.ess.anime.wallpaper.ui.view.CustomDialog;
@@ -67,7 +71,14 @@ public class ReverseSearchWebsiteActivity extends BaseWebActivity {
 
     @Override
     MiddlewareWebClientBase customWebViewClient() {
-        return null;
+        return new MiddlewareWebClientBase() {
+            @SuppressLint("WebViewClientOnReceivedSslError")
+            @Override
+            public void onReceivedSslError(WebView webView, SslErrorHandler sslErrorHandler, SslError sslError) {
+                // 接受所有网站的证书，忽略SSL错误，执行访问网页
+                sslErrorHandler.proceed();
+            }
+        };
     }
 
     @Override

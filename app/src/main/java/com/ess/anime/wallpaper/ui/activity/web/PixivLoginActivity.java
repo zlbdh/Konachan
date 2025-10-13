@@ -1,7 +1,10 @@
 package com.ess.anime.wallpaper.ui.activity.web;
 
+import android.annotation.SuppressLint;
+import android.net.http.SslError;
 import android.text.TextUtils;
 import android.webkit.CookieManager;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.widget.Toast;
@@ -30,6 +33,13 @@ public class PixivLoginActivity extends BaseWebActivity {
     @Override
     MiddlewareWebClientBase customWebViewClient() {
         return new MiddlewareWebClientBase() {
+            @SuppressLint("WebViewClientOnReceivedSslError")
+            @Override
+            public void onReceivedSslError(WebView webView, SslErrorHandler sslErrorHandler, SslError sslError) {
+                // 接受所有网站的证书，忽略SSL错误，执行访问网页
+                sslErrorHandler.proceed();
+            }
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {

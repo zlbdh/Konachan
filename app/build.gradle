@@ -118,8 +118,8 @@ dependencies {
     implementation 'com.danikula:videocache:2.7.1'
 
     // AgentWeb (https://github.com/Justson/AgentWeb)
-    implementation 'com.just.agentweb:agentweb:4.0.3-alpha@aar'
-    implementation project(path: ':agentweb-filechooser')
+    implementation 'io.github.justson:agentweb-core:v5.1.1-androidx'
+    implementation 'io.github.justson:agentweb-filechooser:v5.1.1-androidx'
 
     // QMUI (UI support by Tencent) (https://github.com/Tencent/QMUI_Android)
     implementation 'com.qmuiteam:qmui:1.2.0'

@@ -1,8 +1,12 @@
 package com.ess.anime.wallpaper.ui.activity.web;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.net.http.SslError;
 import android.os.Bundle;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebView;
 
 import com.just.agentweb.MiddlewareWebClientBase;
 
@@ -53,7 +57,14 @@ public class HyperlinkActivity extends BaseWebActivity {
 
     @Override
     MiddlewareWebClientBase customWebViewClient() {
-        return null;
+        return new MiddlewareWebClientBase() {
+            @SuppressLint("WebViewClientOnReceivedSslError")
+            @Override
+            public void onReceivedSslError(WebView webView, SslErrorHandler sslErrorHandler, SslError sslError) {
+                // 接受所有网站的证书，忽略SSL错误，执行访问网页
+                sslErrorHandler.proceed();
+            }
+        };
     }
 
     @Override
