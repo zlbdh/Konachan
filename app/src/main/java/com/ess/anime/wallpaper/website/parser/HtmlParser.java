@@ -90,12 +90,12 @@ public abstract class HtmlParser {
 
     public static String getNameFromBaidu(String html) {
         Document doc = Jsoup.parse(html);
-        Elements eleKeys = doc.getElementsByClass("basicInfo-item name");
+        Elements eleKeys = doc.select("[class*=basicInfoItem][class*=itemName]");
         ArrayList<String> keyList = new ArrayList<>();
         for (Element e : eleKeys) {
             keyList.add(e.text());
         }
-        Elements eleValues = doc.getElementsByClass("basicInfo-item value");
+        Elements eleValues = doc.select("[class*=basicInfoItem][class*=itemValue]");
         ArrayList<String> valueList = new ArrayList<>();
         for (Element e : eleValues) {
             valueList.add(e.text());
@@ -105,10 +105,10 @@ public abstract class HtmlParser {
         for (int i = 0; i < keyList.size(); i++) {
             if (keyList.get(i).contains("名")) {
                 String value = valueList.get(i);
-                Pattern pattern = Pattern.compile("[a-zA-Z\\-]+[a-zA-Z\\s\\-]*[a-zA-Z\\-]+");
+                Pattern pattern = Pattern.compile("[a-zA-Z\\-★]+[a-zA-Z\\s\\-★]*[a-zA-Z\\-★]+");
                 String filterName = StringUtils.filter(value, pattern).trim();
                 if (!TextUtils.isEmpty(filterName)) {
-                    name = filterName;
+                    name = filterName.replace("★"," ");
                     break;
                 }
             }
