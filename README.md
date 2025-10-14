@@ -3,9 +3,9 @@
 
 
 
-## 最新版本【v1.9.3】
-* 地址1：[百度云盘下载](https://pan.baidu.com/s/1KjQwggPNt5itRxstjHTHTg?pwd=patb)，提取码: patb
-* 地址2：[国内源地址下载](https://opentext.oss-cn-shenzhen.aliyuncs.com/apk/kanimeG1.9.3.apk)
+## 最新版本【v1.9.4】
+* 地址1：[百度云盘下载](https://pan.baidu.com/s/1HA--EyLwirZ5dzkNDaRLuQ?pwd=xntw)，提取码: xntw
+* 地址2：[国内源地址下载](https://opentext.oss-cn-shenzhen.aliyuncs.com/apk/kanimeG1.9.4.apk)
 
 ## 应用展示
 <a href="https://github.com/EternalSoySauce/images/blob/master/k_pre_1.jpg"><img src="https://github.com/EternalSoySauce/images/blob/master/k_pre_1.jpg" width="30%"/></a> <a href="https://github.com/EternalSoySauce/images/blob/master/k_pre_2.jpg"><img src="https://github.com/EternalSoySauce/images/blob/master/k_pre_2.jpg" width="30%"/></a> <a href="https://github.com/EternalSoySauce/images/blob/master/k_pre_3.jpg"><img src="https://github.com/EternalSoySauce/images/blob/master/k_pre_3.jpg" width="30%"/></a>
@@ -62,6 +62,13 @@
 * 其他
 
 ## 历史更新
+* 【v1.9.4】
+  * 修复各图站解析失败，修复中文搜索异常。
+  * 兼容 avif 格式图片展示。
+  * K站增加了人机校验，必须使用美国节点的梯子才能访问。
+  * 其它站点随意，如遇无法访问建议尝试香港或日本节点。
+  * Lolibooru站点倒闭了，默哀。
+
 * 【v1.9.3】
   * 图片详情页支持快速滑动查看上/下一张图片。
   * 图片详情页支持移动切换按钮位置。
