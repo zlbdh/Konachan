@@ -107,6 +107,9 @@ public class WebsiteManager {
                 case WebsiteConfig.BASE_URL_E621:
                     websiteConfig = new E621Config();
                     break;
+                case WebsiteConfig.BASE_URL_RULE34:
+                    websiteConfig = new Rule34Config();
+                    break;
             }
 
             if (mWebsiteConfig != websiteConfig) {

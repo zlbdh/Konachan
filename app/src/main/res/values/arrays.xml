@@ -30,6 +30,7 @@
         <item>@string/base_tbib</item>
         <item>@string/base_sakugabooru</item>
         <item>@string/base_e621</item>
+        <item>@string/base_rule34</item>
     </string-array>
 
     <string-array name="screen_orientation_list_item">

@@ -50,6 +50,7 @@
     <string name="base_tbib" translatable="false">TBIB</string>
     <string name="base_sakugabooru" translatable="false">Sakugabooru</string>
     <string name="base_e621" translatable="false">e621</string>
+    <string name="base_rule34" translatable="false">Rule34</string>
     <string name="navigation_drawer_open">Open drawer layout</string>
     <string name="navigation_drawer_close">Close drawer layout</string>
     <string name="nav_post">Image</string>
