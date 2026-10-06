@@ -31,6 +31,7 @@
         <item>@string/base_sakugabooru</item>
         <item>@string/base_e621</item>
         <item>@string/base_rule34</item>
+        <item>@string/base_animepictures</item>
     </string-array>
 
     <string-array name="screen_orientation_list_item">

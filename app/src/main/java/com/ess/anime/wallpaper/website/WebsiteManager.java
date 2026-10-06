@@ -110,6 +110,9 @@ public class WebsiteManager {
                 case WebsiteConfig.BASE_URL_RULE34:
                     websiteConfig = new Rule34Config();
                     break;
+                case WebsiteConfig.BASE_URL_ANIME_PICTURES:
+                    websiteConfig = new AnimePicturesConfig();
+                    break;
             }
 
             if (mWebsiteConfig != websiteConfig) {
