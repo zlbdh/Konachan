@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Konachan,Yande,Lolibooru通用
+ * Konachan,Yande通用
  */
 public class GeneralParser extends HtmlParser {
 

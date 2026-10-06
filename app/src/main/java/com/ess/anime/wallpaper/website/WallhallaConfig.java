@@ -1,11 +1,8 @@
 package com.ess.anime.wallpaper.website;
 
-import android.text.TextUtils;
-
 import com.ess.anime.wallpaper.R;
 import com.ess.anime.wallpaper.website.parser.WallhallaParser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class WallhallaConfig extends WebsiteConfig<WallhallaParser> {
@@ -51,35 +48,9 @@ public class WallhallaConfig extends WebsiteConfig<WallhallaParser> {
 
     @Override
     public String getPostUrl(int page, List<String> tagList) {
-        if (tagList == null) {
-            tagList = new ArrayList<>();
-        }
-
-        if (tagList.isEmpty()) {
-            return getBaseUrl() + "new?page=" + page;
-        } else {
-            boolean isRandom = false;
-            StringBuilder tags = new StringBuilder();
-            for (int i = 0; i < tagList.size(); i++) {
-                String tag = tagList.get(i);
-                if (TextUtils.equals(tag, "order:random")) {
-                    isRandom = true;
-                    break;
-                } else {
-                    tag = tag.replaceAll("_", " ");
-                    tags.append("\"").append(tag).append("\"");
-                }
-                if (i < tagList.size() - 1) {
-                    tags.append("+");
-                }
-            }
-
-            if (isRandom) {
-                return getBaseUrl() + "random";
-            } else {
-                return getBaseUrl() + "search?q=" + tags + "&page=" + page;
-            }
-        }
+        // 2026-10：老站（/new、/search）已下线，新站为前后端分离，无搜索接口、无服务端随机，
+        // 统一返回 recent 列表接口，由 WallhallaParser 解析 JSON
+        return getBaseUrl() + "api/catalogue/recent?page=" + page + "&limit=20";
     }
 
     @Override
@@ -99,12 +70,14 @@ public class WallhallaConfig extends WebsiteConfig<WallhallaParser> {
 
     @Override
     public String getPopularOverallUrl(int year, int month, int day, int page) {
-        return getBaseUrl() + "toplist?page=" + page;
+        // 2026-10：老站 /toplist 已下线，新站精选接口为 /api/catalogue/best
+        return getBaseUrl() + "api/catalogue/best?page=" + page + "&limit=20";
     }
 
     @Override
     public String getPostDetailUrl(String id) {
-        return getBaseUrl() + "wallpaper/" + id;
+        // 2026-10：详情走公开 JSON 接口，id 为图片 uuid
+        return getBaseUrl() + "api/catalogue/item/" + id;
     }
 
     @Override
@@ -139,7 +112,8 @@ public class WallhallaConfig extends WebsiteConfig<WallhallaParser> {
 
     @Override
     public boolean isSupportRandomPost() {
-        return true;
+        // 2026-10：新站无服务端随机接口（/random 为前端本地洗牌），暂不支持
+        return false;
     }
 
     @Override

@@ -42,7 +42,6 @@
     <string name="base_danbooru" translatable="false">Danbooru</string>
     <string name="base_safebooru" translatable="false">Safebooru</string>
     <string name="base_gelbooru" translatable="false">Gelbooru</string>
-    <string name="base_lolibooru" translatable="false">Lolibooru</string>
     <string name="base_sankaku" translatable="false">Sankaku</string>
     <string name="base_zerochan" translatable="false">Zerochan</string>
     <string name="base_wallhaven" translatable="false">Wallhaven</string>

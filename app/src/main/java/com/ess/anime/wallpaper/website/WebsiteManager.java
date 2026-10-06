@@ -83,9 +83,6 @@ public class WebsiteManager {
                 case WebsiteConfig.BASE_URL_GELBOORU:
                     websiteConfig = new GelbooruConfig();
                     break;
-                case WebsiteConfig.BASE_URL_LOLIBOORU:
-                    websiteConfig = new LolibooruConfig();
-                    break;
                 case WebsiteConfig.BASE_URL_SANKAKU:
                     websiteConfig = new SankakuConfig();
                     break;
