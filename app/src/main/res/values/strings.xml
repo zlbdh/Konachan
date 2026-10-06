@@ -46,6 +46,10 @@
     <string name="base_zerochan" translatable="false">Zerochan</string>
     <string name="base_wallhaven" translatable="false">Wallhaven</string>
     <string name="base_wallhalla" translatable="false">Wallhalla</string>
+    <string name="base_xbooru" translatable="false">Xbooru</string>
+    <string name="base_tbib" translatable="false">TBIB</string>
+    <string name="base_sakugabooru" translatable="false">Sakugabooru</string>
+    <string name="base_e621" translatable="false">e621</string>
     <string name="navigation_drawer_open">Open drawer layout</string>
     <string name="navigation_drawer_close">Close drawer layout</string>
     <string name="nav_post">Image</string>

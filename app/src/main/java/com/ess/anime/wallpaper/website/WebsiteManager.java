@@ -95,6 +95,18 @@ public class WebsiteManager {
                 case WebsiteConfig.BASE_URL_WALLHALLA:
                     websiteConfig = new WallhallaConfig();
                     break;
+                case WebsiteConfig.BASE_URL_XBOORU:
+                    websiteConfig = new XbooruConfig();
+                    break;
+                case WebsiteConfig.BASE_URL_TBIB:
+                    websiteConfig = new TbibConfig();
+                    break;
+                case WebsiteConfig.BASE_URL_SAKUGABOORU:
+                    websiteConfig = new SakugabooruConfig();
+                    break;
+                case WebsiteConfig.BASE_URL_E621:
+                    websiteConfig = new E621Config();
+                    break;
             }
 
             if (mWebsiteConfig != websiteConfig) {
