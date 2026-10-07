@@ -77,9 +77,6 @@ public class WebsiteManager {
                 case WebsiteConfig.BASE_URL_DANBOORU:
                     websiteConfig = new DanbooruConfig();
                     break;
-                case WebsiteConfig.BASE_URL_SAFEBOORU:
-                    websiteConfig = new SafebooruConfig();
-                    break;
                 case WebsiteConfig.BASE_URL_GELBOORU:
                     websiteConfig = new GelbooruConfig();
                     break;
@@ -89,20 +86,11 @@ public class WebsiteManager {
                 case WebsiteConfig.BASE_URL_ZEROCHAN:
                     websiteConfig = new ZerochanConfig();
                     break;
-                case WebsiteConfig.BASE_URL_WALLHAVEN:
-                    websiteConfig = new WallhavenConfig();
-                    break;
-                case WebsiteConfig.BASE_URL_WALLHALLA:
-                    websiteConfig = new WallhallaConfig();
-                    break;
                 case WebsiteConfig.BASE_URL_XBOORU:
                     websiteConfig = new XbooruConfig();
                     break;
                 case WebsiteConfig.BASE_URL_TBIB:
                     websiteConfig = new TbibConfig();
-                    break;
-                case WebsiteConfig.BASE_URL_SAKUGABOORU:
-                    websiteConfig = new SakugabooruConfig();
                     break;
                 case WebsiteConfig.BASE_URL_E621:
                     websiteConfig = new E621Config();

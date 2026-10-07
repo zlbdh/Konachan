@@ -20,15 +20,11 @@
         <item>@string/base_konachan_e</item>
         <item>@string/base_yande</item>
         <item>@string/base_danbooru</item>
-        <item>@string/base_safebooru</item>
         <item>@string/base_gelbooru</item>
         <item>@string/base_sankaku</item>
         <item>@string/base_zerochan</item>
-        <item>@string/base_wallhaven</item>
-        <item>@string/base_wallhalla</item>
         <item>@string/base_xbooru</item>
         <item>@string/base_tbib</item>
-        <item>@string/base_sakugabooru</item>
         <item>@string/base_e621</item>
         <item>@string/base_rule34</item>
         <item>@string/base_animepictures</item>
