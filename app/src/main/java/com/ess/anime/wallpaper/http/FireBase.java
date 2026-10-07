@@ -25,7 +25,7 @@ public class FireBase {
         return FirebaseHolder.instance;
     }
 
-    public final static String UPDATE_FILE_URL = "https://opentext.oss-cn-shenzhen.aliyuncs.com/apk/latest_version";
+    public final static String UPDATE_FILE_URL = "https://raw.githubusercontent.com/zlbdh/Konachan/master/latest_version.json";
     public final static String UPDATE_FILE_NAME = "latest_version";
 //    private FirebaseStorage mStorage = FirebaseStorage.getInstance();
 //    private StorageReference mStorageRef = mStorage.getReference();
@@ -88,8 +88,16 @@ public class FireBase {
                 FileUtils.stringToFile(json, new File(mContext.getExternalFilesDir(null), UPDATE_FILE_NAME));
                 ApkBean apkBean = ApkBean.getApkDetailFromJson(mContext, json);
                 if (apkBean.versionCode > SystemUtils.getVersionCode(mContext)) {
-                    // 发送通知到 MainActivity
-                    EventBus.getDefault().postSticky(new MsgBean(Constants.CHECK_UPDATE, apkBean));
+                    // 自动下载更新已开启：直接启动下载服务，不弹窗
+                    boolean autoDownload = mPreference.getBoolean(Constants.AUTO_DOWNLOAD_UPDATE, false);
+                    if (autoDownload) {
+                        android.content.Intent intent = new android.content.Intent(mContext, com.ess.anime.wallpaper.download.apk.DownloadApkService.class);
+                        intent.putExtra(Constants.APK_BEAN, apkBean);
+                        mContext.startService(intent);
+                    } else {
+                        // 发送通知到 MainActivity
+                        EventBus.getDefault().postSticky(new MsgBean(Constants.CHECK_UPDATE, apkBean));
+                    }
                 }
             }
         });

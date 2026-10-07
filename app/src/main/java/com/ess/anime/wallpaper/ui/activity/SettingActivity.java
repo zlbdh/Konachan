@@ -105,6 +105,7 @@ public class SettingActivity extends BaseActivity {
         items.add(mScreenOrientationItem = getScreenOrientationItem());
         items.add(mClearCacheItem = getClearCacheItem());
         items.add(getGelbooruApiKeyItem());
+        items.add(getAutoDownloadUpdateItem());
         items.add(getCheckUpdateItem());
         return items;
     }
@@ -264,6 +265,19 @@ public class SettingActivity extends BaseActivity {
         } else {
             return new File[]{getCacheDir(), getExternalCacheDir()};
         }
+    }
+
+    private CommonSettingItem getAutoDownloadUpdateItem() {
+        boolean checked = mPreferences.getBoolean(Constants.AUTO_DOWNLOAD_UPDATE, false);
+        return new CommonSettingItem()
+                .setTitle(R.string.setting_auto_download_update_title)
+                .setDesc(R.string.setting_auto_download_update_desc)
+                .setRippleDelayClick(false)
+                .setCheckboxShown(true)
+                .setCheckboxChecked(checked)
+                .setOnCheckedChangeListener((button, isChecked) -> {
+                    mPreferences.edit().putBoolean(Constants.AUTO_DOWNLOAD_UPDATE, isChecked).apply();
+                });
     }
 
     private CommonSettingItem getCheckUpdateItem() {

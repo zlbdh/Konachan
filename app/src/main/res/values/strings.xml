@@ -315,4 +315,6 @@
     <string name="batch_download_progress">正在加入队列 %1$d/%2$d…</string>
     <string name="batch_download_done">已将 %1$d/%2$d 张加入下载队列</string>
     <string name="setting_gelbooru_api_key_save">保存</string>
+    <string name="setting_auto_download_update_title">自动下载更新</string>
+    <string name="setting_auto_download_update_desc">检测到新版本时自动下载 APK，不弹窗询问</string>
 </resources>
