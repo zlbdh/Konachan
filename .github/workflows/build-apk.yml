@@ -25,6 +25,9 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: 验证发布逻辑
+        run: python3 -m unittest discover -s tests/ci -v
+
       - name: 配置 Java 17
         uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
@@ -38,8 +41,33 @@ jobs:
           dependency-graph: disabled
 
       - name: 确认 Android SDK
+        timeout-minutes: 6
         run: |
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-34" "build-tools;35.0.0"
+          set -euo pipefail
+          packages=()
+          test -s "$ANDROID_HOME/platforms/android-34/android.jar" || packages+=("platforms;android-34")
+          tools_missing=0
+          test -s "$ANDROID_HOME/build-tools/35.0.0/lib/apksigner.jar" || tools_missing=1
+          for tool in aapt aapt2 apksigner zipalign; do
+            if ! test -x "$ANDROID_HOME/build-tools/35.0.0/$tool"; then
+              tools_missing=1
+              break
+            fi
+          done
+          if ((tools_missing)); then
+            packages+=("build-tools;35.0.0")
+          fi
+          if ((${#packages[@]})); then
+            timeout --kill-after=15s 300 "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+              "--sdk_root=$ANDROID_HOME" --channel=0 "${packages[@]}" < /dev/null
+          fi
+          test -s "$ANDROID_HOME/platforms/android-34/android.jar"
+          test -s "$ANDROID_HOME/build-tools/35.0.0/lib/apksigner.jar"
+          for tool in aapt aapt2 apksigner zipalign; do
+            test -x "$ANDROID_HOME/build-tools/35.0.0/$tool"
+          done
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" version
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" version
           printf 'sdk.dir=%s\n' "$ANDROID_HOME" > local.properties
 
       - name: 构建 APK
