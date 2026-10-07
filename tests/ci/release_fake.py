@@ -37,17 +37,22 @@ class FakeGitHub:
         self.fail_download = False
         self.download_size_mismatch = False
         self.download_hash_mismatch = False
+        self.draft_tag = "untagged-51efee1e84f7f4552b8f"
+        self.keep_untagged_after_publish = False
 
-    def uploaded_asset(self):
+    def uploaded_asset(self, draft=None):
         item = self.artifact
+        if draft is None:
+            draft = self.release is not None and self.release["draft"]
+        tag = self.draft_tag if draft else item.tag
         return {"id": 20, "name": item.apk.name, "size": item.size, "state": "uploaded",
                 "digest": "sha256:" + ("0" * 64 if self.bad_digest else item.sha256),
-                "browser_download_url": f"https://github.com/{self.repo}/releases/download/{item.tag}/{item.apk.name}"}
+                "browser_download_url": f"https://github.com/{self.repo}/releases/download/{tag}/{item.apk.name}"}
 
     def set_existing_release(self, draft=False):
         self.ref = {"object": {"type": "commit", "sha": self.artifact.source_sha}}
         self.release = {"id": 10, "tag_name": self.artifact.tag,
-                        "draft": draft, "prerelease": True, "assets": [self.uploaded_asset()]}
+                        "draft": draft, "prerelease": True, "assets": [self.uploaded_asset(draft)]}
 
     def api(self, method, path, payload=None, missing_ok=False):
         self.calls.append((method, path, copy.deepcopy(payload)))
@@ -85,6 +90,10 @@ class FakeGitHub:
                 if self.fail_publish:
                     raise ReleaseError("发布失败", 500)
                 self.release.update(payload)
+                if not self.keep_untagged_after_publish:
+                    for asset in self.release["assets"]:
+                        asset["browser_download_url"] = asset["browser_download_url"].replace(
+                            "/" + self.draft_tag + "/", "/" + self.artifact.tag + "/")
                 if self.advance_after_publish:
                     self.latest["versionCode"] = self.artifact.version_code + 1
                     self.blob = "newer-blob"

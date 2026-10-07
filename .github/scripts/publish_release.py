@@ -5,6 +5,7 @@ import base64
 import binascii
 import json
 import os
+import re
 import sys
 from urllib.parse import quote, unquote, urlparse
 
@@ -85,16 +86,20 @@ def matching_asset(artifact, release):
     return assets[0] if assets else None
 
 
-def verify_asset(artifact, client, asset):
+def verify_asset(artifact, client, asset, allow_draft=False):
     if not asset or asset.get("state") != "uploaded" or asset.get("size") != artifact.size:
         raise ReleaseError("远端 APK 资产不完整或大小不一致，禁止发布版本文件")
     if str(asset.get("digest", "")).lower() != "sha256:" + artifact.sha256:
         raise ReleaseError("远端 APK SHA-256 与最终签名 APK 不一致")
     url = asset.get("browser_download_url", "")
     parsed = urlparse(url)
-    expected_path = f"/{client.repo}/releases/download/{artifact.tag}/{artifact.apk.name}"
+    prefix = f"/{client.repo}/releases/download/"
+    path = unquote(parsed.path)
+    parts = path[len(prefix):].split("/") if path.startswith(prefix) else []
+    valid_tag = len(parts) == 2 and (parts[0] == artifact.tag or
+                (allow_draft and re.fullmatch(r"untagged-[0-9a-fA-F]+", parts[0]) is not None))
     if (parsed.scheme != "https" or parsed.netloc != "github.com" or parsed.query or parsed.fragment
-            or unquote(parsed.path) != expected_path):
+            or not valid_tag or parts[1] != artifact.apk.name):
         raise ReleaseError("APK 下载地址不是当前仓库、标签和文件的固定资产地址")
     return url
 
@@ -130,9 +135,10 @@ def publish_release(artifact, client):
         if asset is None:
             client.upload(artifact.tag, artifact.apk)
         else:
-            verify_asset(artifact, client, asset)
+            verify_asset(artifact, client, asset, allow_draft=True)
         release = client.api("GET", f"repos/{client.repo}/releases/{release['id']}")
-        verify_asset(artifact, client, matching_asset(artifact, release))
+        verify_asset(artifact, client, matching_asset(artifact, release),
+                     allow_draft=release.get("draft") is True)
         client.api("PATCH", f"repos/{client.repo}/releases/{release['id']}",
                    {"draft": False, "prerelease": True, "make_latest": "false"})
         release = client.api("GET", f"repos/{client.repo}/releases/{release['id']}")

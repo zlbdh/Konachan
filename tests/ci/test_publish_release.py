@@ -188,6 +188,48 @@ class PublishReleaseTest(unittest.TestCase):
                     publish_release(self.item, self.client)
                 self.assertNoVersionWrite()
 
+    def test_real_draft_untagged_url_becomes_final_before_json_and_download(self):
+        self.client.repo = "zlbdh/Konachan"
+        self.client.set_existing_release(draft=True)
+        self.assertIn("/untagged-51efee1e84f7f4552b8f/",
+                      self.client.release["assets"][0]["browser_download_url"])
+        result = publish_release(self.item, self.client)
+        self.assertEqual(result["status"], "published")
+        url = self.client.latest["apkUrl"]
+        self.assertIn("/" + self.item.tag + "/", url)
+        self.assertNotIn("untagged-", url)
+        self.assertTrue(all("untagged-" not in call[1] for call in self.client.calls
+                            if call[0] == "DOWNLOAD"))
+
+    def test_public_release_cannot_keep_untagged_url(self):
+        self.client.set_existing_release(draft=True)
+        self.client.keep_untagged_after_publish = True
+        with self.assertRaises(ReleaseError):
+            publish_release(self.item, self.client)
+        self.assertNoVersionWrite()
+        self.assertNotIn("DOWNLOAD", self.kinds())
+
+    def test_existing_public_untagged_url_is_rejected(self):
+        self.client.set_existing_release(draft=False)
+        self.client.release["assets"][0]["browser_download_url"] = self.client.uploaded_asset(True)["browser_download_url"]
+        with self.assertRaises(ReleaseError):
+            publish_release(self.item, self.client)
+        self.assertNoVersionWrite()
+
+    def test_draft_url_still_rejects_wrong_repo_filename_and_non_hex_tag(self):
+        for change in (lambda url: url.replace("test-owner/Konachan", "other-owner/Konachan"),
+                       lambda url: url.replace(self.item.apk.name, "other.apk"),
+                       lambda url: url.replace(self.client.draft_tag, "untagged-not-hex")):
+            with self.subTest(change=change):
+                self.client = FakeGitHub(self.item)
+                self.client.set_existing_release(draft=True)
+                asset = self.client.release["assets"][0]
+                asset["browser_download_url"] = change(asset["browser_download_url"])
+                with self.assertRaises(ReleaseError):
+                    publish_release(self.item, self.client)
+                self.assertNoVersionWrite()
+                self.assertNotIn("PATCH", self.kinds())
+
 
 if __name__ == "__main__":
     unittest.main()
