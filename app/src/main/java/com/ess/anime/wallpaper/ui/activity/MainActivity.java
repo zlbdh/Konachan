@@ -294,10 +294,22 @@ public class MainActivity extends BaseActivity {
     // 检查到新版本后收到的通知, obj 为 ApkBean
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void showUpdateDialog(MsgBean msgBean) {
-        if (msgBean.msg.equals(Constants.CHECK_UPDATE) && SystemUtils.isActivityActive(this)) {
-            EventBus.getDefault().removeAllStickyEvents();
+        if (msgBean.msg.equals(Constants.CHECK_UPDATE) && SystemUtils.isActivityActive(this) && hasWindowFocus()) {
+            EventBus.getDefault().removeStickyEvent(msgBean);
             ApkBean apkBean = (ApkBean) msgBean.obj;
-            CustomDialog.showUpdateDialog(this, apkBean);
+            if (android.preference.PreferenceManager.getDefaultSharedPreferences(this)
+                    .getBoolean(Constants.AUTO_DOWNLOAD_UPDATE, false)) {
+                com.ess.anime.wallpaper.download.apk.UpdateDownloadManager.start(this, apkBean, true);
+            } else CustomDialog.showUpdateDialog(this, apkBean);
+        }
+    }
+
+    @Override public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            MsgBean pending = EventBus.getDefault().getStickyEvent(MsgBean.class);
+            if (pending != null && Constants.CHECK_UPDATE.equals(pending.msg)) showUpdateDialog(pending);
+            FireBase.getInstance().resumeCachedUpdate();
         }
     }
 }

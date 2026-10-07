@@ -277,7 +277,7 @@ public class FileUtils {
 
             File parentFile = toFile.getParentFile();
             if (parentFile != null && !parentFile.exists()) {
-                if (!parentFile.mkdirs()) {
+                if (!parentFile.mkdirs() && !parentFile.isDirectory()) {
                     return false;
                 }
             }

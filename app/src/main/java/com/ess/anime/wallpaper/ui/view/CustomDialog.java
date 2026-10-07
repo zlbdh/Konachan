@@ -378,13 +378,9 @@ public class CustomDialog extends MaterialDialog.Builder {
                 .negativeText(R.string.dialog_update_ignore)
                 .positiveText(R.string.dialog_update_update)
                 .onPositive((dialog1, which) -> {
-                    File apkFile = new File(apkBean.localFilePath);
-                    if (apkFile.exists()) {
-                        SystemUtils.installApk(context, apkFile, true);
-                    } else {
-                        Intent intent = new Intent(context, DownloadApkService.class);
-                        intent.putExtra(Constants.APK_BEAN, apkBean);
-                        context.startService(intent);
+                    if (!com.ess.anime.wallpaper.download.apk.UpdateDownloadManager.start(context, apkBean, false)) {
+                        android.widget.Toast.makeText(context, "更新正在下载或暂时不能启动，请稍后重试",
+                                android.widget.Toast.LENGTH_LONG).show();
                     }
                 }).show();
     }

@@ -82,6 +82,9 @@
             android:name=".download.apk.DownloadApkService"
             android:foregroundServiceType="dataSync" />
 
+        <activity android:name=".download.apk.InstallUpdateActivity"
+            android:exported="false" />
+
         <activity
             android:name=".ui.activity.SettingActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"

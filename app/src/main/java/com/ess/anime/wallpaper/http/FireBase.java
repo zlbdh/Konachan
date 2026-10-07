@@ -6,148 +6,64 @@ import android.preference.PreferenceManager;
 
 import com.ess.anime.wallpaper.MyApp;
 import com.ess.anime.wallpaper.bean.MsgBean;
+import com.ess.anime.wallpaper.download.apk.UpdateDownloadManager;
 import com.ess.anime.wallpaper.download.apk.ApkBean;
+import com.ess.anime.wallpaper.global.AppForegroundState;
 import com.ess.anime.wallpaper.global.Constants;
-import com.ess.anime.wallpaper.utils.FileUtils;
 import com.ess.anime.wallpaper.utils.SystemUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 
+/** 保留旧入口名称，更新检查已使用 GitHub 的版本元数据。 */
 public class FireBase {
+    private static class FirebaseHolder { private static final FireBase instance = new FireBase(); }
+    public static FireBase getInstance() { return FirebaseHolder.instance; }
+    public static final String UPDATE_FILE_URL = "https://raw.githubusercontent.com/zlbdh/Konachan/master/latest_version.json";
+    public static final String UPDATE_FILE_NAME = "latest_version";
+    public interface Callback { void onComplete(UpdateCheckController.Result result); }
 
-    private static class FirebaseHolder {
-        private static final FireBase instance = new FireBase();
-    }
+    private final Context context = MyApp.getInstance().getApplicationContext();
+    private final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+    private final UpdateCheckController controller = new UpdateCheckController(context,
+            new File(context.getExternalFilesDir(null), UPDATE_FILE_NAME), SystemUtils.getVersionCode(context));
+    private int offeredVersion;
 
-    public static FireBase getInstance() {
-        return FirebaseHolder.instance;
-    }
+    private FireBase() { }
 
-    public final static String UPDATE_FILE_URL = "https://raw.githubusercontent.com/zlbdh/Konachan/master/latest_version.json";
-    public final static String UPDATE_FILE_NAME = "latest_version";
-//    private FirebaseStorage mStorage = FirebaseStorage.getInstance();
-//    private StorageReference mStorageRef = mStorage.getReference();
-//    private StreamDownloadTask mCheckUpdateTask;
-//
-//    private FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
-//    private Task<DocumentSnapshot> mCheckUserTask;
-//    private Task<Void> mAddUserTask;
-
-//    private Context mContext = mStorage.getApp().getApplicationContext();
-    private Context mContext = MyApp.getInstance().getApplicationContext();
-    private SharedPreferences mPreference = PreferenceManager.getDefaultSharedPreferences(mContext);
-
-    private FireBase() {
-    }
-
-//    public void checkUpdate() {
-//        cancelCheckUpdate();
-//
-//        StorageReference islandRef = mStorageRef.child(UPDATE_FILE_NAME);
-//        mCheckUpdateTask = islandRef.getStream();
-//        mCheckUpdateTask.addOnSuccessListener(new OnSuccessListener<StreamDownloadTask.TaskSnapshot>() {
-//            @Override
-//            public void onSuccess(final StreamDownloadTask.TaskSnapshot taskSnapshot) {
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        String json = FileUtils.streamToString(taskSnapshot.getStream());
-//                        FileUtils.stringToFile(json, new File(mContext.getExternalFilesDir(null), UPDATE_FILE_NAME));
-//                        ApkBean apkBean = ApkBean.getApkDetailFromJson(mContext, json);
-//                        if (apkBean.versionCode > ComponentUtils.getVersionCode(mContext)) {
-//                            // 发送通知到 MainActivity
-//                            EventBus.getDefault().postSticky(new MsgBean(Constants.CHECK_UPDATE, apkBean));
-//                        }
-//                    }
-//                }).start();
-//            }
-//        })/*.addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception exception) {
-//                if (exception instanceof StorageException
-//                        && ((StorageException) exception).getErrorCode() == StorageException.ERROR_CANCELED) {
-//                    return;
-//                }
-//            }
-//        })*/;
-//    }
-
+    /** 启动时只检查一次；后台只保留有效缓存，前台才能提示或自动下载。 */
     public void checkUpdate() {
-        cancelCheckUpdate();
-
-        OkHttp.connect(UPDATE_FILE_URL, UPDATE_FILE_URL, new OkHttp.OkHttpCallback() {
-            @Override
-            public void onFailure(int errorCode, String errorMessage) {
-                checkUpdate();
-            }
-
-            @Override
-            public void onSuccessful(String json) {
-                FileUtils.stringToFile(json, new File(mContext.getExternalFilesDir(null), UPDATE_FILE_NAME));
-                ApkBean apkBean = ApkBean.getApkDetailFromJson(mContext, json);
-                if (apkBean.versionCode > SystemUtils.getVersionCode(mContext)) {
-                    // 自动下载更新已开启：直接启动下载服务，不弹窗
-                    boolean autoDownload = mPreference.getBoolean(Constants.AUTO_DOWNLOAD_UPDATE, false);
-                    if (autoDownload) {
-                        android.content.Intent intent = new android.content.Intent(mContext, com.ess.anime.wallpaper.download.apk.DownloadApkService.class);
-                        intent.putExtra(Constants.APK_BEAN, apkBean);
-                        mContext.startService(intent);
-                    } else {
-                        // 发送通知到 MainActivity
-                        EventBus.getDefault().postSticky(new MsgBean(Constants.CHECK_UPDATE, apkBean));
-                    }
-                }
-            }
+        controller.check(result -> {
+            if (result.status != UpdateCheckController.Status.AVAILABLE) return;
+            offer(result.apk);
         });
     }
 
-    private void cancelCheckUpdate() {
-//        if (mCheckUpdateTask != null) {
-//            mCheckUpdateTask.cancel();
-//        }
-        OkHttp.cancel(UPDATE_FILE_URL);
+    /** 后台请求已完成时，恢复前台从有效缓存消费一次，不重复弹被忽略的版本。 */
+    public void resumeCachedUpdate() {
+        File cache = new File(context.getExternalFilesDir(null), UPDATE_FILE_NAME);
+        if (!cache.isFile() || cache.length() > 65536) return;
+        ApkBean apk = ApkBean.parse(context, com.ess.anime.wallpaper.utils.FileUtils.fileToString(cache));
+        if (apk != null) offer(apk);
     }
 
-    public void checkToAddUser() {
-//        if (mCheckUserTask != null || mAddUserTask != null
-//                || mPreference.getBoolean(Constants.ALREADY_ADD_USER, false)) {
-//            return;
-//        }
-//
-//        UserBean user = new UserBean(mContext);
-//        String docId = FileUtils.encodeMD5String(user.id);
-//        DocumentReference docRef = mDatabase.collection("users").document(docId);
-//        checkUser(docRef, user);
+    private void offer(ApkBean apk) {
+        if (apk.versionCode <= offeredVersion) return;
+        UpdateDecision.Action action = UpdateDecision.decide(SystemUtils.getVersionCode(context),
+                apk.versionCode, preferences.getBoolean(Constants.AUTO_DOWNLOAD_UPDATE, false),
+                AppForegroundState.isVisible());
+        if (action == UpdateDecision.Action.DOWNLOAD) {
+            if (UpdateDownloadManager.start(context, apk, true)) offeredVersion = apk.versionCode;
+        } else if (action == UpdateDecision.Action.PROMPT) {
+            offeredVersion = apk.versionCode;
+            EventBus.getDefault().postSticky(new MsgBean(Constants.CHECK_UPDATE, apk));
+        }
     }
 
-//    private void checkUser(final DocumentReference docRef, final UserBean user) {
-//        mCheckUserTask = docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    DocumentSnapshot document = task.getResult();
-//                    if (document == null || !document.exists()) {
-//                        addUser(docRef, user);
-//                    } else {
-//                        mPreference.edit().putBoolean(Constants.ALREADY_ADD_USER, true).apply();
-//                    }
-//                }
-//            }
-//        });
-//    }
-//
-//    private void addUser(DocumentReference docRef, UserBean user) {
-//        mAddUserTask = docRef.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-//            @Override
-//            public void onSuccess(Void aVoid) {
-//                mPreference.edit().putBoolean(Constants.ALREADY_ADD_USER, true).apply();
-//            }
-//        });
-//    }
+    /** 手动检查真实联网，由调用页面展示有新版、已最新或失败。 */
+    public void checkUpdate(Callback callback) { controller.check(callback::onComplete); }
 
-    public void cancelAll() {
-        cancelCheckUpdate();
-    }
+    public void checkToAddUser() { }
+    public void cancelAll() { controller.cancel(); }
 }

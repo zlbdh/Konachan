@@ -8,9 +8,9 @@ import android.widget.Toast;
 import com.ess.anime.wallpaper.R;
 import com.ess.anime.wallpaper.adapter.RecyclerCommonSettingAdapter;
 import com.ess.anime.wallpaper.bean.MsgBean;
-import com.ess.anime.wallpaper.download.apk.ApkBean;
 import com.ess.anime.wallpaper.global.Constants;
 import com.ess.anime.wallpaper.http.FireBase;
+import com.ess.anime.wallpaper.http.UpdateCheckController;
 import com.ess.anime.wallpaper.model.entity.CommonSettingItem;
 import com.ess.anime.wallpaper.model.helper.SoundHelper;
 import com.ess.anime.wallpaper.ui.view.CustomDialog;
@@ -34,6 +34,7 @@ public class SettingActivity extends BaseActivity {
 
     private SharedPreferences mPreferences;
     private RecyclerCommonSettingAdapter mSettingAdapter;
+    private boolean mCheckingUpdate;
 
     private long mCacheSize;
     private CommonSettingItem mClearCacheItem;
@@ -285,20 +286,26 @@ public class SettingActivity extends BaseActivity {
         return new CommonSettingItem()
                 .setTitle(R.string.setting_check_update)
                 .setTips(getString(R.string.setting_current_version, version))
-                .setOnClickListener(v -> {
-                    File file = new File(getExternalFilesDir(null), FireBase.UPDATE_FILE_NAME);
-                    if (file.exists()) {
-                        String json = FileUtils.fileToString(file);
-                        ApkBean apkBean = ApkBean.getApkDetailFromJson(this, json);
-                        if (apkBean.versionCode > SystemUtils.getVersionCode(this)) {
-                            CustomDialog.showUpdateDialog(this, apkBean);
-                        } else {
-                            showNoNewVersionToast();
-                        }
-                    } else {
-                        showNoNewVersionToast();
-                    }
-                });
+                .setOnClickListener(v -> checkUpdateManually());
+    }
+
+    private void checkUpdateManually() {
+        if (mCheckingUpdate) return;
+        mCheckingUpdate = true;
+        Toast.makeText(this, "正在检查更新…", Toast.LENGTH_SHORT).show();
+        FireBase.getInstance().checkUpdate(result -> {
+            mCheckingUpdate = false;
+            if (!SystemUtils.isActivityActive(this)
+                    || !getLifecycle().getCurrentState().isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED)) return;
+            if (result.status == UpdateCheckController.Status.AVAILABLE) {
+                CustomDialog.showUpdateDialog(this, result.apk);
+            } else if (result.status == UpdateCheckController.Status.LATEST) {
+                showNoNewVersionToast();
+            } else {
+                if ("检查已取消".equals(result.message) || result.message.contains("替代")) return;
+                Toast.makeText(this, "检查更新失败，请稍后重试", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void showNoNewVersionToast() {

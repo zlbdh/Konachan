@@ -113,7 +113,7 @@ public class DownloadImageService extends Service {
         File tempFolder = new File(Constants.IMAGE_TEMP);
         String tempName = savePath.substring(savePath.lastIndexOf("/") + 1, savePath.lastIndexOf("."));
         File tempFile = new File(tempFolder, tempName);
-        if (!tempFolder.exists() && !tempFolder.mkdirs()) {
+        if (!tempFolder.isDirectory() && !tempFolder.mkdirs() && !tempFolder.isDirectory()) {
             DownloadTaskState.record(downloadBean, false, "无法创建临时下载目录");
             mMainHandler.post(() -> {
                 listener.onError();

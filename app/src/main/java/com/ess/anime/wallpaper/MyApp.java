@@ -24,6 +24,7 @@ public class MyApp extends Application {
     public void onCreate() {
         super.onCreate();
         sApplication = this;
+        com.ess.anime.wallpaper.global.AppForegroundState.register(this);
         if (BuildConfig.DEBUG) {
             AgentWebConfig.debug();
         } else {
