@@ -56,8 +56,28 @@ public class BatchDownloadHelper {
                     if (imageBean != null) {
                         List<DownloadBean> list = ImageDataHelper.makeDownloadChosenList(
                                 appContext, thumbBean, imageBean);
-                        if (quality >= 0 && quality < list.size()) {
-                            DownloadBean bean = list.get(quality);
+                        // 按 type 匹配（0=样图/1=大图/2=原图），不能按下标，
+                        // 因为样图或原图可能不存在导致 list 下标偏移
+                        DownloadBean bean = null;
+                        for (DownloadBean b : list) {
+                            if (b.getType() == quality) {
+                                bean = b;
+                                break;
+                            }
+                        }
+                        // 兜底：如果所选清晰度不存在（如无原图），用大图
+                        if (bean == null) {
+                            for (DownloadBean b : list) {
+                                if (b.getType() == 1) {
+                                    bean = b;
+                                    break;
+                                }
+                            }
+                        }
+                        if (bean == null && !list.isEmpty()) {
+                            bean = list.get(0);
+                        }
+                        if (bean != null) {
                             // 跳过已存在的文件（避免重复下载）
                             if (!bean.getFileExists()) {
                                 DownloadImageManager.getInstance(appContext).addOrUpdate(bean);
