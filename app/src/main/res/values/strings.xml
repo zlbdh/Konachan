@@ -307,4 +307,11 @@
 
     <!-- Global -->
     <string name="unknown">Unknown</string>
+    <string name="batch_download_title">批量下载本页（%1$d 张）</string>
+    <string name="batch_download_sample">样图（小，省流量）</string>
+    <string name="batch_download_large">大图（推荐）</string>
+    <string name="batch_download_original">原图（最大）</string>
+    <string name="batch_download_preparing">正在准备下载…</string>
+    <string name="batch_download_progress">正在加入队列 %1$d/%2$d…</string>
+    <string name="batch_download_done">已将 %1$d/%2$d 张加入下载队列</string>
 </resources>

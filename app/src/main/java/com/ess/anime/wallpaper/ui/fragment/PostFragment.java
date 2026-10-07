@@ -25,6 +25,8 @@ import com.ess.anime.wallpaper.http.HandlerFuture;
 import com.ess.anime.wallpaper.http.OkHttp;
 import com.ess.anime.wallpaper.listener.DoubleTapEffector;
 import com.ess.anime.wallpaper.model.helper.SoundHelper;
+import com.ess.anime.wallpaper.model.helper.BatchDownloadHelper;
+import com.ess.anime.wallpaper.model.helper.PermissionHelper;
 import com.ess.anime.wallpaper.ui.activity.MainActivity;
 import com.ess.anime.wallpaper.ui.activity.PopularActivity;
 import com.ess.anime.wallpaper.ui.activity.SearchActivity;
@@ -144,6 +146,9 @@ public class PostFragment extends BaseFragment implements
         mRootView.findViewById(R.id.iv_search).setOnClickListener(view -> {
             openSearch();
         });
+        mRootView.findViewById(R.id.iv_batch_download).setOnClickListener(view -> {
+            showBatchDownloadDialog();
+        });
         mRootView.findViewById(R.id.fab_home).setOnClickListener(view -> {
             searchHome();
         });
@@ -215,6 +220,56 @@ public class PostFragment extends BaseFragment implements
         mFloatingMenu.close(true);
         Intent searchIntent = new Intent(mActivity, SearchActivity.class);
         startActivityForResult(searchIntent, Constants.SEARCH_CODE);
+    }
+
+    private void showBatchDownloadDialog() {
+        List<ThumbBean> data = mPostAdapter.getData();
+        if (data.isEmpty()) {
+            return;
+        }
+        mFloatingMenu.close(true);
+        String[] qualities = new String[]{
+                getString(R.string.batch_download_sample),
+                getString(R.string.batch_download_large),
+                getString(R.string.batch_download_original)};
+        new androidx.appcompat.app.AlertDialog.Builder(mActivity)
+                .setTitle(getString(R.string.batch_download_title, data.size()))
+                .setItems(qualities, (dialog, which) -> startBatchDownload(data, which))
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    private void startBatchDownload(List<ThumbBean> data, int quality) {
+        PermissionHelper.checkStoragePermissions(mActivity, new PermissionHelper.RequestListener() {
+            @Override
+            public void onGranted() {
+                android.app.ProgressDialog progress = new android.app.ProgressDialog(mActivity);
+                progress.setMessage(getString(R.string.batch_download_preparing));
+                progress.setCancelable(false);
+                progress.show();
+                // 复制一份，避免后台线程与 UI 线程并发修改
+                List<ThumbBean> copy = new java.util.ArrayList<>(data);
+                BatchDownloadHelper.downloadAll(mActivity, copy, quality,
+                        new BatchDownloadHelper.Callback() {
+                            @Override
+                            public void onProgress(int done, int total) {
+                                progress.setMessage(getString(R.string.batch_download_progress, done, total));
+                            }
+
+                            @Override
+                            public void onComplete(int success, int total) {
+                                progress.dismiss();
+                                android.widget.Toast.makeText(mActivity,
+                                        getString(R.string.batch_download_done, success, total),
+                                        android.widget.Toast.LENGTH_LONG).show();
+                            }
+                        });
+            }
+
+            @Override
+            public void onDenied() {
+            }
+        });
     }
 
     private void initPopupPage() {
