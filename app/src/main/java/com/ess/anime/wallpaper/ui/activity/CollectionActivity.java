@@ -263,7 +263,7 @@ public class CollectionActivity extends BaseActivity implements LocalCollections
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PermissionHelper.REQ_CODE_PERMISSION) {
             // 进入系统设置界面请求权限后的回调
-            if (PermissionHelper.hasPermissions(this, Permission.Group.STORAGE)) {
+            if (PermissionHelper.hasStoragePermissions(this)) {
                 initWhenPermissionGranted();
             } else {
                 finish();

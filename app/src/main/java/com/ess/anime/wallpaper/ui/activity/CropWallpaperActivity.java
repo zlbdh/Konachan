@@ -64,7 +64,7 @@ public class CropWallpaperActivity extends BaseActivity implements UCropFragment
     @Override
     protected void init(Bundle savedInstanceState) {
         Uri sourceUri = getIntent().getParcelableExtra(FILE_URI);
-        if (sourceUri == null || !PermissionHelper.hasPermissions(this, Permission.Group.STORAGE)) {
+        if (sourceUri == null || !PermissionHelper.hasStoragePermissions(this)) {
             finish();
             return;
         }

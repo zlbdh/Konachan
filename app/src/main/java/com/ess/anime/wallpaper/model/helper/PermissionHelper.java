@@ -196,7 +196,22 @@ public class PermissionHelper {
     public static void checkStoragePermissions(Context context, RequestListener listener) {
         String title = context.getString(R.string.dialog_permission_rationale_title);
         String msg = context.getString(R.string.dialog_permission_rationale_msg);
-        checkPermissions(context, title, msg, listener, Permission.Group.STORAGE);
+        checkPermissions(context, title, msg, listener, getStoragePermissions());
+    }
+
+    /**
+     * 按系统版本返回应申请的存储权限（Android 13+ 用 READ_MEDIA_IMAGES）
+     */
+    public static String[] getStoragePermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return new String[]{android.Manifest.permission.READ_MEDIA_IMAGES};
+        } else {
+            return Permission.Group.STORAGE;
+        }
+    }
+
+    public static boolean hasStoragePermissions(Context context) {
+        return hasPermissions(context, getStoragePermissions());
     }
 
     public interface RequestListener {

@@ -66,7 +66,7 @@ public class FullscreenActivity extends BaseActivity implements OnPhotoTapListen
         QMUIStatusBarHelper.translucent(this);
         QMUIDisplayHelper.cancelFullScreen(this);
         mEnlarge = getIntent().getBooleanExtra(Constants.ENLARGE, false);
-        if (ImageDataHolder.getCollectionList().isEmpty() || !PermissionHelper.hasPermissions(this, Permission.Group.STORAGE)) {
+        if (ImageDataHolder.getCollectionList().isEmpty() || !PermissionHelper.hasStoragePermissions(this)) {
             finish();
             return;
         }
