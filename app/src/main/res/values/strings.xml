@@ -317,4 +317,9 @@
     <string name="setting_gelbooru_api_key_save">保存</string>
     <string name="setting_auto_download_update_title">自动下载更新</string>
     <string name="setting_auto_download_update_desc">检测到新版本时自动下载 APK，不弹窗询问</string>
+    <string name="setting_rule34_api_key_title">Rule34 API Key 设置</string>
+    <string name="setting_rule34_api_key_desc">Rule34 必须鉴权，在 rule34.xxx 注册后于账号设置页获取 key，填入后方可加载</string>
+    <string name="setting_rule34_api_key_hint">api_key</string>
+    <string name="setting_rule34_user_id_hint">user_id（数字）</string>
+    <string name="setting_rule34_api_key_saved">已保存，切换站点或刷新后生效</string>
 </resources>

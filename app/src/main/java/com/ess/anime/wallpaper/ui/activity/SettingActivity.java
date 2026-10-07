@@ -106,6 +106,7 @@ public class SettingActivity extends BaseActivity {
         items.add(mScreenOrientationItem = getScreenOrientationItem());
         items.add(mClearCacheItem = getClearCacheItem());
         items.add(getGelbooruApiKeyItem());
+        items.add(getRule34ApiKeyItem());
         items.add(getAutoDownloadUpdateItem());
         items.add(getCheckUpdateItem());
         return items;
@@ -116,6 +117,53 @@ public class SettingActivity extends BaseActivity {
                 .setTitle(R.string.setting_gelbooru_api_key_title)
                 .setDesc(R.string.setting_gelbooru_api_key_desc)
                 .setOnClickListener(v -> showGelbooruApiKeyDialog());
+    }
+
+    private CommonSettingItem getRule34ApiKeyItem() {
+        return new CommonSettingItem()
+                .setTitle(R.string.setting_rule34_api_key_title)
+                .setDesc(R.string.setting_rule34_api_key_desc)
+                .setOnClickListener(v -> showRule34ApiKeyDialog());
+    }
+
+    private void showRule34ApiKeyDialog() {
+        android.widget.LinearLayout layout = new android.widget.LinearLayout(this);
+        layout.setOrientation(android.widget.LinearLayout.VERTICAL);
+        int padding = (int) (20 * getResources().getDisplayMetrics().density);
+        layout.setPadding(padding, padding / 2, padding, padding / 2);
+
+        android.widget.EditText etApiKey = new android.widget.EditText(this);
+        etApiKey.setHint(R.string.setting_rule34_api_key_hint);
+        etApiKey.setText(mPreferences.getString(Constants.RULE34_API_KEY, ""));
+        etApiKey.setSingleLine(true);
+        layout.addView(etApiKey);
+
+        android.widget.EditText etUserId = new android.widget.EditText(this);
+        etUserId.setHint(R.string.setting_rule34_user_id_hint);
+        etUserId.setText(mPreferences.getString(Constants.RULE34_USER_ID, ""));
+        etUserId.setSingleLine(true);
+        etUserId.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+        android.widget.LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.topMargin = padding / 2;
+        layout.addView(etUserId, lp);
+
+        new CustomDialog(this)
+                .title(R.string.setting_rule34_api_key_title)
+                .customView(layout, false)
+                .positiveText(R.string.setting_gelbooru_api_key_save)
+                .negativeText(R.string.dialog_download_cancel)
+                .onPositive((dialog, which) -> {
+                    String apiKey = etApiKey.getText().toString().trim();
+                    String userId = etUserId.getText().toString().trim();
+                    mPreferences.edit()
+                            .putString(Constants.RULE34_API_KEY, apiKey)
+                            .putString(Constants.RULE34_USER_ID, userId)
+                            .apply();
+                    Toast.makeText(this, R.string.setting_rule34_api_key_saved, Toast.LENGTH_SHORT).show();
+                })
+                .show();
     }
 
     private void showGelbooruApiKeyDialog() {

@@ -28,6 +28,8 @@ public class Constants {
     public final static String GELBOORU_API_KEY = "gelbooruApiKey";
     public final static String GELBOORU_USER_ID = "gelbooruUserId";
     public final static String AUTO_DOWNLOAD_UPDATE = "autoDownloadUpdate";
+    public final static String RULE34_API_KEY = "rule34ApiKey";
+    public final static String RULE34_USER_ID = "rule34UserId";
 
     // Intent
     public final static String APK_BEAN = "APK_BEAN";

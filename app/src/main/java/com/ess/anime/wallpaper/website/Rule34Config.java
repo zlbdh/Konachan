@@ -1,8 +1,12 @@
 package com.ess.anime.wallpaper.website;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
+import com.ess.anime.wallpaper.MyApp;
 import com.ess.anime.wallpaper.R;
+import com.ess.anime.wallpaper.global.Constants;
 import com.ess.anime.wallpaper.website.parser.AttrDapiParser;
 
 import java.util.ArrayList;
@@ -13,6 +17,21 @@ public class Rule34Config extends WebsiteConfig<AttrDapiParser> {
 
     // rule34.xxx 的 dapi 必须走专用 API 域名（www 域名会返回 Missing authentication）
     private final static String API_BASE_URL = "https://api.rule34.xxx/";
+
+    // Rule34 API 必须鉴权（api.rule34.xxx 注册账号后在 https://rule34.xxx/index.php?page=account&s=options 获取）
+    private String getApiKeySuffix() {
+        try {
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MyApp.getInstance());
+            String apiKey = sp.getString(Constants.RULE34_API_KEY, "").trim();
+            String userId = sp.getString(Constants.RULE34_USER_ID, "").trim();
+            if (!TextUtils.isEmpty(apiKey) && !TextUtils.isEmpty(userId)) {
+                return "&api_key=" + apiKey + "&user_id=" + userId;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 
     @Override
     public String getWebsiteName() {
@@ -67,7 +86,7 @@ public class Rule34Config extends WebsiteConfig<AttrDapiParser> {
             tags.append(tag).append("+");
         }
 
-        return API_BASE_URL + "index.php?page=dapi&s=post&q=index&pid=" + (page - 1) + "&tags=" + tags + "&limit=42";
+        return API_BASE_URL + "index.php?page=dapi&s=post&q=index&pid=" + (page - 1) + "&tags=" + tags + "&limit=42" + getApiKeySuffix();
     }
 
     @Override
