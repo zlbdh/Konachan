@@ -70,7 +70,8 @@ public class RecyclerDownloadImageAdapter extends BaseQuickAdapter<DownloadBean,
         CircleProgressView progressView = holder.getView(R.id.progress_view);
         String tag = downloadBean.downloadUrl;
         DownloadTask task = OkDownload.getInstance().getTask(tag);
-        progressView.setVisibility((task == null || task.progress.status == Progress.ERROR) ? View.GONE : View.VISIBLE);
+        progressView.setVisibility((task == null || task.progress.status == Progress.ERROR
+                || task.progress.status == Progress.PAUSE) ? View.GONE : View.VISIBLE);
         if (task == null) {
             progressView.setValue(0);
             holder.setText(R.id.tv_state, R.string.download_waiting);
@@ -97,7 +98,8 @@ public class RecyclerDownloadImageAdapter extends BaseQuickAdapter<DownloadBean,
         }
 
         // 重新下载按钮
-        holder.setGone(R.id.btn_restart, task != null && task.progress.status == Progress.ERROR);
+        holder.setGone(R.id.btn_restart, task != null && (task.progress.status == Progress.ERROR
+                || task.progress.status == Progress.PAUSE));
         holder.getView(R.id.btn_restart).setOnClickListener(v -> {
             if (!OkHttp.isUrlInDownloadQueue(downloadBean.downloadUrl)) {
                 Intent downloadIntent = new Intent(mContext, DownloadImageService.class);
@@ -108,7 +110,8 @@ public class RecyclerDownloadImageAdapter extends BaseQuickAdapter<DownloadBean,
         });
 
         // 删除按钮
-        boolean isLoading = task == null || (task.progress.status != Progress.ERROR && task.progress.status != Progress.FINISH);
+        boolean isLoading = task == null || (task.progress.status != Progress.ERROR
+                && task.progress.status != Progress.PAUSE && task.progress.status != Progress.FINISH);
         holder.getView(R.id.iv_delete).setOnClickListener(v -> {
             if (isLoading) {
                 CustomDialog.showDeleteWhenDownloadingItemDialog(mContext, new CustomDialog.SimpleDialogActionListener() {

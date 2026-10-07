@@ -268,13 +268,18 @@ public class FileUtils {
         }
 
         try {
+            if (fromFile.getCanonicalFile().equals(toFile.getCanonicalFile())) {
+                return true;
+            }
             if (toFile.exists()) {
                 toFile.delete();
             }
 
             File parentFile = toFile.getParentFile();
             if (parentFile != null && !parentFile.exists()) {
-                parentFile.mkdirs();
+                if (!parentFile.mkdirs()) {
+                    return false;
+                }
             }
 
             boolean renameToSuccess = false;
@@ -286,8 +291,12 @@ public class FileUtils {
 
             if (!renameToSuccess) {
                 //在文件系统不同的情况下，renameTo会失败，此时使用copy，然后删除原文件
-                copyFile(fromFile, toFile);
-                fromFile.delete();
+                if (!copyFile(fromFile, toFile) || toFile.length() != fromFile.length()) {
+                    return false;
+                }
+                if (!fromFile.delete()) {
+                    return false;
+                }
             }
             return toFile.exists();
         } catch (Exception e) {

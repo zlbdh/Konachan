@@ -19,8 +19,9 @@ import com.lzy.okgo.model.Progress;
 import com.lzy.okserver.download.DownloadListener;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class DownloadImageService extends Service {
 
@@ -29,7 +30,8 @@ public class DownloadImageService extends Service {
         return null;
     }
 
-    private final List<Runnable> mThreadList = new ArrayList<>();
+    // 任务直到网络和最终保存都完成才结束，不能在线程提交异步下载后就停服务。
+    private final Set<String> mActiveUrls = new HashSet<>();
     private final Handler mMainHandler = new Handler(Looper.getMainLooper());
     private MyNotification mNotify;
 
@@ -45,6 +47,12 @@ public class DownloadImageService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        for (String url : new HashSet<>(mActiveUrls)) {
+            com.lzy.okserver.download.DownloadTask task = com.lzy.okserver.OkDownload.getInstance().getTask(url);
+            if (task != null) task.pause();
+            OkHttp.removeUrlFromDownloadQueue(url);
+        }
+        mActiveUrls.clear();
         if (mNotify != null) {
             mNotify.stop();
             mNotify = null;
@@ -53,22 +61,17 @@ public class DownloadImageService extends Service {
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                downloadBitmap(intent);
-                synchronized (mThreadList) {
-                    mThreadList.remove(this);
-                    checkToStopService();
-                }
+        DownloadBean bean = intent == null ? null : intent.getParcelableExtra(Constants.DOWNLOAD_BEAN);
+        if (bean == null || bean.downloadUrl == null || bean.savePath == null) {
+            if (mActiveUrls.isEmpty()) {
+                stopSelf();
             }
-        };
-
-        synchronized (mThreadList) {
-            mThreadList.add(runnable);
-            new Thread(runnable).start();
+            return START_NOT_STICKY;
         }
-        return super.onStartCommand(intent, flags, startId);
+        if (mActiveUrls.add(bean.downloadUrl)) {
+            new Thread(() -> downloadBitmap(intent), "image-download").start();
+        }
+        return START_NOT_STICKY;
     }
 
     private void downloadBitmap(Intent intent) {
@@ -93,12 +96,29 @@ public class DownloadImageService extends Service {
             listener.prepareNotification();
         }
 
+        // 发布失败后的重试复用完整文件，避免再次下载和误判为已完成。
+        File saved = new File(savePath);
+        if (saved.isFile()) {
+            boolean published = BitmapUtils.insertToMediaStore(this, saved);
+            DownloadTaskState.record(downloadBean, published, "相册发布失败，保留已下载文件");
+            mMainHandler.post(() -> {
+                if (published) listener.onFinish(); else listener.onError();
+                DownloadImageManager.getInstance().addOrUpdate(downloadBean);
+                finishTask(url);
+            });
+            return;
+        }
+
         // 临时下载文件
         File tempFolder = new File(Constants.IMAGE_TEMP);
         String tempName = savePath.substring(savePath.lastIndexOf("/") + 1, savePath.lastIndexOf("."));
         File tempFile = new File(tempFolder, tempName);
         if (!tempFolder.exists() && !tempFolder.mkdirs()) {
-            OkHttp.removeUrlFromDownloadQueue(url);
+            DownloadTaskState.record(downloadBean, false, "无法创建临时下载目录");
+            mMainHandler.post(() -> {
+                listener.onError();
+                finishTask(url);
+            });
             return;
         }
 
@@ -122,7 +142,7 @@ public class DownloadImageService extends Service {
                         public void onError(Progress progress) {
                             listener.onError();
                             DownloadImageManager.getInstance().addOrUpdate(downloadBean);
-                            OkHttp.removeUrlFromDownloadQueue(url);
+                            finishTask(url);
                         }
 
                         @Override
@@ -132,18 +152,20 @@ public class DownloadImageService extends Service {
                                         // 下载成功，保存为图片
                                         File saveFile = new File(savePath);
                                         boolean success = FileUtils.moveFile(tempFile, saveFile);
-                                        return success ? saveFile : null;
-                                    })
+                                        success = success && BitmapUtils.insertToMediaStore(DownloadImageService.this, saveFile);
+                                        return success;
+                                    }, throwable -> false)
                                     .runOn(HandlerFuture.IO.UI)
-                                    .applyThen(saveFile -> {
-                                        // 添加图片到媒体库（刷新相册）
-                                        if (saveFile != null) {
-                                            BitmapUtils.insertToMediaStore(DownloadImageService.this, saveFile);
+                                    .applyThen(saved -> {
+                                        if (saved) {
+                                            DownloadTaskState.record(downloadBean, true, "");
+                                            listener.onFinish();
+                                        } else {
+                                            DownloadTaskState.record(downloadBean, false, "下载文件未能完整保存或发布到相册");
+                                            listener.onError();
                                         }
-                                        // 通知监听器完成下载 （由于lolibooru监听不到下载进度，所以在这里进行弥补）
-                                        listener.onFinish();
                                         DownloadImageManager.getInstance().addOrUpdate(downloadBean);
-                                        OkHttp.removeUrlFromDownloadQueue(url);
+                                        finishTask(url);
                                     });
                         }
 
@@ -151,20 +173,27 @@ public class DownloadImageService extends Service {
                         public void onRemove(Progress progress) {
                             listener.onRemove();
                             DownloadImageManager.getInstance().remove(downloadBean);
-                            OkHttp.removeUrlFromDownloadQueue(url);
+                            finishTask(url);
                         }
                     });
         } catch (Exception e) {
-            e.printStackTrace();
+            String position = e.getStackTrace().length == 0 ? "" : e.getStackTrace()[0].toString();
+            android.util.Log.e("DownloadImageService", "下载启动异常类型: "
+                    + e.getClass().getName() + " @ " + position);
+            DownloadTaskState.record(downloadBean, false, "下载任务启动失败: " + e.getClass().getSimpleName());
             listener.onError();
             mMainHandler.post(() -> DownloadImageManager.getInstance().addOrUpdate(downloadBean));
-            OkHttp.removeUrlFromDownloadQueue(url);
+            finishTask(url);
         }
     }
 
-    private void checkToStopService() {
-        if (mThreadList.isEmpty()) {
-            stopSelf();
-        }
+    private void finishTask(String url) {
+        mMainHandler.post(() -> {
+            OkHttp.removeUrlFromDownloadQueue(url);
+            mActiveUrls.remove(url);
+            if (mActiveUrls.isEmpty()) {
+                stopSelf();
+            }
+        });
     }
 }

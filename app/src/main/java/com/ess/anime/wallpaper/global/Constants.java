@@ -1,6 +1,7 @@
 package com.ess.anime.wallpaper.global;
 
-import android.os.Environment;
+import com.ess.anime.wallpaper.MyApp;
+import com.ess.anime.wallpaper.utils.StoragePaths;
 
 public class Constants {
 
@@ -65,7 +66,7 @@ public class Constants {
     public final static String RATING_Q = "q";
 
     // Glide
-    public final static String IMAGE_DIR = Environment.getExternalStorageDirectory() + "/Konachan/konachan";
-    public final static String IMAGE_TEMP = Environment.getExternalStorageDirectory() + "/Konachan/temp";
-    public final static String IMAGE_DONATE = Environment.getExternalStorageDirectory() + "/Konachan/donate";
+    public final static String IMAGE_DIR = StoragePaths.imageDirectory(MyApp.getInstance()).getAbsolutePath();
+    public final static String IMAGE_TEMP = StoragePaths.temporaryDirectory(MyApp.getInstance()).getAbsolutePath();
+    public final static String IMAGE_DONATE = StoragePaths.donationDirectory(MyApp.getInstance()).getAbsolutePath();
 }

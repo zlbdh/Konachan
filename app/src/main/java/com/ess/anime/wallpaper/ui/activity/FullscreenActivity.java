@@ -251,10 +251,13 @@ public class FullscreenActivity extends BaseActivity implements OnPhotoTapListen
     private void shareImage() {
         CollectionBean collectionBean = getCurrentCollection();
         if (collectionBean != null) {
-            Uri uri = Uri.parse(collectionBean.url);
+            Uri uri = BitmapUtils.getContentUriFromFile(this, new File(collectionBean.filePath));
+            if (uri == null) return;
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("video/*;image/*");
             intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setClipData(android.content.ClipData.newRawUri("image", uri));
             startActivity(Intent.createChooser(intent, getString(R.string.share_title)));
         }
     }

@@ -194,24 +194,47 @@ public class PermissionHelper {
     }
 
     public static void checkStoragePermissions(Context context, RequestListener listener) {
+        // 自有下载、缓存和收藏在 scoped-storage 下无需读取其他应用媒体的权限。
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (listener != null) listener.onGranted();
+            return;
+        }
         String title = context.getString(R.string.dialog_permission_rationale_title);
         String msg = context.getString(R.string.dialog_permission_rationale_msg);
         checkPermissions(context, title, msg, listener, getStoragePermissions());
     }
 
     /**
-     * 按系统版本返回应申请的存储权限（Android 13+ 用 READ_MEDIA_IMAGES）
+     * 自有存储的权限门禁；Android 10+ 自有目录和自有 MediaStore 项不要求存储权限。
      */
     public static String[] getStoragePermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return new String[]{android.Manifest.permission.READ_MEDIA_IMAGES};
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return new String[0];
         } else {
             return Permission.Group.STORAGE;
         }
     }
 
     public static boolean hasStoragePermissions(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) return true;
         return hasPermissions(context, getStoragePermissions());
+    }
+
+    /** 仅供需要读取其他应用媒体的入口使用，不能作为自有下载的写入门禁。 */
+    public static String[] getExternalMediaReadPermissions(boolean includeVideo) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return includeVideo ? new String[]{android.Manifest.permission.READ_MEDIA_IMAGES,
+                    android.Manifest.permission.READ_MEDIA_VIDEO}
+                    : new String[]{android.Manifest.permission.READ_MEDIA_IMAGES};
+        }
+        return new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE};
+    }
+
+    public static void checkExternalMediaReadPermissions(Context context, boolean includeVideo,
+                                                        RequestListener listener) {
+        checkPermissions(context, context.getString(R.string.dialog_permission_rationale_title),
+                context.getString(R.string.dialog_permission_rationale_msg), listener,
+                getExternalMediaReadPermissions(includeVideo));
     }
 
     public interface RequestListener {

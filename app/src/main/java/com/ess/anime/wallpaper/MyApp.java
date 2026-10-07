@@ -13,7 +13,6 @@ import com.ess.anime.wallpaper.http.OkHttp;
 import com.ess.anime.wallpaper.website.WebsiteManager;
 import com.just.agentweb.AgentWebConfig;
 import com.tencent.bugly.crashreport.CrashReport;
-import com.unity3d.services.core.properties.ClientProperties;
 
 public class MyApp extends Application {
 
@@ -34,7 +33,6 @@ public class MyApp extends Application {
         ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).cancelAll();
         GreenDaoUtils.initGreenDao(this);
         OkHttp.initHttpConfig(this);
-        ClientProperties.setApplicationContext(this);
         WebsiteManager.getInstance().updateWebsiteConfig();
         initData();
     }

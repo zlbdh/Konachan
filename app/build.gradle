@@ -10,6 +10,7 @@ android {
         targetSdkVersion 34
         versionCode 34
         versionName "1.9.5"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resConfigs('zh-rCN', 'zh-rHK', 'zh-rTW')
         vectorDrawables.useSupportLibrary = true
         aaptOptions {
@@ -50,6 +51,8 @@ android {
 }
 
 dependencies {
+    androidTestImplementation 'androidx.test:runner:1.5.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     // Android 基础库
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.0.2'
@@ -95,9 +98,6 @@ dependencies {
 
     // OkGo (https://github.com/jeasonlzy/okhttp-OkGo)
     implementation project(path: ':okserver')
-
-    // u3d网络监听
-    implementation 'com.unity3d.ads:unity-ads:3.0.0'
 
     // Volley (https://github.com/google/volley)
     implementation 'com.android.volley:volley:1.2.1'

@@ -142,7 +142,7 @@ public class SettingActivity extends BaseActivity {
         new CustomDialog(this)
                 .title(R.string.setting_gelbooru_api_key_title)
                 .customView(layout, false)
-                .positiveText(R.string.dialog_download_sure)
+                .positiveText(R.string.setting_gelbooru_api_key_save)
                 .negativeText(R.string.dialog_download_cancel)
                 .onPositive((dialog, which) -> {
                     String apiKey = etApiKey.getText().toString().trim();

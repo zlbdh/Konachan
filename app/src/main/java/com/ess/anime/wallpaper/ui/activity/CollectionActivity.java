@@ -224,12 +224,19 @@ public class CollectionActivity extends BaseActivity implements LocalCollections
     private void shareImages() {
         ArrayList<Uri> uriList = new ArrayList<>();
         for (CollectionBean collectionBean : mCollectionAdapter.getSelectList()) {
-            Uri uri = Uri.parse(collectionBean.url);
-            uriList.add(uri);
+            Uri uri = BitmapUtils.getContentUriFromFile(this, new File(collectionBean.filePath));
+            if (uri != null) uriList.add(uri);
         }
+        if (uriList.isEmpty()) return;
         Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
         intent.setType("*/*");
         intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriList);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        android.content.ClipData clip = android.content.ClipData.newRawUri("images", uriList.get(0));
+        for (int index = 1; index < uriList.size(); index++) {
+            clip.addItem(new android.content.ClipData.Item(uriList.get(index)));
+        }
+        intent.setClipData(clip);
         startActivity(Intent.createChooser(intent, getString(R.string.share_title)));
     }
 

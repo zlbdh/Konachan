@@ -10,12 +10,10 @@ import com.ess.anime.wallpaper.database.GreenDaoUtils;
 import com.ess.anime.wallpaper.download.BaseDownloadProgressListener;
 import com.ess.anime.wallpaper.global.Constants;
 import com.ess.anime.wallpaper.http.OkHttp;
+import com.ess.anime.wallpaper.utils.NetworkAvailabilityMonitor;
 import com.lzy.okgo.model.Progress;
 import com.lzy.okserver.OkDownload;
 import com.lzy.okserver.download.DownloadTask;
-import com.unity3d.services.core.connectivity.ConnectivityChangeReceiver;
-import com.unity3d.services.core.connectivity.ConnectivityMonitor;
-import com.unity3d.services.core.connectivity.IConnectivityListener;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,7 +21,7 @@ import java.util.List;
 
 import androidx.core.content.ContextCompat;
 
-public class DownloadImageManager implements IConnectivityListener {
+public class DownloadImageManager {
 
     private static class DownloadImageHolder {
         private final static DownloadImageManager instance = new DownloadImageManager();
@@ -34,8 +32,7 @@ public class DownloadImageManager implements IConnectivityListener {
     }
 
     private DownloadImageManager() {
-        ConnectivityChangeReceiver.register();
-        ConnectivityMonitor.addListener(this);
+        NetworkAvailabilityMonitor.observe(MyApp.getInstance(), this::onConnected);
         initDownloadList();
         continueToDownloadAll();
     }
@@ -46,7 +43,6 @@ public class DownloadImageManager implements IConnectivityListener {
                 String tag = downloadBean.downloadUrl;
                 DownloadTask task = OkDownload.getInstance().getTask(tag);
                 if (task == null || task.progress.status != Progress.FINISH) {
-                    OkHttp.cancelDownloadFile(tag);
                     checkToDownload(downloadBean);
                 }
             }
@@ -119,7 +115,6 @@ public class DownloadImageManager implements IConnectivityListener {
 
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
 
-    @Override
     public void onConnected() {
         synchronized (mDownloadList) {
             mMainHandler.post(() -> {
@@ -127,7 +122,7 @@ public class DownloadImageManager implements IConnectivityListener {
                 for (DownloadBean downloadBean : mDownloadList) {
                     String tag = downloadBean.downloadUrl;
                     DownloadTask task = OkDownload.getInstance().getTask(tag);
-                    if (task != null && task.progress.status == Progress.ERROR) {
+                    if (task != null && (task.progress.status == Progress.ERROR || task.progress.status == Progress.PAUSE)) {
                         checkToDownload(downloadBean);
                     }
                 }
@@ -135,17 +130,34 @@ public class DownloadImageManager implements IConnectivityListener {
         }
     }
 
-    @Override
     public void onDisconnected() {
     }
 
-    private void checkToDownload(DownloadBean downloadBean) {
-        if (!OkHttp.isUrlInDownloadQueue(downloadBean.downloadUrl)) {
-            Context context = MyApp.getInstance();
-            Intent downloadIntent = new Intent(context, DownloadImageService.class);
-            downloadIntent.putExtra(Constants.DOWNLOAD_BEAN, downloadBean);
+    /** 将一项任务真正交给下载服务；必须在主线程调用。 */
+    public boolean enqueue(DownloadBean downloadBean) {
+        if (downloadBean == null || downloadBean.downloadUrl == null
+                || downloadBean.savePath == null || DownloadTaskState.isFinishedFile(downloadBean)) {
+            return false;
+        }
+        return checkToDownload(downloadBean);
+    }
+
+    private boolean checkToDownload(DownloadBean downloadBean) {
+        if (OkHttp.isUrlInDownloadQueue(downloadBean.downloadUrl)) {
+            return false;
+        }
+        Context context = MyApp.getInstance();
+        Intent downloadIntent = new Intent(context, DownloadImageService.class);
+        downloadIntent.putExtra(Constants.DOWNLOAD_BEAN, downloadBean);
+        OkHttp.addUrlToDownloadQueue(downloadBean.downloadUrl);
+        try {
             ContextCompat.startForegroundService(context, downloadIntent);
-            OkHttp.addUrlToDownloadQueue(downloadBean.downloadUrl);
+            addOrUpdate(downloadBean);
+            return true;
+        } catch (RuntimeException exception) {
+            OkHttp.removeUrlFromDownloadQueue(downloadBean.downloadUrl);
+            android.util.Log.w("DownloadImageManager", "下载服务未能启动", exception);
+            return false;
         }
     }
 

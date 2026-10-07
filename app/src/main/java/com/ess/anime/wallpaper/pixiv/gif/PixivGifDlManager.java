@@ -17,14 +17,12 @@ import com.ess.anime.wallpaper.http.OkHttp;
 import com.ess.anime.wallpaper.pixiv.login.PixivLoginManager;
 import com.ess.anime.wallpaper.utils.BitmapUtils;
 import com.ess.anime.wallpaper.utils.FileUtils;
+import com.ess.anime.wallpaper.utils.NetworkAvailabilityMonitor;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.lzy.okgo.model.Progress;
 import com.lzy.okgo.utils.IOUtils;
 import com.lzy.okserver.download.DownloadListener;
-import com.unity3d.services.core.connectivity.ConnectivityChangeReceiver;
-import com.unity3d.services.core.connectivity.ConnectivityMonitor;
-import com.unity3d.services.core.connectivity.IConnectivityListener;
 
 import net.lingala.zip4j.ZipFile;
 
@@ -36,7 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PixivGifDlManager implements IConnectivityListener {
+public class PixivGifDlManager {
 
     public final static String TAG = PixivGifDlManager.class.getSimpleName();
 
@@ -49,8 +47,7 @@ public class PixivGifDlManager implements IConnectivityListener {
     }
 
     private PixivGifDlManager() {
-        ConnectivityChangeReceiver.register();
-        ConnectivityMonitor.addListener(this);
+        NetworkAvailabilityMonitor.observe(MyApp.getInstance(), this::onConnected);
     }
 
     /*******************************************************************/
@@ -351,7 +348,6 @@ public class PixivGifDlManager implements IConnectivityListener {
 
     private final Handler mMainHandler = new Handler(Looper.getMainLooper());
 
-    @Override
     public void onConnected() {
         synchronized (mPixivMap) {
             mMainHandler.post(() -> {
@@ -368,7 +364,6 @@ public class PixivGifDlManager implements IConnectivityListener {
         }
     }
 
-    @Override
     public void onDisconnected() {
     }
 

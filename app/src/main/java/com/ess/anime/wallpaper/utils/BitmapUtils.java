@@ -14,6 +14,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
@@ -26,6 +27,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import androidx.core.content.FileProvider;
 
 /**
  * 位图操作，使用Bitmap后记得在适当位置recycle
@@ -355,8 +358,17 @@ public class BitmapUtils {
      * @param context 上下文
      * @param file    图片文件
      */
-    public static void insertToMediaStore(Context context, File file) {
-        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+    public static boolean insertToMediaStore(Context context, File file) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return MediaStorePublisher.publish(context, file) != null;
+        }
+        if (file == null || !file.isFile() || file.length() == 0) return false;
+        try {
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+            return true;
+        } catch (RuntimeException error) {
+            return false;
+        }
     }
 
     /**
@@ -383,6 +395,16 @@ public class BitmapUtils {
      * @return content Uri
      */
     public static Uri getContentUriFromFile(Context context, File mediaFile) {
+        if (mediaFile == null || !mediaFile.isFile()) return null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Uri published = MediaStorePublisher.findPublishedUri(context, mediaFile);
+            if (published != null) return published;
+            try {
+                return FileProvider.getUriForFile(context, context.getPackageName() + ".fileprovider", mediaFile);
+            } catch (IllegalArgumentException error) {
+                return null;
+            }
+        }
         String filePath = mediaFile.getAbsolutePath();
         boolean isImageType = FileUtils.isImageType(filePath);
         Uri uri = isImageType ? MediaStore.Images.Media.EXTERNAL_CONTENT_URI : MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
