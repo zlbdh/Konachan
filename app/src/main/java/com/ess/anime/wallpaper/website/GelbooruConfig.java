@@ -1,8 +1,12 @@
 package com.ess.anime.wallpaper.website;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
+import com.ess.anime.wallpaper.MyApp;
 import com.ess.anime.wallpaper.R;
+import com.ess.anime.wallpaper.global.Constants;
 import com.ess.anime.wallpaper.website.parser.GelbooruParser;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -14,7 +18,26 @@ import java.util.List;
 
 public class GelbooruConfig extends WebsiteConfig<GelbooruParser> {
 
-    private final static String SUFFIX_API_KEY = "&api_key=54cd6cb43f920687baaf9fe3748dd418735c802287d6614dafe1c6d8dafc3cd702525ef2653ba26193da00cec72aac63e2991d627a533f998ecd45d0d33baa3b&user_id=1827525";
+    // 内置兜底 key（匿名访问无数据，key 失效时用户可在设置中填入自己的）
+    private final static String DEFAULT_API_KEY = "54cd6cb43f920687baaf9fe3748dd418735c802287d6614dafe1c6d8dafc3cd702525ef2653ba26193da00cec72aac63e2991d627a533f998ecd45d0d33baa3b";
+    private final static String DEFAULT_USER_ID = "1827525";
+
+    private String getApiKeySuffix() {
+        String apiKey = DEFAULT_API_KEY;
+        String userId = DEFAULT_USER_ID;
+        try {
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MyApp.getInstance());
+            String savedKey = sp.getString(Constants.GELBOORU_API_KEY, "");
+            String savedUserId = sp.getString(Constants.GELBOORU_USER_ID, "");
+            if (!TextUtils.isEmpty(savedKey) && !TextUtils.isEmpty(savedUserId)) {
+                apiKey = savedKey.trim();
+                userId = savedUserId.trim();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "&api_key=" + apiKey + "&user_id=" + userId;
+    }
 
     @Override
     public String getWebsiteName() {
@@ -69,7 +92,7 @@ public class GelbooruConfig extends WebsiteConfig<GelbooruParser> {
             tags.append(tag).append("+");
         }
 
-        return getBaseUrl() + "index.php?page=dapi&s=post&q=index&pid=" + (page - 1) + "&tags=" + tags + "&limit=42" + SUFFIX_API_KEY;
+        return getBaseUrl() + "index.php?page=dapi&s=post&q=index&pid=" + (page - 1) + "&tags=" + tags + "&limit=42" + getApiKeySuffix();
     }
 
     @Override

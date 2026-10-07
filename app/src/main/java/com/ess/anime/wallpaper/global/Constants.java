@@ -24,6 +24,8 @@ public class Constants {
     public final static String PRELOAD_IMAGE_ONLY_WIFI = "preloadImageOnlyWifi";
     public final static String PIXIV_LOGIN_COOKIE = "pixiv_login_cookie";
     public final static String PIXIV_LOGIN_COOKIE_EXPIRED = "pixiv_login_cookie_expired";
+    public final static String GELBOORU_API_KEY = "gelbooruApiKey";
+    public final static String GELBOORU_USER_ID = "gelbooruUserId";
 
     // Intent
     public final static String APK_BEAN = "APK_BEAN";

@@ -52,6 +52,11 @@
     <string name="base_e621" translatable="false">e621</string>
     <string name="base_rule34" translatable="false">Rule34</string>
     <string name="base_animepictures" translatable="false">AnimePictures</string>
+    <string name="setting_gelbooru_api_key_title">Gelbooru API Key 设置</string>
+    <string name="setting_gelbooru_api_key_desc">内置 key 失效时可填入自己的 key（Gelbooru 账号页获取），留空则使用内置 key</string>
+    <string name="setting_gelbooru_api_key_hint">api_key</string>
+    <string name="setting_gelbooru_user_id_hint">user_id</string>
+    <string name="setting_gelbooru_api_key_saved">已保存，切换站点或刷新后生效</string>
     <string name="navigation_drawer_open">Open drawer layout</string>
     <string name="navigation_drawer_close">Close drawer layout</string>
     <string name="nav_post">Image</string>
