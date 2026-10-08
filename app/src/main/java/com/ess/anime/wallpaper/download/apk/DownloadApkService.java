@@ -26,7 +26,7 @@ import java.util.Set;
 
 /** 下载及验包全部结束才停止前台服务；自动模式仅通知，安装由用户点击触发。 */
 public class DownloadApkService extends Service {
-    private static final String CHANNEL = "application-updates";
+    private static final String CHANNEL = "apk-update-progress-v2";
     private static final int FOREGROUND_ID = 1248;
     private final Handler main = new Handler(Looper.getMainLooper());
     private final Set<String> active = new HashSet<>();
@@ -38,7 +38,7 @@ public class DownloadApkService extends Service {
         super.onCreate();
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= 26) mNotificationManager.createNotificationChannel(
-                new NotificationChannel(CHANNEL, "应用更新", NotificationManager.IMPORTANCE_LOW));
+                new NotificationChannel(CHANNEL, "应用更新", NotificationManager.IMPORTANCE_DEFAULT));
         mForegroundBuilder = Build.VERSION.SDK_INT >= 26
                 ? new Notification.Builder(this, CHANNEL) : new Notification.Builder(this);
         mForegroundBuilder.setSmallIcon(R.mipmap.ic_launcher)
