@@ -64,6 +64,11 @@ public abstract class WordPressConfig extends WebsiteConfig<WordPressParser> {
     }
 
     @Override
+    protected String getPostsPath() {
+        return "posts?";
+    }
+
+    @Override
     public String getPostUrl(int page, List<String> tagList) {
         if (tagList == null) {
             tagList = new ArrayList<>();
@@ -75,7 +80,7 @@ public abstract class WordPressConfig extends WebsiteConfig<WordPressParser> {
             }
         }
         // _embed=wp:featuredmedia includes the featured image URL in the posts response to avoid N+1 requests
-        return getRestBase() + "posts?per_page=42&page=" + page
+        return getRestBase() + getPostsPath() + "per_page=42&page=" + page
                 + "&search=" + tags.toString().trim()
                 + "&_embed=wp:featuredmedia";
     }
