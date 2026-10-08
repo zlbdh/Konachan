@@ -31,6 +31,11 @@ public abstract class WebsiteConfig<T extends HtmlParser> {
     public final static String BASE_URL_HIJIRIBE = "https://hijiribe.donmai.us/";
     public final static String BASE_URL_MISSKON = "https://misskon.com/";
     public final static String BASE_URL_FOURKHD = "https://www.4khd.com/";
+    public final static String BASE_URL_COSBLAY = "https://cosblay.com/";
+    public final static String BASE_URL_NUDECOSPLAYGIRLS = "https://nudecosplaygirls.com/";
+    public final static String BASE_URL_COSPLAY3X = "https://cosplay3x.com/";
+    public final static String BASE_URL_ASIANPINK = "https://asianpink.net/";
+    public final static String BASE_URL_ADULTCOMIXXX = "https://adultcomixxx.com/";
 
     public final static String TAG_JSON_URL_KONACHAN_S = "https://konachan.net/tag/summary.json";
     public final static String TAG_JSON_URL_KONACHAN_E = "https://konachan.com/tag/summary.json";
@@ -42,7 +47,9 @@ public abstract class WebsiteConfig<T extends HtmlParser> {
             BASE_URL_XBOORU, BASE_URL_TBIB, BASE_URL_E621,
             BASE_URL_RULE34, BASE_URL_HYPNO, BASE_URL_YUKKURI,
             BASE_URL_AIBOORU, BASE_URL_SONOHARA, BASE_URL_HIJIRIBE,
-            BASE_URL_MISSKON, BASE_URL_FOURKHD
+            BASE_URL_MISSKON, BASE_URL_FOURKHD, BASE_URL_COSBLAY,
+            BASE_URL_NUDECOSPLAYGIRLS, BASE_URL_COSPLAY3X, BASE_URL_ASIANPINK,
+            BASE_URL_ADULTCOMIXXX
     };
 
     protected String mTagJson;

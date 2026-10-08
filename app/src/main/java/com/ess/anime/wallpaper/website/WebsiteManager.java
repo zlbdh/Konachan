@@ -116,6 +116,21 @@ public class WebsiteManager {
                 case WebsiteConfig.BASE_URL_FOURKHD:
                     websiteConfig = new FourkhdConfig();
                     break;
+                case WebsiteConfig.BASE_URL_COSBLAY:
+                    websiteConfig = new CosblayConfig();
+                    break;
+                case WebsiteConfig.BASE_URL_NUDECOSPLAYGIRLS:
+                    websiteConfig = new NudeCosplayGirlsConfig();
+                    break;
+                case WebsiteConfig.BASE_URL_COSPLAY3X:
+                    websiteConfig = new Cosplay3XConfig();
+                    break;
+                case WebsiteConfig.BASE_URL_ASIANPINK:
+                    websiteConfig = new AsianPinkConfig();
+                    break;
+                case WebsiteConfig.BASE_URL_ADULTCOMIXXX:
+                    websiteConfig = new AdultComixxxConfig();
+                    break;
             }
 
             if (mWebsiteConfig != websiteConfig) {
