@@ -42,6 +42,8 @@
         <item>@string/base_pornhub</item>
         <item>@string/base_redtube</item>
         <item>@string/base_eporner</item>
+        <item>@string/base_nhentai</item>
+        <item>@string/base_hitomi</item>
     </string-array>
 
     <string-array name="screen_orientation_list_item">

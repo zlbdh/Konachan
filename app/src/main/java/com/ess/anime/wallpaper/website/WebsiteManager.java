@@ -143,6 +143,12 @@ public class WebsiteManager {
                 case WebsiteConfig.BASE_URL_EPORNER:
                     websiteConfig = new EpornerConfig();
                     break;
+                case WebsiteConfig.BASE_URL_NHENTAI:
+                    websiteConfig = new NHentaiConfig();
+                    break;
+                case WebsiteConfig.BASE_URL_HITOMI:
+                    websiteConfig = new HitomiConfig();
+                    break;
             }
 
             if (mWebsiteConfig != websiteConfig) {
