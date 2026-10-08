@@ -27,6 +27,13 @@ public final class BatchDownloadController {
     public void show(List<ThumbBean> data) {
         if (!active() || data.isEmpty() || task != null || waitingPermission || chooser != null) return;
         List<ThumbBean> snapshot = new ArrayList<>(data);
+        // 读取默认清晰度设置：-1=每次询问，否则直接用
+        int defaultQuality = android.preference.PreferenceManager.getDefaultSharedPreferences(activity)
+                .getInt(com.ess.anime.wallpaper.global.Constants.BATCH_DOWNLOAD_QUALITY, -1);
+        if (defaultQuality >= 0 && defaultQuality <= 2) {
+            requestDownload(snapshot, defaultQuality);
+            return;
+        }
         String[] qualities = {activity.getString(R.string.batch_download_sample),
                 activity.getString(R.string.batch_download_large),
                 activity.getString(R.string.batch_download_original)};

@@ -98,6 +98,9 @@ public class WebsiteManager {
                 case WebsiteConfig.BASE_URL_HYPNO:
                     websiteConfig = new HypnohubConfig();
                     break;
+                case WebsiteConfig.BASE_URL_YUKKURI:
+                    websiteConfig = new YukkuriConfig();
+                    break;
             }
 
             if (mWebsiteConfig != websiteConfig) {

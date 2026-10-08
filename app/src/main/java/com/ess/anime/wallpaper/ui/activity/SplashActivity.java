@@ -19,6 +19,23 @@ public class SplashActivity extends BaseActivity {
     private boolean mIsForeground;
     private boolean mCanGotoNextPage;
 
+    // 更新检查每天只做一次，避免每次启动都请求
+    private void checkUpdateOncePerDay() {
+        try {
+            android.content.SharedPreferences sp = android.preference.PreferenceManager
+                    .getDefaultSharedPreferences(this);
+            long lastCheck = sp.getLong("lastUpdateCheckTime", 0);
+            long now = System.currentTimeMillis();
+            if (now - lastCheck > 24 * 60 * 60 * 1000L) {
+                sp.edit().putLong("lastUpdateCheckTime", now).apply();
+                FireBase.getInstance().checkUpdate();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            FireBase.getInstance().checkUpdate();
+        }
+    }
+
     @Override
     protected int layoutRes() {
         return R.layout.activity_splash;
@@ -30,7 +47,7 @@ public class SplashActivity extends BaseActivity {
         SoundHelper.getInstance().playSplashWelcomeSound(this);
 
         FireBase.getInstance().checkToAddUser();
-        FireBase.getInstance().checkUpdate();
+        checkUpdateOncePerDay();
         ReverseSearchWebsiteDataHelper.loadNewJsonFromServer(this);
 
         WebsiteManager.getInstance().loadNewRequestHeadersJsonFromServer();

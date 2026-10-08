@@ -108,6 +108,7 @@ public class SettingActivity extends BaseActivity {
         items.add(getGelbooruApiKeyItem());
         items.add(getRule34ApiKeyItem());
         items.add(getDanbooruApiKeyItem());
+        items.add(getBatchDownloadQualityItem());
         items.add(getAutoDownloadUpdateItem());
         items.add(getCheckUpdateItem());
         return items;
@@ -361,6 +362,45 @@ public class SettingActivity extends BaseActivity {
         } else {
             return new File[]{getCacheDir(), getExternalCacheDir()};
         }
+    }
+
+    private CommonSettingItem getBatchDownloadQualityItem() {
+        return new CommonSettingItem()
+                .setTitle(R.string.setting_batch_download_quality_title)
+                .setDesc(getBatchDownloadQualityDesc())
+                .setOnClickListener(v -> showBatchDownloadQualityDialog());
+    }
+
+    private String getBatchDownloadQualityDesc() {
+        int q = mPreferences.getInt(Constants.BATCH_DOWNLOAD_QUALITY, -1);
+        switch (q) {
+            case 0: return getString(R.string.batch_download_sample);
+            case 1: return getString(R.string.batch_download_large);
+            case 2: return getString(R.string.batch_download_original);
+            default: return getString(R.string.setting_batch_download_quality_ask);
+        }
+    }
+
+    private void showBatchDownloadQualityDialog() {
+        String[] items = {
+                getString(R.string.setting_batch_download_quality_ask),
+                getString(R.string.batch_download_sample),
+                getString(R.string.batch_download_large),
+                getString(R.string.batch_download_original)
+        };
+        int checked = mPreferences.getInt(Constants.BATCH_DOWNLOAD_QUALITY, -1) + 1;
+        new CustomDialog(this)
+                .title(R.string.setting_batch_download_quality_title)
+                .items(items)
+                .itemsCallbackSingleChoice(checked, (dialog, view, which, text) -> true)
+                .positiveText(R.string.setting_gelbooru_api_key_save)
+                .negativeText(R.string.dialog_download_cancel)
+                .onPositive((dialog, which) -> {
+                    int selected = dialog.getSelectedIndex() - 1;
+                    mPreferences.edit().putInt(Constants.BATCH_DOWNLOAD_QUALITY, selected).apply();
+                    recreate();
+                })
+                .show();
     }
 
     private CommonSettingItem getAutoDownloadUpdateItem() {
