@@ -126,4 +126,24 @@ public class HypnohubConfig extends WebsiteConfig<AttrDapiParser> {
     public boolean isSupportRandomPost() {
         return true;
     }
+
+    @Override
+    public boolean isSupportAdvancedSearch() {
+        return false;
+    }
+
+    @Override
+    public boolean isSupportSearchAutoCompleteFromNetwork() {
+        return false;
+    }
+
+    @Override
+    public String getSearchAutoCompleteUrl(String tag) {
+        return null;
+    }
+
+    @Override
+    public List<String> parseSearchAutoCompleteListFromNetwork(String promptResult, String search) {
+        return null;
+    }
 }
