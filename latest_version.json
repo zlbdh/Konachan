@@ -1,13 +1,13 @@
 {
-  "versionCode": 35,
+  "versionCode": 36,
   "versionName": "1.9.6",
   "apkName": "kanimeG1.9.6-debug.apk",
-  "apkSize": 74778538,
-  "apkUrl": "https://github.com/zlbdh/Konachan/releases/download/v1.9.6-5/kanimeG1.9.6-debug.apk",
-  "apkSha256": "d6f8f66449b9668e116440cbf4259998c3965f8e35242bbfdec16dc70af0fafc",
+  "apkSize": 74765778,
+  "apkUrl": "https://github.com/zlbdh/Konachan/releases/download/v1.9.6-9/kanimeG1.9.6-debug.apk",
+  "apkSha256": "6e4bb8c89efb7a34ad65fe1379b6e2fb2d7e20f3002ea8bfdcb3d15ba67f9de3",
   "signingCertificateSha256": "1f3ed26b24f63125cb1cf946277bafaccff424293bc3438e9c2fe1710d2422f2",
-  "sourceSha": "3468079ed49c177f4fb7135f816ec731502b511e",
-  "releaseTag": "v1.9.6-5",
+  "sourceSha": "a790aeae63c92dba2b998c0cabf9bb050a287dd9",
+  "releaseTag": "v1.9.6-9",
   "updatedContentZh": "自动检查和下载更新；项目固定签名；下载包完整性、版本与签名校验。首次切换项目签名时需更换安装旧签名版本。",
   "updatedContentEn": "Automatic update downloads; stable project signing; APK integrity, version and certificate validation. The first signing transition requires replacing older differently signed installations."
 }
