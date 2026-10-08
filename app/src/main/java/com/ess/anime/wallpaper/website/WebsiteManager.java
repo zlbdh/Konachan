@@ -83,9 +83,6 @@ public class WebsiteManager {
                 case WebsiteConfig.BASE_URL_SANKAKU:
                     websiteConfig = new SankakuConfig();
                     break;
-                case WebsiteConfig.BASE_URL_ZEROCHAN:
-                    websiteConfig = new ZerochanConfig();
-                    break;
                 case WebsiteConfig.BASE_URL_XBOORU:
                     websiteConfig = new XbooruConfig();
                     break;

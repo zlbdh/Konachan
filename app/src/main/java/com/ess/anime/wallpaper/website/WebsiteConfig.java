@@ -20,7 +20,6 @@ public abstract class WebsiteConfig<T extends HtmlParser> {
     public final static String BASE_URL_DANBOORU = "https://danbooru.donmai.us/";
     public final static String BASE_URL_GELBOORU = "https://gelbooru.com/";
     public final static String BASE_URL_SANKAKU = "https://sankakuapi.com/v2/";  // https://chan.sankakucomplex.com/
-    public final static String BASE_URL_ZEROCHAN = "https://www.zerochan.net/";
     public final static String BASE_URL_XBOORU = "https://xbooru.com/";
     public final static String BASE_URL_TBIB = "https://tbib.org/";
     public final static String BASE_URL_E621 = "https://e621.net/";
@@ -33,7 +32,7 @@ public abstract class WebsiteConfig<T extends HtmlParser> {
 
     public final static String[] BASE_URLS = {
             BASE_URL_KONACHAN_S, BASE_URL_KONACHAN_E, BASE_URL_YANDE, BASE_URL_DANBOORU,
-            BASE_URL_GELBOORU, BASE_URL_SANKAKU, BASE_URL_ZEROCHAN,
+            BASE_URL_GELBOORU, BASE_URL_SANKAKU,
             BASE_URL_XBOORU, BASE_URL_TBIB, BASE_URL_E621,
             BASE_URL_RULE34, BASE_URL_HYPNO
     };
