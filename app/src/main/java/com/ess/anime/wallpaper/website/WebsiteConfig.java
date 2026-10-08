@@ -55,7 +55,7 @@ public abstract class WebsiteConfig<T extends HtmlParser> {
             BASE_URL_NUDECOSPLAYGIRLS, BASE_URL_COSPLAY3X, BASE_URL_ASIANPINK,
             BASE_URL_ADULTCOMIXXX, BASE_URL_CIVITAI, BASE_URL_PORNHUB,
             BASE_URL_REDTUBE, BASE_URL_EPORNER, BASE_URL_NHENTAI,
-            BASE_URL_HITOMI
+            BASE_URL_HITOMI, BASE_URL_MISSKON, BASE_URL_FOURKHD
     };
 
     protected String mTagJson;
