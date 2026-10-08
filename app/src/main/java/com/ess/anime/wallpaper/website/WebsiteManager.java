@@ -134,6 +134,15 @@ public class WebsiteManager {
                 case WebsiteConfig.BASE_URL_CIVITAI:
                     websiteConfig = new CivitaiConfig();
                     break;
+                case WebsiteConfig.BASE_URL_PORNHUB:
+                    websiteConfig = new PornHubConfig();
+                    break;
+                case WebsiteConfig.BASE_URL_REDTUBE:
+                    websiteConfig = new RedTubeConfig();
+                    break;
+                case WebsiteConfig.BASE_URL_EPORNER:
+                    websiteConfig = new EpornerConfig();
+                    break;
             }
 
             if (mWebsiteConfig != websiteConfig) {
