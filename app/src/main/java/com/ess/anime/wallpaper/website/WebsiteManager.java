@@ -131,6 +131,9 @@ public class WebsiteManager {
                 case WebsiteConfig.BASE_URL_ADULTCOMIXXX:
                     websiteConfig = new AdultComixxxConfig();
                     break;
+                case WebsiteConfig.BASE_URL_CIVITAI:
+                    websiteConfig = new CivitaiConfig();
+                    break;
             }
 
             if (mWebsiteConfig != websiteConfig) {

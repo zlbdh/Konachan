@@ -62,6 +62,7 @@
     <string name="base_cosplay3x" translatable="false">Cosplay3X</string>
     <string name="base_asianpink" translatable="false">AsianPink</string>
     <string name="base_adultcomixxx" translatable="false">AdultComixxx</string>
+    <string name="base_civitai" translatable="false">Civitai</string>
     <string name="setting_gelbooru_api_key_title">Gelbooru API Key 设置</string>
     <string name="setting_gelbooru_api_key_desc">内置 key 失效时可填入自己的 key（Gelbooru 账号页获取），留空则使用内置 key</string>
     <string name="setting_gelbooru_api_key_hint">api_key</string>

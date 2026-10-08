@@ -38,6 +38,7 @@
         <item>@string/base_cosplay3x</item>
         <item>@string/base_asianpink</item>
         <item>@string/base_adultcomixxx</item>
+        <item>@string/base_civitai</item>
     </string-array>
 
     <string-array name="screen_orientation_list_item">
