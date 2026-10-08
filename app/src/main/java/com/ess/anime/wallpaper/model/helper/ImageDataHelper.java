@@ -33,6 +33,27 @@ public class ImageDataHelper {
         File file;
         String desc;
         boolean exists;
+        // Multi-page gallery (e.g. nhentai): download the currently viewed page
+        if (imageBean.hasMultiPages()) {
+            int total = imageBean.pageUrls.size();
+            int page = Math.max(0, Math.min(imageBean.currentPage, total - 1));
+            String pageUrl = imageBean.pageUrls.get(page);
+            if (DownloadQualitySelector.isMediaUrl(pageUrl)) {
+                desc = context.getString(R.string.dialog_download_large,
+                        postBean.jpegWidth, postBean.jpegHeight,
+                        FileUtils.computeFileSize(postBean.fileSize),
+                        getFileExtension(pageUrl).toUpperCase());
+                file = makeFileToSave(imgHead, postBean.id, "-Page" + (page + 1), pageUrl);
+                exists = file.exists();
+                if (exists) {
+                    desc = context.getString(R.string.dialog_download_already, desc);
+                }
+                downloadList.add(new DownloadBean(1, pageUrl, postBean.fileSize,
+                        context.getString(R.string.download_title_large, imgHead, postBean.id + "-p" + (page + 1)),
+                        thumbBean.thumbUrl, file.getAbsolutePath(), exists, desc));
+                return downloadList;
+            }
+        }
         // 0.Sample size
         if (DownloadQualitySelector.isMediaUrl(postBean.sampleUrl) && postBean.sampleFileSize != 0
                 && !TextUtils.equals(postBean.fileUrl, postBean.sampleUrl)) {

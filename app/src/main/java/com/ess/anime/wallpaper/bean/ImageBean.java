@@ -11,6 +11,7 @@ import com.google.gson.annotations.SerializedName;
 import java.text.Collator;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 public class ImageBean implements Parcelable {
@@ -21,6 +22,11 @@ public class ImageBean implements Parcelable {
 
     @SerializedName(value = "poolPosts", alternate = "pool_posts")
     public PoolPostBean[] poolPosts;  //Information about this image within its album
+
+    @SerializedName("pageUrls")
+    public List<String> pageUrls;  //Multi-page gallery image URLs (e.g. nhentai); empty for single-image sites
+
+    public transient int currentPage;  //Current page index (0-based), runtime state only
 
     @SerializedName(value = "tagArray", alternate = "tags")
     private JsonObject tagArray;  //The JSON is irregular; convert it to TagBean after receipt
@@ -60,6 +66,8 @@ public class ImageBean implements Parcelable {
         poolPosts = in.createTypedArray(PoolPostBean.CREATOR);
         tags = in.readParcelable(TagBean.class.getClassLoader());
         votes = in.readParcelable(VoteBean.class.getClassLoader());
+        pageUrls = in.createStringArrayList();
+        currentPage = in.readInt();
     }
 
     @Override
@@ -69,6 +77,13 @@ public class ImageBean implements Parcelable {
         dest.writeTypedArray(poolPosts, flags);
         dest.writeParcelable(tags, flags);
         dest.writeParcelable(votes, flags);
+        dest.writeStringList(pageUrls);
+        dest.writeInt(currentPage);
+    }
+
+    /** Whether this is a multi-page gallery */
+    public boolean hasMultiPages() {
+        return pageUrls != null && pageUrls.size() > 1;
     }
 
     @Override
@@ -93,6 +108,12 @@ public class ImageBean implements Parcelable {
         private final PostBean postBean = new PostBean();
         private final PoolBean poolBean = new PoolBean();
         private final TagBean tagBean = new TagBean();
+        private List<String> pageUrls;
+
+        public ImageJsonBuilder pageUrls(List<String> pageUrls) {
+            this.pageUrls = pageUrls;
+            return this;
+        }
 
         public ImageJsonBuilder id(String id) {
             postBean.id = id;
@@ -470,7 +491,18 @@ public class ImageBean implements Parcelable {
                         .append("\"description\":\"").append(poolBean.description).append("\"}");
             }
             json.append("],")
-                    .append("\"pool_posts\":[],")
+                    .append("\"pool_posts\":[],");
+            // Multi-page gallery URLs (e.g. nhentai)
+            json.append("\"pageUrls\":[");
+            if (pageUrls != null) {
+                for (int i = 0; i < pageUrls.size(); i++) {
+                    if (i > 0) {
+                        json.append(",");
+                    }
+                    json.append("\"").append(pageUrls.get(i)).append("\"");
+                }
+            }
+            json.append("],")
                     .append("\"tags\":{");
             Collator collator = Collator.getInstance(Locale.ENGLISH);
             Collections.sort(tagBean.copyright, collator);

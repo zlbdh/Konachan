@@ -163,6 +163,9 @@ public class DetailFragment extends BaseFragment {
 
         // Image resolution
         String size = postBean.jpegWidth + " x " + postBean.jpegHeight;
+        if (imageBean.hasMultiPages()) {
+            size += " · " + imageBean.pageUrls.size() + "P";
+        }
         setText(R.id.post_size, R.string.detail_post_size, size);
 
         // Image size

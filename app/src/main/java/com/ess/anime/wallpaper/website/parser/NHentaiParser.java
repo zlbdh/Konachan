@@ -150,9 +150,19 @@ public class NHentaiParser extends HtmlParser {
             String fileUrl = "";
             int width = 0;
             int height = 0;
+            java.util.List<String> allPageUrls = new java.util.ArrayList<>();
             try {
                 JsonArray pages = g.getAsJsonArray("pages");
                 if (pages != null && pages.size() > 0) {
+                    for (int i = 0; i < pages.size(); i++) {
+                        try {
+                            String p = optString(pages.get(i).getAsJsonObject(), "path");
+                            if (!TextUtils.isEmpty(p)) {
+                                allPageUrls.add(imgUrl(p));
+                            }
+                        } catch (Exception ignore) {
+                        }
+                    }
                     JsonObject p0 = pages.get(0).getAsJsonObject();
                     String path = optString(p0, "path");
                     if (!TextUtils.isEmpty(path)) {
@@ -252,6 +262,7 @@ public class NHentaiParser extends HtmlParser {
                     .score(optString(g, "num_favorites"))
                     .md5("")
                     .fileUrl(fileUrl)
+                    .pageUrls(allPageUrls)
                     .width(String.valueOf(width))
                     .height(String.valueOf(height))
                     .fileSize("-1")

@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.ess.anime.wallpaper.R;
 import com.ess.anime.wallpaper.bean.ImageBean;
@@ -34,6 +36,12 @@ public class ImageFragment extends BaseFragment {
     private View mTouchView;
     private SwipeRefreshLayout mSwipeRefresh;
     private MultipleMediaLayout mMediaLayout;
+
+    // Multi-page gallery navigation (e.g. nhentai)
+    private View mLayoutPageNav;
+    private TextView mTvPageIndicator;
+    private ImageView mIvPagePrev;
+    private ImageView mIvPageNext;
 
     private ImageDetailActivity mActivity;
     private ThumbBean mThumbBean;
@@ -136,10 +144,72 @@ public class ImageFragment extends BaseFragment {
         });
 
         mMediaLayout.setBackgroundColor(Color.TRANSPARENT);
+
+        initPageNav();
+    }
+
+    /** Multi-page gallery navigation bar; hidden for single-image sites. */
+    private void initPageNav() {
+        mLayoutPageNav = mRootView.findViewById(R.id.layout_page_nav);
+        mTvPageIndicator = mRootView.findViewById(R.id.tv_page_indicator);
+        mIvPagePrev = mRootView.findViewById(R.id.iv_page_prev);
+        mIvPageNext = mRootView.findViewById(R.id.iv_page_next);
+        mIvPagePrev.setOnClickListener(v -> goToPage(mImageBean.currentPage - 1));
+        mIvPageNext.setOnClickListener(v -> goToPage(mImageBean.currentPage + 1));
+        updatePageNav();
+    }
+
+    private void updatePageNav() {
+        if (mLayoutPageNav == null) {
+            return;
+        }
+        boolean multi = mImageBean != null && mImageBean.hasMultiPages();
+        mLayoutPageNav.setVisibility(multi ? View.VISIBLE : View.GONE);
+        if (multi) {
+            int total = mImageBean.pageUrls.size();
+            int cur = Math.max(0, Math.min(mImageBean.currentPage, total - 1));
+            mTvPageIndicator.setText((cur + 1) + "/" + total);
+            mIvPagePrev.setAlpha(cur > 0 ? 0.9f : 0.3f);
+            mIvPageNext.setAlpha(cur < total - 1 ? 0.9f : 0.3f);
+        }
+    }
+
+    private void goToPage(int page) {
+        if (mImageBean == null || !mImageBean.hasMultiPages()) {
+            return;
+        }
+        int total = mImageBean.pageUrls.size();
+        if (page < 0 || page >= total || page == mImageBean.currentPage) {
+            return;
+        }
+        mImageBean.currentPage = page;
+        if (mThumbBean != null) {
+            mThumbBean.imageBean = mImageBean;
+        }
+        mMediaLayout.setMediaPath(mImageBean.pageUrls.get(page));
+        updatePageNav();
     }
 
     private void loadMedia() {
         if (SystemUtils.isActivityActive(mActivity)) {
+            // Multi-page gallery (e.g. nhentai): load the current page directly
+            if (mImageBean != null && mImageBean.hasMultiPages()) {
+                int total = mImageBean.pageUrls.size();
+                int page = Math.max(0, Math.min(mImageBean.currentPage, total - 1));
+                mImageBean.currentPage = page;
+                // Prefer the local file if this page was already downloaded
+                String path = mImageBean.pageUrls.get(page);
+                List<DownloadBean> chosenList = ImageDataHelper.makeDownloadChosenList(mActivity, mThumbBean, mImageBean);
+                for (DownloadBean bean : chosenList) {
+                    if (bean.fileExists) {
+                        path = bean.savePath;
+                        break;
+                    }
+                }
+                mMediaLayout.setMediaPath(path);
+                updatePageNav();
+                return;
+            }
             List<DownloadBean> chosenList = ImageDataHelper.makeDownloadChosenList(mActivity, mThumbBean, mImageBean);
             Iterator<DownloadBean> iterator = chosenList.iterator();
             while (iterator.hasNext()) {
@@ -192,6 +262,7 @@ public class ImageFragment extends BaseFragment {
         mThumbBean.imageBean = imageBean;
         mThumbBean.checkToReplacePostData();
         loadMedia();
+        updatePageNav();
         mSwipeRefresh.setRefreshing(false);
         mSwipeRefresh.getChildAt(0).setVisibility(View.VISIBLE);
         mTouchView.setVisibility(View.GONE);
