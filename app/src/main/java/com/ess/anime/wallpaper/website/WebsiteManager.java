@@ -104,6 +104,12 @@ public class WebsiteManager {
                 case WebsiteConfig.BASE_URL_AIBOORU:
                     websiteConfig = new AIbooruConfig();
                     break;
+                case WebsiteConfig.BASE_URL_SONOHARA:
+                    websiteConfig = new SonoharaConfig();
+                    break;
+                case WebsiteConfig.BASE_URL_HIJIRIBE:
+                    websiteConfig = new HijiribeConfig();
+                    break;
             }
 
             if (mWebsiteConfig != websiteConfig) {

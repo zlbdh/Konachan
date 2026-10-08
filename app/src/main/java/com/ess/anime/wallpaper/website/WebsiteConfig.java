@@ -27,6 +27,8 @@ public abstract class WebsiteConfig<T extends HtmlParser> {
     public final static String BASE_URL_HYPNO = "https://hypnohub.net/";
     public final static String BASE_URL_YUKKURI = "https://yukkuri.shiteitte.net/";
     public final static String BASE_URL_AIBOORU = "https://aibooru.online/";
+    public final static String BASE_URL_SONOHARA = "https://sonohara.donmai.us/";
+    public final static String BASE_URL_HIJIRIBE = "https://hijiribe.donmai.us/";
 
     public final static String TAG_JSON_URL_KONACHAN_S = "https://konachan.net/tag/summary.json";
     public final static String TAG_JSON_URL_KONACHAN_E = "https://konachan.com/tag/summary.json";
@@ -37,7 +39,7 @@ public abstract class WebsiteConfig<T extends HtmlParser> {
             BASE_URL_GELBOORU, BASE_URL_SANKAKU,
             BASE_URL_XBOORU, BASE_URL_TBIB, BASE_URL_E621,
             BASE_URL_RULE34, BASE_URL_HYPNO, BASE_URL_YUKKURI,
-            BASE_URL_AIBOORU
+            BASE_URL_AIBOORU, BASE_URL_SONOHARA, BASE_URL_HIJIRIBE
     };
 
     protected String mTagJson;
