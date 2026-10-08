@@ -98,6 +98,9 @@ public class WebsiteManager {
                 case WebsiteConfig.BASE_URL_RULE34:
                     websiteConfig = new Rule34Config();
                     break;
+                case WebsiteConfig.BASE_URL_HYPNO:
+                    websiteConfig = new HypnohubConfig();
+                    break;
             }
 
             if (mWebsiteConfig != websiteConfig) {

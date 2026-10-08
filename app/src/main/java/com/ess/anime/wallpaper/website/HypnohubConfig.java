@@ -1,0 +1,129 @@
+package com.ess.anime.wallpaper.website;
+
+import android.text.TextUtils;
+
+import com.ess.anime.wallpaper.R;
+import com.ess.anime.wallpaper.website.parser.AttrDapiParser;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class HypnohubConfig extends WebsiteConfig<AttrDapiParser> {
+
+    @Override
+    public String getWebsiteName() {
+        return "Hypnohub";
+    }
+
+    @Override
+    public int getWebsiteLogoRes() {
+        return R.drawable.ic_website_hypnohub;
+    }
+
+    @Override
+    public String getBaseUrl() {
+        return BASE_URL_HYPNO;
+    }
+
+    @Override
+    public boolean hasTagJson() {
+        return false;
+    }
+
+    @Override
+    public String getTagJsonUrl() {
+        return null;
+    }
+
+    @Override
+    public void saveTagJson(String key, String json) {
+    }
+
+    @Override
+    public String getTagJson() {
+        return null;
+    }
+
+    @Override
+    public List<String> parseSearchAutoCompleteListFromTagJson(String search) {
+        return null;
+    }
+
+    @Override
+    public String getPostUrl(int page, List<String> tagList) {
+        if (tagList == null) {
+            tagList = new ArrayList<>();
+        }
+
+        StringBuilder tags = new StringBuilder();
+        for (String tag : tagList) {
+            if (TextUtils.equals(tag, "order:random")) {
+                tag = "sort:random";
+            }
+            tags.append(tag).append("+");
+        }
+
+        return getBaseUrl() + "index.php?page=dapi&s=post&q=index&pid=" + (page - 1) + "&tags=" + tags + "&limit=42";
+    }
+
+    @Override
+    public String getPopularDailyUrl(int year, int month, int day, int page) {
+        return null;
+    }
+
+    @Override
+    public String getPopularWeeklyUrl(int year, int month, int day, int page) {
+        return null;
+    }
+
+    @Override
+    public String getPopularMonthlyUrl(int year, int month, int day, int page) {
+        return null;
+    }
+
+    @Override
+    public String getPopularOverallUrl(int year, int month, int day, int page) {
+        return getPostUrl(page, Collections.singletonList("sort:score"));
+    }
+
+    @Override
+    public String getPostDetailUrl(String id) {
+        return getBaseUrl() + "index.php?page=post&s=view&id=" + id;
+    }
+
+    @Override
+    public String getCommentUrl(String id) {
+        return getPostDetailUrl(id);
+    }
+
+    @Override
+    public boolean hasPool() {
+        return true;
+    }
+
+    @Override
+    public String getPoolUrl(int page, String name) {
+        return getBaseUrl() + "index.php?page=pool&s=list&pid=" + (page - 1) * 25;
+    }
+
+    @Override
+    public String getPoolPostUrl(String linkToShow, int page) {
+        return linkToShow;
+    }
+
+    @Override
+    public boolean needReloadDetailByIdForPoolPost() {
+        return true;
+    }
+
+    @Override
+    public String getSavedImageHead() {
+        return "Hypnohub-";
+    }
+
+    @Override
+    public boolean isSupportRandomPost() {
+        return true;
+    }
+}
