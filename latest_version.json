@@ -1,13 +1,13 @@
 {
-  "versionCode": 46,
+  "versionCode": 47,
   "versionName": "2.0.0",
   "apkName": "kanimeG2.0.0-debug.apk",
   "apkSize": 74639230,
-  "apkUrl": "https://github.com/zlbdh/Konachan/releases/download/v2.0.0-28/kanimeG2.0.0-debug.apk",
-  "apkSha256": "08b036cb8ac78a07a5d200649808471dbbebb91790548bfcbf6e807672dec2f6",
+  "apkUrl": "https://github.com/zlbdh/Konachan/releases/download/v2.0.0-36/kanimeG2.0.0-debug.apk",
+  "apkSha256": "bf304147adddd6bdecb3a545960ffd33ab6a1b8738630a7d174b6c0e330e9999",
   "signingCertificateSha256": "1f3ed26b24f63125cb1cf946277bafaccff424293bc3438e9c2fe1710d2422f2",
-  "sourceSha": "7eefb1545a91dbb5278da012f73cdb49ca55ce6c",
-  "releaseTag": "v2.0.0-28",
+  "sourceSha": "b07235f6ffc71e39c560d8dc269d5956b70aec8b",
+  "releaseTag": "v2.0.0-36",
   "updatedContentZh": "Automatic update downloads; stable project signing; APK integrity, version and certificate validation. The first signing transition requires replacing older differently signed installations.",
   "updatedContentEn": "Automatic update downloads; stable project signing; APK integrity, version and certificate validation. The first signing transition requires replacing older differently signed installations."
 }
