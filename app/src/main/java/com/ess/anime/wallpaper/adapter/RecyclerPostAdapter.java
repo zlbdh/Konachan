@@ -67,7 +67,7 @@ public class RecyclerPostAdapter extends BaseQuickAdapter<ThumbBean, BaseViewHol
                 .placeholder(R.drawable.ic_placeholder_post)
                 .priority(Priority.HIGH)
                 .override(thumbBean.thumbWidth, thumbBean.thumbHeight);
-        // tube 站缩略图 URL 带时效签名，禁用磁盘缓存避免过期后加载失败
+        // Tube thumbnail URLs have time-limited signatures; disable disk caching to avoid failures after expiration.
         try {
             if (WebsiteManager.getInstance().getWebsiteConfig().isDisableDiskCache()) {
                 glideRequest = glideRequest.diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.NONE);

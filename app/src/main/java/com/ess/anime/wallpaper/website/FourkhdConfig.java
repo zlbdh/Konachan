@@ -18,7 +18,7 @@ public class FourkhdConfig extends WordPressConfig {
 
     @Override
     protected String getPostsPath() {
-        // rest_route 模式：参数用 & 连接，不能再加 ?
+        // In rest_route mode, join parameters with & instead of adding another ?.
         return "posts&";
     }
 

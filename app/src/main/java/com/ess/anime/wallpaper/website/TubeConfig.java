@@ -138,7 +138,7 @@ public abstract class TubeConfig extends WebsiteConfig<TubeParser> {
 
     @Override
     public boolean isDisableDiskCache() {
-        // tube 站缩略图 URL 带 24h 签名，磁盘缓存过期后无法加载
+        // Tube thumbnail URLs have 24-hour signatures, so expired disk-cache entries cannot load.
         return true;
     }
 
