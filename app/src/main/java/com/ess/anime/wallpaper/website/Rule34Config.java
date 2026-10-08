@@ -9,6 +9,10 @@ import com.ess.anime.wallpaper.R;
 import com.ess.anime.wallpaper.global.Constants;
 import com.ess.anime.wallpaper.website.parser.AttrDapiParser;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -161,12 +165,22 @@ public class Rule34Config extends WebsiteConfig<AttrDapiParser> {
 
     @Override
     public String getSearchAutoCompleteUrl(String tag) {
-        return null;
+        return getBaseUrl() + "index.php?page=autocomplete2&term=" + tag;
     }
 
     @Override
     public List<String> parseSearchAutoCompleteListFromNetwork(String promptResult, String search) {
-        return null;
+        List<String> list = new ArrayList<>();
+        try {
+            JsonArray tagArray = new JsonParser().parse(promptResult).getAsJsonArray();
+            for (int i = 0; i < tagArray.size(); i++) {
+                JsonObject item = tagArray.get(i).getAsJsonObject();
+                list.add(item.get("value").getAsString());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
 }

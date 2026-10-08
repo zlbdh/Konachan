@@ -391,14 +391,14 @@ public class CustomDialog extends MaterialDialog.Builder {
      * @param context 上下文
      */
     public static void showFeedbackDialog(Context context) {
-        String email = "1018717197@qq.com";
+        String email = "zlbdha@gmail.com";
         MaterialDialog dialog = new CustomDialog(context)
                 .title(R.string.dialog_feedback_title)
                 .content(context.getString(R.string.dialog_feedback_msg, email))
                 .negativeText(R.string.dialog_feedback_cancel)
                 .neutralText(R.string.dialog_feedback_neutral)
                 .onNeutral((dialog12, which) -> {
-                    String url = "https://github.com/EternalSoySauce/Konachan/issues";
+                    String url = "https://github.com/zlbdh/Konachan/issues";
                     HyperlinkActivity.launch(context, url);
                 })
                 .positiveText(R.string.dialog_feedback_sure)

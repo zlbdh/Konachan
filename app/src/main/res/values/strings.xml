@@ -322,4 +322,9 @@
     <string name="setting_rule34_api_key_hint">api_key</string>
     <string name="setting_rule34_user_id_hint">user_id（数字）</string>
     <string name="setting_rule34_api_key_saved">已保存，切换站点或刷新后生效</string>
+    <string name="setting_danbooru_api_key_title">Danbooru API Key 设置</string>
+    <string name="setting_danbooru_api_key_desc">登录后配 key 可提高访问频率限制，在 danbooru.donmai.us 用户页获取</string>
+    <string name="setting_danbooru_login_hint">用户名（login）</string>
+    <string name="setting_danbooru_api_key_hint">api_key</string>
+    <string name="setting_danbooru_api_key_saved">已保存，切换站点或刷新后生效</string>
 </resources>

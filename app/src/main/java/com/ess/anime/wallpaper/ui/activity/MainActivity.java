@@ -153,7 +153,7 @@ public class MainActivity extends BaseActivity {
                 } else if (mCurrentNavId == R.id.nav_game) {
                     startActivity(new Intent(MainActivity.this, GameActivity.class));
                 } else if (mCurrentNavId == R.id.nav_github) {
-                    String url = "https://github.com/EternalSoySauce/Konachan";
+                    String url = "https://github.com/zlbdh/Konachan";
                     HyperlinkActivity.launch(MainActivity.this, url);
                 } else if (mCurrentNavId == R.id.nav_feedback) {
                     CustomDialog.showFeedbackDialog(MainActivity.this);

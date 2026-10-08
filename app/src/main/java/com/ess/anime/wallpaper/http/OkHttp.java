@@ -108,11 +108,22 @@ public class OkHttp {
     }
 
     public static void connect(String url, Object tag, Map<String, String> headerMap, OkHttpCallback callback, Request.Priority priority) {
+        connectWithRetry(url, tag, headerMap, callback, priority, 0);
+    }
+
+    // 带重试的异步请求（最多重试 2 次，间隔 1 秒）
+    private static final int MAX_RETRY = 2;
+    private static void connectWithRetry(String url, Object tag, Map<String, String> headerMap,
+                                         OkHttpCallback callback, Request.Priority priority, int retryCount) {
         PriorityStringRequest request = new PriorityStringRequest(
                 convertSchemeToHttps(url),
                 callback::onSuccessful,
                 error -> {
-                    if (error.networkResponse != null) {
+                    if (retryCount < MAX_RETRY) {
+                        // 延迟 1 秒后重试
+                        new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(
+                                () -> connectWithRetry(url, tag, headerMap, callback, priority, retryCount + 1), 1000);
+                    } else if (error.networkResponse != null) {
                         callback.onFailure(error.networkResponse.statusCode, new String(error.networkResponse.data));
                     } else {
                         callback.onFailure(-1, "");

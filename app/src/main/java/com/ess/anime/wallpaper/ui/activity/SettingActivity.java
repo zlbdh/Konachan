@@ -107,6 +107,7 @@ public class SettingActivity extends BaseActivity {
         items.add(mClearCacheItem = getClearCacheItem());
         items.add(getGelbooruApiKeyItem());
         items.add(getRule34ApiKeyItem());
+        items.add(getDanbooruApiKeyItem());
         items.add(getAutoDownloadUpdateItem());
         items.add(getCheckUpdateItem());
         return items;
@@ -124,6 +125,52 @@ public class SettingActivity extends BaseActivity {
                 .setTitle(R.string.setting_rule34_api_key_title)
                 .setDesc(R.string.setting_rule34_api_key_desc)
                 .setOnClickListener(v -> showRule34ApiKeyDialog());
+    }
+
+    private CommonSettingItem getDanbooruApiKeyItem() {
+        return new CommonSettingItem()
+                .setTitle(R.string.setting_danbooru_api_key_title)
+                .setDesc(R.string.setting_danbooru_api_key_desc)
+                .setOnClickListener(v -> showDanbooruApiKeyDialog());
+    }
+
+    private void showDanbooruApiKeyDialog() {
+        android.widget.LinearLayout layout = new android.widget.LinearLayout(this);
+        layout.setOrientation(android.widget.LinearLayout.VERTICAL);
+        int padding = (int) (20 * getResources().getDisplayMetrics().density);
+        layout.setPadding(padding, padding / 2, padding, padding / 2);
+
+        android.widget.EditText etLogin = new android.widget.EditText(this);
+        etLogin.setHint(R.string.setting_danbooru_login_hint);
+        etLogin.setText(mPreferences.getString(Constants.DANBOORU_LOGIN, ""));
+        etLogin.setSingleLine(true);
+        layout.addView(etLogin);
+
+        android.widget.EditText etApiKey = new android.widget.EditText(this);
+        etApiKey.setHint(R.string.setting_danbooru_api_key_hint);
+        etApiKey.setText(mPreferences.getString(Constants.DANBOORU_API_KEY, ""));
+        etApiKey.setSingleLine(true);
+        android.widget.LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.topMargin = padding / 2;
+        layout.addView(etApiKey, lp);
+
+        new CustomDialog(this)
+                .title(R.string.setting_danbooru_api_key_title)
+                .customView(layout, false)
+                .positiveText(R.string.setting_gelbooru_api_key_save)
+                .negativeText(R.string.dialog_download_cancel)
+                .onPositive((dialog, which) -> {
+                    String login = etLogin.getText().toString().trim();
+                    String apiKey = etApiKey.getText().toString().trim();
+                    mPreferences.edit()
+                            .putString(Constants.DANBOORU_LOGIN, login)
+                            .putString(Constants.DANBOORU_API_KEY, apiKey)
+                            .apply();
+                    Toast.makeText(this, R.string.setting_danbooru_api_key_saved, Toast.LENGTH_SHORT).show();
+                })
+                .show();
     }
 
     private void showRule34ApiKeyDialog() {

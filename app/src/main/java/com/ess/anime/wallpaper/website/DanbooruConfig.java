@@ -1,8 +1,12 @@
 package com.ess.anime.wallpaper.website;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
+import com.ess.anime.wallpaper.MyApp;
 import com.ess.anime.wallpaper.R;
+import com.ess.anime.wallpaper.global.Constants;
 import com.ess.anime.wallpaper.website.parser.DanbooruParser;
 import com.ess.anime.wallpaper.website.search.GeneralAutoCompleteParser;
 
@@ -12,6 +16,21 @@ import java.util.List;
 import java.util.Locale;
 
 public class DanbooruConfig extends WebsiteConfig<DanbooruParser> {
+
+    // Danbooru 登录后配 api_key 可提高频率限制（danbooru.donmai.us/users/home 获取）
+    private String getApiKeySuffix() {
+        try {
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MyApp.getInstance());
+            String login = sp.getString(Constants.DANBOORU_LOGIN, "").trim();
+            String apiKey = sp.getString(Constants.DANBOORU_API_KEY, "").trim();
+            if (!TextUtils.isEmpty(login) && !TextUtils.isEmpty(apiKey)) {
+                return "&login=" + login + "&api_key=" + apiKey;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 
     @Override
     public String getWebsiteName() {
@@ -72,7 +91,7 @@ public class DanbooruConfig extends WebsiteConfig<DanbooruParser> {
             }
         }
 
-        return getBaseUrl() + "posts.xml?page=" + page + "&tags=" + tags;
+        return getBaseUrl() + "posts.xml?page=" + page + "&tags=" + tags + getApiKeySuffix();
     }
 
     @Override

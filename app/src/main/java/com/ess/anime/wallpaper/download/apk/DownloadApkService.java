@@ -30,17 +30,32 @@ public class DownloadApkService extends Service {
     private static final int FOREGROUND_ID = 1248;
     private final Handler main = new Handler(Looper.getMainLooper());
     private final Set<String> active = new HashSet<>();
+    private NotificationManager mNotificationManager;
+    private Notification.Builder mForegroundBuilder;
 
     @Override public IBinder onBind(Intent intent) { return null; }
     @Override public void onCreate() {
         super.onCreate();
-        NotificationManager notifications = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= 26) notifications.createNotificationChannel(
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= 26) mNotificationManager.createNotificationChannel(
                 new NotificationChannel(CHANNEL, "应用更新", NotificationManager.IMPORTANCE_LOW));
-        Notification.Builder builder = Build.VERSION.SDK_INT >= 26
+        mForegroundBuilder = Build.VERSION.SDK_INT >= 26
                 ? new Notification.Builder(this, CHANNEL) : new Notification.Builder(this);
-        startForeground(FOREGROUND_ID, builder.setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("正在下载并校验更新").setOngoing(true).build());
+        mForegroundBuilder.setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("正在下载更新")
+                .setProgress(100, 0, false)
+                .setOngoing(true);
+        startForeground(FOREGROUND_ID, mForegroundBuilder.build());
+    }
+
+    /** 更新前台通知的下载进度 */
+    private void updateForegroundProgress(int progress, long currentSize, long totalSize) {
+        if (mForegroundBuilder == null || mNotificationManager == null) return;
+        String text = com.ess.anime.wallpaper.utils.FileUtils.computeFileSize(currentSize)
+                + " / " + com.ess.anime.wallpaper.utils.FileUtils.computeFileSize(totalSize);
+        mForegroundBuilder.setProgress(100, progress, false)
+                .setContentText(text);
+        mNotificationManager.notify(FOREGROUND_ID, mForegroundBuilder.build());
     }
     @Override public int onStartCommand(Intent intent, int flags, int startId) {
         ApkBean supplied = intent == null ? null : intent.getParcelableExtra(Constants.APK_BEAN);
@@ -76,7 +91,9 @@ public class DownloadApkService extends Service {
                     new DownloadListener(apk.apkUrl) {
                         @Override public void onStart(Progress progress) { state(apk, "DOWNLOADING", ""); }
                         @Override public void onProgress(Progress progress) {
-                            listener.onProgress((int) (progress.fraction * 100), progress.currentSize, progress.totalSize, progress.speed);
+                            int percent = (int) (progress.fraction * 100);
+                            listener.onProgress(percent, progress.currentSize, progress.totalSize, progress.speed);
+                            updateForegroundProgress(percent, progress.currentSize, progress.totalSize);
                         }
                         @Override public void onError(Progress progress) { failed(apk, listener, "更新下载失败，请重试"); }
                         @Override public void onRemove(Progress progress) { listener.onRemove(); finish(apk.apkUrl); }
@@ -93,6 +110,13 @@ public class DownloadApkService extends Service {
     }
     private void ready(ApkBean apk, DownloadApkProgressListener listener, boolean automatic) {
         state(apk, "READY", "更新已下载并校验，点击通知安装");
+        if (mForegroundBuilder != null && mNotificationManager != null) {
+            mForegroundBuilder.setContentTitle("更新已下载并校验")
+                    .setContentText("点击通知安装")
+                    .setProgress(0, 0, false)
+                    .setOngoing(false);
+            mNotificationManager.notify(FOREGROUND_ID, mForegroundBuilder.build());
+        }
         main.post(() -> {
             listener.onFinish();
             if (!automatic && AppForegroundState.isVisible()) startActivity(InstallUpdateActivity.intent(this, apk));
