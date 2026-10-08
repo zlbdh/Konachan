@@ -31,6 +31,8 @@
         <item>@string/base_aibooru</item>
         <item>@string/base_sonohara</item>
         <item>@string/base_hijiribe</item>
+        <item>@string/base_misskon</item>
+        <item>@string/base_fourkhd</item>
     </string-array>
 
     <string-array name="screen_orientation_list_item">

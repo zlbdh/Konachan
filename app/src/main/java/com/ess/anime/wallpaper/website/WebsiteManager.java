@@ -110,6 +110,12 @@ public class WebsiteManager {
                 case WebsiteConfig.BASE_URL_HIJIRIBE:
                     websiteConfig = new HijiribeConfig();
                     break;
+                case WebsiteConfig.BASE_URL_MISSKON:
+                    websiteConfig = new MisskonConfig();
+                    break;
+                case WebsiteConfig.BASE_URL_FOURKHD:
+                    websiteConfig = new FourkhdConfig();
+                    break;
             }
 
             if (mWebsiteConfig != websiteConfig) {
