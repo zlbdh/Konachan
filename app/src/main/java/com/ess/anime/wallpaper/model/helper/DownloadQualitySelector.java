@@ -5,7 +5,7 @@ import com.ess.anime.wallpaper.download.image.DownloadBean;
 import java.net.URI;
 import java.util.List;
 
-/** 清晰度是 DownloadBean.type，不是动态候选列表的位置。 */
+/** Quality is DownloadBean.type, not the position in a dynamic candidate list. */
 public final class DownloadQualitySelector {
     private DownloadQualitySelector() { }
 
@@ -13,7 +13,7 @@ public final class DownloadQualitySelector {
         if (quality < 0 || quality > 2) return null;
         DownloadBean selected = find(candidates, quality);
         if (selected != null) return selected;
-        // 多数图站没有独立原图/样图，其唯一的大图就是可用的原始媒体。
+        // Most sites have no separate original or sample; their single large image is the available original media.
         selected = find(candidates, 1);
         if (selected == null) selected = find(candidates, 2);
         return selected != null ? selected : find(candidates, 0);

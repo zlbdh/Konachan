@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-/** 下载及验包全部结束才停止前台服务；自动模式仅通知，安装由用户点击触发。 */
+/** Stop the foreground service only after download and verification finish. Automatic mode posts a notification; installation requires a user tap. */
 public class DownloadApkService extends Service {
     private static final String CHANNEL = "apk-update-progress-v2";
     private static final int FOREGROUND_ID = 1248;
@@ -38,17 +38,17 @@ public class DownloadApkService extends Service {
         super.onCreate();
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= 26) mNotificationManager.createNotificationChannel(
-                new NotificationChannel(CHANNEL, "应用更新", NotificationManager.IMPORTANCE_DEFAULT));
+                new NotificationChannel(CHANNEL, "App Update", NotificationManager.IMPORTANCE_DEFAULT));
         mForegroundBuilder = Build.VERSION.SDK_INT >= 26
                 ? new Notification.Builder(this, CHANNEL) : new Notification.Builder(this);
         mForegroundBuilder.setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("正在下载更新")
+                .setContentTitle("Downloading update")
                 .setProgress(100, 0, false)
                 .setOngoing(true);
         startForeground(FOREGROUND_ID, mForegroundBuilder.build());
     }
 
-    /** 更新前台通知的下载进度 */
+    /** Update download progress in the foreground notification */
     private void updateForegroundProgress(int progress, long currentSize, long totalSize) {
         if (mForegroundBuilder == null || mNotificationManager == null) return;
         String text = com.ess.anime.wallpaper.utils.FileUtils.computeFileSize(currentSize)
@@ -82,7 +82,7 @@ public class DownloadApkService extends Service {
                     && previous.progress.currentSize == cache.length();
             if (!resumable) {
             File isolated = new File(cache.getParentFile(), cache.getName() + ".invalid-" + System.currentTimeMillis());
-            if (!cache.renameTo(isolated)) { failed(apk, listener, "无法隔离无效更新缓存"); return; }
+            if (!cache.renameTo(isolated)) { failed(apk, listener, "Unable to isolate an invalid update cache"); return; }
             OkHttp.cancelDownloadFile(apk.apkUrl);
             }
         }
@@ -95,7 +95,7 @@ public class DownloadApkService extends Service {
                             listener.onProgress(percent, progress.currentSize, progress.totalSize, progress.speed);
                             updateForegroundProgress(percent, progress.currentSize, progress.totalSize);
                         }
-                        @Override public void onError(Progress progress) { failed(apk, listener, "更新下载失败，请重试"); }
+                        @Override public void onError(Progress progress) { failed(apk, listener, "Update download failed. Please try again."); }
                         @Override public void onRemove(Progress progress) { listener.onRemove(); finish(apk.apkUrl); }
                         @Override public void onFinish(File file, Progress progress) {
                             state(apk, "VERIFYING", "");
@@ -106,13 +106,13 @@ public class DownloadApkService extends Service {
                             }, "apk-update-verification").start();
                         }
                     });
-        } catch (Exception error) { failed(apk, listener, "更新下载未能启动，请重试"); }
+        } catch (Exception error) { failed(apk, listener, "Unable to start the update download. Please try again."); }
     }
     private void ready(ApkBean apk, DownloadApkProgressListener listener, boolean automatic) {
-        state(apk, "READY", "更新已下载并校验，点击通知安装");
+        state(apk, "READY", "Update downloaded and verified. Tap the notification to install.");
         if (mForegroundBuilder != null && mNotificationManager != null) {
-            mForegroundBuilder.setContentTitle("更新已下载并校验")
-                    .setContentText("点击通知安装")
+            mForegroundBuilder.setContentTitle("Update downloaded and verified")
+                    .setContentText("Tap the notification to install")
                     .setProgress(0, 0, false)
                     .setOngoing(false);
             mNotificationManager.notify(FOREGROUND_ID, mForegroundBuilder.build());

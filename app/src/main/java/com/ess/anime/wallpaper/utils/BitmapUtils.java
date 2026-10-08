@@ -31,18 +31,18 @@ import java.util.ArrayList;
 import androidx.core.content.FileProvider;
 
 /**
- * 位图操作，使用Bitmap后记得在适当位置recycle
+ * Bitmap operations; recycle bitmaps at the appropriate point after use
  *
  * @author Zero
  */
 public class BitmapUtils {
 
     /**
-     * 将Bitmap转化为Byte[]
+     * Convert a Bitmap to Byte[]
      *
-     * @param bitmap 目标位图
-     * @param format 读取格式
-     * @return 字节数组
+     * @param bitmap Target bitmap
+     * @param format Image encoding format
+     * @return Byte array
      */
     public static byte[] bitmapToBytes(Bitmap bitmap, CompressFormat format) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -59,10 +59,10 @@ public class BitmapUtils {
     }
 
     /**
-     * 提取ImageView中的图片
+     * Extract the image from an ImageView
      *
-     * @param iv 目标ImageView
-     * @return 位图
+     * @param iv Target ImageView
+     * @return Bitmap
      */
     public static Bitmap getBitmapFromImageView(ImageView iv) {
         iv.setDrawingCacheEnabled(true);
@@ -72,13 +72,13 @@ public class BitmapUtils {
     }
 
     /**
-     * 返回压缩到指定大小后的资源位图
+     * Return a resource bitmap scaled to the requested dimensions
      *
      * @param res        Resources
      * @param id         resId
-     * @param destWidth  目标宽度
-     * @param destHeight 目标高度
-     * @return 压缩后位图
+     * @param destWidth  Target width
+     * @param destHeight Target height
+     * @return Scaled bitmap
      */
     public static Bitmap compressBitmapResource(Resources res, int id, int destWidth, int destHeight) {
         BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -102,12 +102,12 @@ public class BitmapUtils {
     }
 
     /**
-     * 将Bitmap保存为本地图片
+     * Save a Bitmap as a local image
      *
-     * @param bitmap 需要保存的位图
-     * @param path   保存路径
-     * @param format 存储格式
-     * @return 是否保存成功
+     * @param bitmap Bitmap to save
+     * @param path   Output path
+     * @param format Storage format
+     * @return Whether saving succeeded
      */
     public static boolean saveBitmapToLocal(Bitmap bitmap, String path, CompressFormat format) {
         FileOutputStream fos = null;
@@ -130,14 +130,14 @@ public class BitmapUtils {
     }
 
     /**
-     * 从本地路径获取Bitmap，并根据指定view的尺寸进行缩放以防止oom <br/>
-     * 若加载至ImageView中，需继续调用getLocalBitmapDegree和rotateBitmap方法调整图片方向
+     * Load a local Bitmap and scale it to the target view to avoid out-of-memory errors <br/>
+     * For an ImageView, also call getLocalBitmapDegree and rotateBitmap to correct orientation
      *
-     * @param context    上下文
-     * @param path       本地图片路径
-     * @param destWidth  缩放至适配view的宽度
-     * @param destHeight 缩放至适配view的高度
-     * @return 位图
+     * @param context    Context
+     * @param path       Local image path
+     * @param destWidth  Width to fit the view
+     * @param destHeight Height to fit the view
+     * @return Bitmap
      */
     public static Bitmap getBitmapFromLocal(Context context, String path, float destWidth, float destHeight) {
         BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -161,10 +161,10 @@ public class BitmapUtils {
     }
 
     /**
-     * 获取本地图片的方向
+     * Get the local image orientation
      *
-     * @param path 本地图片路径
-     * @return 图片旋转角度
+     * @param path Local image path
+     * @return Image rotation angle
      */
     public static float getLocalBitmapDegree(String path) {
         float degree = 0;
@@ -190,11 +190,11 @@ public class BitmapUtils {
     }
 
     /**
-     * 将图片旋转至正向
+     * Rotate the image upright
      *
-     * @param bitmap 目标位图
-     * @param degree 旋转角度
-     * @return 旋转后的位图
+     * @param bitmap Target bitmap
+     * @param degree Rotation angle
+     * @return Rotated bitmap
      */
     public static Bitmap rotateBitmap(Bitmap bitmap, float degree) {
         if (bitmap == null)
@@ -210,10 +210,10 @@ public class BitmapUtils {
     }
 
     /**
-     * 将图片左右翻转
+     * Flip the image horizontally
      *
-     * @param bitmap 目标图片
-     * @return 翻转后图片
+     * @param bitmap Target image
+     * @return Flipped image
      */
     public static Bitmap flipBitmapHor(Bitmap bitmap) {
         Matrix matrix = new Matrix();
@@ -226,10 +226,10 @@ public class BitmapUtils {
     }
 
     /**
-     * 将图片上下翻转
+     * Flip the image vertically
      *
-     * @param bitmap 目标图片
-     * @return 翻转后图片
+     * @param bitmap Target image
+     * @return Flipped image
      */
     public static Bitmap flipBitmapVer(Bitmap bitmap) {
         Matrix matrix = new Matrix();
@@ -242,10 +242,10 @@ public class BitmapUtils {
     }
 
     /**
-     * 水平拼接多张图片
+     * Join multiple images horizontally
      *
-     * @param bitmaps 图片数组
-     * @return 拼接后图片
+     * @param bitmaps Image array
+     * @return Joined image
      */
     public static Bitmap mergeBitmapsHor(Bitmap[] bitmaps) {
         int width = 0;
@@ -265,10 +265,10 @@ public class BitmapUtils {
     }
 
     /**
-     * 竖直拼接多张图片
+     * Join multiple images vertically
      *
-     * @param bitmaps 图片数组
-     * @return 拼接后图片
+     * @param bitmaps Image array
+     * @return Joined image
      */
     public static Bitmap mergeBitmapsVer(Bitmap[] bitmaps) {
         int width = 0;
@@ -288,12 +288,12 @@ public class BitmapUtils {
     }
 
     /**
-     * 将图片切割成 m * n 张小图
+     * Split the image into m × n tiles
      *
-     * @param bitmap   目标图片
-     * @param rowCount 切割行数
-     * @param colCount 切割列数
-     * @return 切割后图片链表
+     * @param bitmap   Target image
+     * @param rowCount Number of rows
+     * @param colCount Number of columns
+     * @return List of image tiles
      */
     public static ArrayList<Bitmap> splitImage(Bitmap bitmap, int rowCount, int colCount) {
         ArrayList<Bitmap> splitList = new ArrayList<>();
@@ -310,12 +310,12 @@ public class BitmapUtils {
     }
 
     /**
-     * 将图片进行高斯模糊，可以先将图片用Bitmap.createScaledBitmap()缩放和bitmap.compress()压缩质量，
-     * 以便于达到更理想的模糊效果。
+     * Apply Gaussian blur; first scale with Bitmap.createScaledBitmap() and adjust quality with bitmap.compress()
+     * to achieve a better blur effect.
      *
-     * @param context 上下文
-     * @param bitmap  需要模糊的图片
-     * @return 模糊后的图片
+     * @param context Context
+     * @param bitmap  Image to blur
+     * @return Blurred image
      */
     public static Bitmap blurBitmap(Context context, Bitmap bitmap) {
         //Let's create an empty bitmap with the same size of the bitmap we want to blur
@@ -353,10 +353,10 @@ public class BitmapUtils {
     }
 
     /**
-     * 添加图片到媒体库（刷新相册）
+     * Add an image to the media library and refresh the gallery
      *
-     * @param context 上下文
-     * @param file    图片文件
+     * @param context Context
+     * @param file    Image file
      */
     public static boolean insertToMediaStore(Context context, File file) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -372,10 +372,10 @@ public class BitmapUtils {
     }
 
     /**
-     * 从媒体库删除图片/视频（刷新相册）
+     * Remove an image or video from the media library and refresh the gallery
      *
-     * @param context 上下文
-     * @param path    图片/视频路径
+     * @param context Context
+     * @param path    Image or video path
      */
     public static void deleteFromMediaStore(Context context, String path) {
         Uri uri;
@@ -390,8 +390,8 @@ public class BitmapUtils {
     /**
      * Gets the content:// URI from the given corresponding path to a file
      *
-     * @param context   上下文
-     * @param mediaFile 媒体文件
+     * @param context   Context
+     * @param mediaFile Media file
      * @return content Uri
      */
     public static Uri getContentUriFromFile(Context context, File mediaFile) {
@@ -431,11 +431,11 @@ public class BitmapUtils {
     }
 
     /**
-     * 根据图片Uri获取路径
+     * Get the path for an image URI
      *
-     * @param context 上下文
-     * @param uri     图片Uri
-     * @return 图片文件路径
+     * @param context Context
+     * @param uri     Image URI
+     * @return Image file path
      */
     public static String getImagePathFromUri(Context context, Uri uri) {
         if (uri == null) {

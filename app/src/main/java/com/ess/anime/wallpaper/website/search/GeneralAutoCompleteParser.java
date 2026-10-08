@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-// 搜索下拉提示TagJson解析器（Konachan、Yande通用）
-// 参考js地址：http://konachan.com/assets/moe-legacy/application-ce3dc3e48d9ceff5fb362df103a23576.js
+// Search dropdown tag JSON parser shared by Konachan and Yande.re
+// Reference JavaScript: http://konachan.com/assets/moe-legacy/application-ce3dc3e48d9ceff5fb362df103a23576.js
 public class GeneralAutoCompleteParser {
 
     /*

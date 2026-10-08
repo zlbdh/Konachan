@@ -126,7 +126,7 @@ public class SankakuConfig extends WebsiteConfig<SankakuParser> {
     @Override
     public String getPoolUrl(int page, String name) {
         name = name == null ? "" : name;
-        // todo 暂不知道Api如何搜索
+        // TODO API search behavior is not yet known
         return getBaseUrl() + "pools?page=" + page;
     }
 

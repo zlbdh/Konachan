@@ -219,7 +219,7 @@ public class PixivGifActivity extends BaseActivity implements IPixivLoginListene
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PermissionHelper.REQ_CODE_PERMISSION) {
-            // 进入系统设置界面请求权限后的回调
+            // Callback after requesting permission in system settings
             if (PermissionHelper.hasStoragePermissions(this)) {
                 initWhenPermissionGranted();
             } else {

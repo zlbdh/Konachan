@@ -3,7 +3,7 @@ package com.ess.anime.wallpaper.website;
 import com.ess.anime.wallpaper.R;
 
 /**
- * Hijiribe (hijiribe.donmai.us) - Danbooru 官方姐妹站
+ * Hijiribe (hijiribe.donmai.us): official Danbooru sister site
  */
 public class HijiribeConfig extends DanbooruConfig {
 

@@ -62,14 +62,14 @@ public class DanbooruParser extends HtmlParser {
     public String getImageDetailJson(Document doc) {
         ImageBean.ImageJsonBuilder builder = new ImageBean.ImageJsonBuilder();
         try {
-            // 解析时间字符串，格式：2018-05-29T21:06-04:00（-04:00为时区）
-            // 注意PostBean.createdTime单位为second
+            // Parse a timestamp such as 2018-05-29T21:06-04:00, where -04:00 is the time zone
+            // PostBean.createdTime is measured in seconds
             Element time = doc.getElementsByTag("time").first();
             String createdTime = time.attr("datetime");
             long mills = TimeFormat.timeToMillsWithZone(createdTime, "yyyy-MM-dd'T'HH:mm", TimeZone.getTimeZone("GMT-5:00"));
             createdTime = String.valueOf(mills / 1000);
 
-            // 解析原图文件大小
+            // Parse original image file size
             Element info = doc.getElementById("post-information");
             String author = "";
             String jpegFileSize = "";
@@ -102,7 +102,7 @@ public class DanbooruParser extends HtmlParser {
                     .sampleUrl(image.attr("src"))
                     .sampleWidth(image.attr("width"))
                     .sampleHeight(image.attr("height"))
-                    .sampleFileSize("-1") // danbooru无法获得sample尺寸图片大小，又需要提供下载，因此用-1代替
+                    .sampleFileSize("-1") // Danbooru does not provide sample file size; use -1 so downloads remain available
                     .jpegUrl(container.attr("data-file-url"))
                     .jpegWidth(container.attr("data-width"))
                     .jpegHeight(container.attr("data-height"))
@@ -114,7 +114,7 @@ public class DanbooruParser extends HtmlParser {
                     .height(container.attr("data-height"))
                     .flagDetail(container.attr("data-flags"));
 
-            // 解析图集信息
+            // Parse album information
             Element span = doc.getElementsByClass("pool-name").first();
             if (span != null) {
                 Element a = span.getElementsByTag("a").first();

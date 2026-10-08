@@ -24,16 +24,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Hitomi.la 解析器
+ * Hitomi.la parser
  *
- * 流程（getPostUrl 返回的占位 URL 会 404，Document 为空，这里全部自己请求）：
- * 1. Range 请求 nozomi 索引拿到本页的 gallery id 列表（4 字节小端，倒序）
- * 2. 逐个请求 galleries/{id}.js 拿画廊信息（含 files[].hash/width/height）
- * 3. 用 HitomiConfig.getImageUrl(id, hash) 拼图片直链
+ * Flow: getPostUrl returns a placeholder 404 with an empty Document; perform all requests here:
+ * 1. Range-request the nozomi index to get this page's gallery IDs (four-byte little-endian, reverse order)
+ * 2. Request galleries/{id}.js for each gallery, including files[].hash, width, and height
+ * 3. Build direct image URLs with HitomiConfig.getImageUrl(id, hash)
  */
 public class HitomiParser extends HtmlParser {
 
-    /** 缓存最新的 gallery id，避免每页都请求 */
+    /** Cache the latest gallery ID to avoid requesting it for every page */
     private static volatile int sNewestId = 0;
 
     public HitomiParser(WebsiteConfig websiteConfig) {
@@ -71,9 +71,9 @@ public class HitomiParser extends HtmlParser {
     }
 
     /**
-     * 拿到本页的 gallery id 列表。
-     * nozomi 索引是倒序的（最新在前），每页取 PAGE_SIZE 个。
-     * 为减少请求，直接用"最新 id - 偏移"估算（id 连续递增，删除的画廊请求会 404 跳过）。
+     * Get the gallery IDs for this page.
+     * The nozomi index is ordered newest first; take PAGE_SIZE entries per page.
+     * Reduce requests by estimating latest ID minus offset; IDs increase sequentially and deleted galleries return 404 and are skipped.
      */
     private List<Integer> getGalleryIdsForPage(int page) {
         List<Integer> ids = new ArrayList<>();
@@ -93,7 +93,7 @@ public class HitomiParser extends HtmlParser {
         return ids;
     }
 
-    /** Range 取 nozomi 前 4 字节得到最新 gallery id（小端 int） */
+    /** Range-request the first four nozomi bytes to obtain the latest gallery ID as a little-endian int */
     private int getNewestGalleryId() {
         if (sNewestId > 0) {
             return sNewestId;
@@ -113,7 +113,7 @@ public class HitomiParser extends HtmlParser {
         return 0;
     }
 
-    /** 带 Range 头的同步请求，返回原始字节 */
+    /** Synchronous request with a Range header, returning raw bytes */
     private byte[] fetchRange(String url, long start, long end) throws Exception {
         okhttp3.OkHttpClient client = new okhttp3.OkHttpClient.Builder()
                 .connectTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
@@ -135,7 +135,7 @@ public class HitomiParser extends HtmlParser {
         return null;
     }
 
-    /** 请求 galleries/{id}.js，返回解析后的 JsonObject（去掉 var galleryinfo = 前缀） */
+    /** Request galleries/{id}.js and parse a JsonObject after removing the var galleryinfo = prefix */
     private JsonObject fetchGallery(int galleryId) {
         try {
             String url = HitomiConfig.getGalleryJsUrl(galleryId);
@@ -149,18 +149,18 @@ public class HitomiParser extends HtmlParser {
             } finally {
                 response.close();
             }
-            // 去掉 "var galleryinfo = " 前缀和末尾分号
+            // Remove the "var galleryinfo = " prefix and trailing semicolon
             Matcher m = Pattern.compile("var\\s+galleryinfo\\s*=\\s*(\\{.*\\})\\s*;?\\s*$",
                     Pattern.DOTALL).matcher(body.trim());
             String json = m.find() ? m.group(1) : body.trim();
             return new JsonParser().parse(json).getAsJsonObject();
         } catch (Exception e) {
-            // 404（被删除的画廊）等直接跳过
+            // Skip 404 responses for deleted galleries and similar failures
             return null;
         }
     }
 
-    /** 把单个画廊解析成 ThumbBean（首图做缩略图，全部页面拼进 ImageBean） */
+    /** Parse one gallery into ThumbBean, using its first image as the thumbnail and all pages in ImageBean */
     private ThumbBean parseGallery(int galleryId, JsonObject gallery) {
         try {
             JsonArray files = gallery.getAsJsonArray("files");
@@ -181,7 +181,7 @@ public class HitomiParser extends HtmlParser {
                 }
             }
 
-            // tags 拼成空格分隔
+            // Join tags with spaces
             StringBuilder tags = new StringBuilder();
             try {
                 JsonArray tagArray = gallery.getAsJsonArray("tags");
@@ -193,7 +193,7 @@ public class HitomiParser extends HtmlParser {
             }
             String tagStr = (title + " " + tags.toString()).trim();
 
-            // 首图做缩略图
+            // Use the first image as the thumbnail
             JsonObject first = files.get(0).getAsJsonObject();
             String firstHash = first.get("hash").getAsString();
             String thumbUrl = HitomiConfig.getImageUrl(galleryId, firstHash);
@@ -219,7 +219,7 @@ public class HitomiParser extends HtmlParser {
         }
     }
 
-    /** 把画廊所有页面拼成 ImageBean（详情页/批量下载直接用，不再二次请求） */
+    /** Build ImageBean from all gallery pages for direct use by details and batch downloads, avoiding another request */
     private ImageBean buildImageBean(int galleryId, String tags, JsonArray files) {
         ImageBean.ImageJsonBuilder builder = new ImageBean.ImageJsonBuilder();
         try {
@@ -264,8 +264,8 @@ public class HitomiParser extends HtmlParser {
                     .rating("e")
                     .hasChildren(String.valueOf(urls.size() > 1))
                     .parentId("");
-            // 多页：把剩余页面 URL 追加到 tags 后的扩展字段？ImageBean 只支持单图，
-            // 这里把全部页面用 "|" 拼进 source，由详情页按需解析（预留）。
+            // For multiple pages, should remaining URLs go in an extension field after tags? ImageBean supports only one image;
+            // join all page URLs with "|" in source for future on-demand parsing by the details screen.
             return ImageBean.getImageDetailFromJson(builder.build());
         } catch (Exception e) {
             e.printStackTrace();

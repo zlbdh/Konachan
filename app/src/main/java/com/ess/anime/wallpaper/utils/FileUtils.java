@@ -21,8 +21,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 整合了一些常用的IO流与File类的功能操作 <br/><br/>
- * <b>需添加权限：</b><br/>
+ * Common IO stream and File operations <br/><br/>
+ * <b>Required permission:</b><br/>
  * &emsp;&lt;uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /&gt;
  *
  * @author Zero
@@ -30,10 +30,10 @@ import java.util.regex.Pattern;
 public class FileUtils {
 
     /**
-     * 对字符串（UTF-8编码）进行MD5加密
+     * Compute the MD5 hash of a UTF-8 string
      *
-     * @param info 需要加密的字符串
-     * @return 加密后的字符串，如果抛出异常则返回空字符串
+     * @param info String to encode
+     * @return Encoded string, or an empty string on error
      */
     public static String encodeMD5String(String info) {
         try {
@@ -58,11 +58,11 @@ public class FileUtils {
     }
 
     /**
-     * 对字符串进行异或加密
+     * XOR-encode a string
      *
-     * @param info          需要加密的字符串
-     * @param cryptographic 密钥
-     * @return 加密后的字符串
+     * @param info          String to encode
+     * @param cryptographic Key
+     * @return Encoded string
      */
     public static String encodeXorString(String info, String cryptographic) {
         char[] infoArray = info.toCharArray();
@@ -78,11 +78,11 @@ public class FileUtils {
     }
 
     /**
-     * 对字符串进行异或解密
+     * XOR-decode a string
      *
-     * @param info          需要解密的字符串
-     * @param cryptographic 密钥
-     * @return 解密后的字符串
+     * @param info          String to decode
+     * @param cryptographic Key
+     * @return Decoded string
      */
     public static String decodeXorString(String info, String cryptographic) {
         char[] infoArray = info.toCharArray();
@@ -98,10 +98,10 @@ public class FileUtils {
     }
 
     /**
-     * 对字符串（UTF-8编码）进行Base64加密
+     * Base64-encode a UTF-8 string
      *
-     * @param info 需要加密的字符串
-     * @return 加密后的字符串，如果抛出异常则返回空字符串
+     * @param info String to encode
+     * @return Encoded string, or an empty string on error
      */
     public static String encodeBase64String(String info) {
         try {
@@ -112,20 +112,20 @@ public class FileUtils {
     }
 
     /**
-     * 对字符串（UTF-8编码）进行Base64解密
+     * Base64-decode a UTF-8 string
      *
-     * @param info 需要解密的字符串
-     * @return 解密后的字符串
+     * @param info String to decode
+     * @return Decoded string
      */
     public static String decodeBase64String(String info) {
         return new String(Base64.decode(info, Base64.DEFAULT));
     }
 
     /**
-     * 对文件进行Base64加密
+     * Base64-encode a file
      *
-     * @param file 需要加密的文件
-     * @return 加密后的文件字符串，如果抛出异常则返回空字符串
+     * @param file File to encode
+     * @return Base64 file content, or an empty string on error
      */
     public static String encodeBase64File(File file) {
         FileInputStream fis = null;
@@ -141,11 +141,11 @@ public class FileUtils {
     }
 
     /**
-     * 对文件进行Base64解密
+     * Base64-decode file content
      *
-     * @param encodeStr 加密的文件字符串
-     * @param file      解密后保存为的文件
-     * @return 文件是否保存成功
+     * @param encodeStr Encoded file content
+     * @param file      Output file for decoded content
+     * @return Whether the file was saved successfully
      */
     public static boolean decodeBase64File(String encodeStr, File file) {
         FileOutputStream fos;
@@ -161,10 +161,10 @@ public class FileUtils {
     }
 
     /**
-     * 流转换成字符串（UTF-8编码）
+     * Convert a stream to a UTF-8 string
      *
-     * @param is 流对象
-     * @return 流转换成的字符串    返回null代表异常
+     * @param is Input stream
+     * @return Decoded string, or null on error
      */
     public static String streamToString(InputStream is) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -189,11 +189,11 @@ public class FileUtils {
     }
 
     /**
-     * 流保存为文件
+     * Save a stream to a file
      *
-     * @param is   输入流对象
-     * @param file 要保存成为的目标文件
-     * @return 是否保存成功 true/false
+     * @param is   Input stream
+     * @param file Destination file
+     * @return true if saving succeeded, otherwise false
      */
     public static boolean streamToFile(InputStream is, File file) {
         BufferedInputStream bis = new BufferedInputStream(is);
@@ -221,11 +221,11 @@ public class FileUtils {
     }
 
     /**
-     * 字符串保存为文件
+     * Save a string to a file
      *
-     * @param str  输入字符串
-     * @param file 要保存成为的目标文件
-     * @return 是否保存成功 true/false
+     * @param str  Input string
+     * @param file Destination file
+     * @return true if saving succeeded, otherwise false
      */
     public static boolean stringToFile(String str, File file) {
         try {
@@ -240,10 +240,10 @@ public class FileUtils {
     }
 
     /**
-     * 读取文件为字符串
+     * Read a file as a string
      *
-     * @param file 目标文件
-     * @return 读取到的字符串
+     * @param file Target file
+     * @return File content as a string
      */
     public static String fileToString(File file) {
         try {
@@ -256,11 +256,11 @@ public class FileUtils {
     }
 
     /**
-     * 移动文件，eg. 把路径为 a/img.jpg 的文件移动为路径为 b/img.jpg 的文件
+     * Move a file, for example from a/img.jpg to b/img.jpg
      *
-     * @param fromFile 要移动的文件
-     * @param toFile   要保存到的目标文件
-     * @return 是否移动成功  true/false
+     * @param fromFile File to move
+     * @param toFile   Destination file
+     * @return true if the move succeeded, otherwise false
      */
     public static boolean moveFile(File fromFile, File toFile) {
         if (!fromFile.exists() || !fromFile.isFile()) {
@@ -290,7 +290,7 @@ public class FileUtils {
             }
 
             if (!renameToSuccess) {
-                //在文件系统不同的情况下，renameTo会失败，此时使用copy，然后删除原文件
+                //renameTo fails across filesystems; copy and then delete the original instead
                 if (!copyFile(fromFile, toFile) || toFile.length() != fromFile.length()) {
                     return false;
                 }
@@ -306,11 +306,11 @@ public class FileUtils {
     }
 
     /**
-     * 复制文件，eg. 把路径为 a/img.jpg 的文件复制为路径为 b/img.jpg 的文件
+     * Copy a file, for example from a/img.jpg to b/img.jpg
      *
-     * @param fromFile 要复制的文件
-     * @param toFile   要保存到的目标文件
-     * @return 是否复制成功  true/false
+     * @param fromFile File to copy
+     * @param toFile   Destination file
+     * @return true if copying succeeded, otherwise false
      */
     public static boolean copyFile(File fromFile, File toFile) {
         BufferedInputStream bis = null;
@@ -343,11 +343,11 @@ public class FileUtils {
     }
 
     /**
-     * 复制文件夹，eg. 把路径 root/a 的文件夹复制到路径 root/b，其结果为 root/b/a
+     * Copy a directory, for example root/a into root/b, producing root/b/a
      *
-     * @param fromPath 要复制的文件夹路径
-     * @param toPath   要保存到的目标位置的路径
-     * @return 是否复制成功  true/false
+     * @param fromPath Directory to copy
+     * @param toPath   Destination directory
+     * @return true if copying succeeded, otherwise false
      */
     public static boolean copyFolder(String fromPath, String toPath) {
         File fromFile = new File(fromPath);
@@ -373,20 +373,20 @@ public class FileUtils {
     }
 
     /**
-     * 删除文件或文件夹（包括其所有子文件夹和文件）
+     * Delete a file or directory, including all nested files and directories
      *
-     * @param path 要删除的文件或文件夹路径
-     * @return 是否删除成功  true/false
+     * @param path File or directory path to delete
+     * @return true if deletion succeeded, otherwise false
      */
     public static boolean deleteFile(String path) {
         return deleteFile(new File(path));
     }
 
     /**
-     * 删除文件或文件夹（包括其所有子文件夹和文件）
+     * Delete a file or directory, including all nested files and directories
      *
-     * @param file 要删除的文件或文件夹
-     * @return 是否删除成功  true/false
+     * @param file File or directory to delete
+     * @return true if deletion succeeded, otherwise false
      */
     public static boolean deleteFile(File file) {
         try {
@@ -408,20 +408,20 @@ public class FileUtils {
     }
 
     /**
-     * 获取文件或文件夹的大小，如果文件或文件夹不存在，则返回0。附：获取文件大小可直接使用file.length();
+     * Get file or directory size, or zero if missing. For a single file, file.length() can be used directly.
      *
-     * @param path 文件夹路径
-     * @return 文件夹大小，单位：B
+     * @param path Directory path
+     * @return Directory size in bytes
      */
     public static long getFileLength(String path) {
         return getFileLength(new File(path));
     }
 
     /**
-     * 获取文件或文件夹的大小，如果文件或文件夹不存在，则返回0。附：获取文件大小可直接使用file.length();
+     * Get file or directory size, or zero if missing. For a single file, file.length() can be used directly.
      *
-     * @param file 文件夹
-     * @return 文件夹大小，单位：B
+     * @param file Directory
+     * @return Directory size in bytes
      */
     public static long getFileLength(File file) {
         long length = 0;
@@ -446,10 +446,10 @@ public class FileUtils {
     private final static long GB = MB * 1024;
 
     /**
-     * 将文件大小转换为KB、MB、GB 等字符串
+     * Format a file size as B, KB, MB, or GB
      *
-     * @param b 文件字节大小
-     * @return B（整数位）、KB（整数位）、MB（四舍五入，两位精确度）、GB（四舍五入，两位精确度）
+     * @param b File size in bytes
+     * @return B and KB as integers; MB and GB rounded to two decimal places
      */
     public static String computeFileSize(long b) {
         float size;
@@ -473,14 +473,14 @@ public class FileUtils {
     }
 
     /**
-     * 将文件大小由KB、MB、GB 等字符串转换为long值
+     * Parse a B, KB, MB, or GB size string into a long
      *
-     * @param fileSize 文件大小字符串
-     * @return 文件大小
+     * @param fileSize Formatted file size
+     * @return File size
      */
     public static long parseFileSize(String fileSize) {
         try {
-            double size = Double.parseDouble(fileSize.replaceAll("[^-*\\d+(\\.)?]", "")); // 提取数字
+            double size = Double.parseDouble(fileSize.replaceAll("[^-*\\d+(\\.)?]", "")); // Extract the number
             if (fileSize.toUpperCase().contains("G")) {
                 size *= 1024 * 1024 * 1024;
             } else if (fileSize.toUpperCase().contains("M")) {
@@ -495,10 +495,10 @@ public class FileUtils {
     }
 
     /**
-     * 获取文件后缀，不带·
+     * Get the file extension without the dot
      *
-     * @param path 文件路径
-     * @return 文件后缀
+     * @param path File path
+     * @return File extension
      */
     public static String getFileExtension(String path) {
         Pattern pattern = Pattern.compile("\\.(\\w+)(\\?|$)");
@@ -511,10 +511,10 @@ public class FileUtils {
     }
 
     /**
-     * 获取文件后缀，带·
+     * Get the file extension with the dot
      *
-     * @param path 文件路径
-     * @return 文件后缀
+     * @param path File path
+     * @return File extension
      */
     public static String getFileExtensionWithDot(String path) {
         String extension = getFileExtension(path);
@@ -526,7 +526,7 @@ public class FileUtils {
     }
 
     /**
-     * 判断文件是否为图片格式
+     * Check whether the file is an image
      *
      * @return boolean
      */
@@ -545,7 +545,7 @@ public class FileUtils {
     }
 
     /**
-     * 判断文件是否为视频格式
+     * Check whether the file is a video
      *
      * @return boolean
      */
@@ -564,7 +564,7 @@ public class FileUtils {
     }
 
     /**
-     * 判断文件是否为媒体格式
+     * Check whether the file is media
      *
      * @return boolean
      */

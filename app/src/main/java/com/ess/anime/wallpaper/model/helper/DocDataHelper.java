@@ -16,26 +16,21 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class DocDataHelper {
 
-    private final static String TXT_SEARCH_MODE_CHINESE = "search_mode_chinese";
-    private final static String TXT_SEARCH_MODE_ENGLISH = "search_mode_english";
-    private final static String TXT_TAG_TYPE_DOC_CHINESE = "tag_type_doc_chinese";
-    private final static String TXT_TAG_TYPE_DOC_ENGLISH = "tag_type_doc_english";
-    private final static String TXT_ADVANCED_SEARCH_DOC_CHINESE = "advanced_search_doc_chinese";
-    private final static String TXT_ADVANCED_SEARCH_DOC_ENGLISH = "advanced_search_doc_english";
+    private final static String TXT_SEARCH_MODE_ENGLISH = "search_mode.html";
+    private final static String TXT_TAG_TYPE_DOC_ENGLISH = "tag_type_doc.html";
+    private final static String TXT_ADVANCED_SEARCH_DOC_ENGLISH = "advanced_search_doc.html";
 
-    // 搜索界面显示“搜索模式说明”
+    // Search mode help displayed on the search screen
     public static ArrayList<String> getSearchModeDocumentList(Context context) {
         ArrayList<String> docList = new ArrayList<>();
-        String fileName = isChinese() ? TXT_SEARCH_MODE_CHINESE : TXT_SEARCH_MODE_ENGLISH;
+        String fileName = TXT_SEARCH_MODE_ENGLISH;
         InputStream is = null;
         try {
             is = context.getAssets().open(fileName);
-            String html = FileUtils.decodeXorString(FileUtils.streamToString(is),
-                    FileUtils.encodeMD5String(fileName));
+            String html = FileUtils.streamToString(is);
             Document document = Jsoup.parse(html);
             Elements modes = document.getElementsByTag("span");
             for (Element mode : modes) {
@@ -55,14 +50,13 @@ public class DocDataHelper {
         return docList;
     }
 
-    // 标签类型说明文档
+    // Tag type documentation
     public static Spanned getTagTypeHelpDoc(Context context) {
-        String fileName = isChinese() ? TXT_TAG_TYPE_DOC_CHINESE : TXT_TAG_TYPE_DOC_ENGLISH;
+        String fileName = TXT_TAG_TYPE_DOC_ENGLISH;
         InputStream is = null;
         try {
             is = context.getAssets().open(fileName);
-            String html = FileUtils.decodeXorString(FileUtils.streamToString(is),
-                    FileUtils.encodeMD5String(fileName));
+            String html = FileUtils.streamToString(is);
             return Html.fromHtml(html);
         } catch (IOException e) {
             e.printStackTrace();
@@ -78,15 +72,14 @@ public class DocDataHelper {
         return new SpannedString(context.getString(R.string.dialog_doc_lost));
     }
 
-    // 高级搜索说明文档
+    // Advanced search documentation
     public static Spanned getAdvancedSearchDoc(Context context) {
-        String fileName = isChinese() ? TXT_ADVANCED_SEARCH_DOC_CHINESE : TXT_ADVANCED_SEARCH_DOC_ENGLISH;
+        String fileName = TXT_ADVANCED_SEARCH_DOC_ENGLISH;
         InputStream is = null;
         try {
             is = context.getAssets().open(fileName);
-            String html = FileUtils.decodeXorString(FileUtils.streamToString(is),
-                    FileUtils.encodeMD5String(fileName));
-            // AndroidX后的sdk反射不到了，没找到相关源码是啥
+            String html = FileUtils.streamToString(is);
+            // The reflection hook is unavailable after the AndroidX migration; its SDK source is unclear.
 //            return Html.fromHtml(html, null, new HtmlFontSizeTagHandler(context));
             return Html.fromHtml(html);
         } catch (IOException e) {
@@ -103,9 +96,4 @@ public class DocDataHelper {
         return new SpannedString(context.getString(R.string.dialog_doc_lost));
     }
 
-    // 判断当前语种是否为汉语
-    public static boolean isChinese() {
-        String code = Locale.getDefault().getCountry();
-        return code.equals("CN") || code.equals("TW") || code.equals("HK");
-    }
 }

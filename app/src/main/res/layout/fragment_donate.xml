@@ -7,8 +7,13 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <com.ess.anime.wallpaper.ui.view.image.SwitcherTitle
+    <TextView
         android:id="@+id/switcher_title"
+        android:text="@string/donate_title"
+        android:textColor="#00BFFF"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:paddingHorizontal="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="25dp" />
@@ -27,19 +32,24 @@
         android:gravity="center"
         android:weightSum="3">
 
-        <ImageView
+        <TextView
             android:id="@+id/iv_alipay"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_donate_alipay" />
+            android:text="@string/donate_alipay"
+            android:textColor="#009FE8"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:minHeight="48dp" />
 
         <ImageView
             android:id="@+id/iv_wechat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_donate_wechat" />
+            android:src="@drawable/ic_donate_wechat"
+            android:contentDescription="@string/donate_wechat" />
     </LinearLayout>
 
     <ImageView
@@ -48,5 +58,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
         android:layout_marginBottom="15dp"
-        android:src="@drawable/ic_donate_close" />
+        android:src="@drawable/ic_donate_close"
+        android:contentDescription="@string/donate_close" />
 </LinearLayout>

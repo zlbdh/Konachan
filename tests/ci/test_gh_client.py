@@ -1,4 +1,4 @@
-"""gh CLI 传输适配测试，所有进程和 HTTP 响应均由本地替身提供。"""
+"""Tests for the gh CLI transport adapter, with local test doubles for every process and HTTP response."""
 
 import json
 import subprocess
@@ -25,7 +25,7 @@ class GhClientTest(unittest.TestCase):
         text = f"HTTP/2.0 {status} response\r\nContent-Type: application/json\r\n\r\n"
         if body is not None:
             text += json.dumps(body)
-        self.response = subprocess.CompletedProcess([], 1 if failed else 0, text, "不应回显的进程诊断")
+        self.response = subprocess.CompletedProcess([], 1 if failed else 0, text, "Process diagnostics that must not be echoed")
 
     def test_successful_get_parses_included_headers(self):
         self.http(200, {"id": 10})
@@ -35,7 +35,7 @@ class GhClientTest(unittest.TestCase):
 
     def test_api_payload_is_stdin_json_not_shell_interpolation(self):
         self.http(201, {"id": 10})
-        payload = {"message": "中文更新 [skip ci]", "literal": "$(不应执行)"}
+        payload = {"message": "Unicode update: café [skip ci]", "literal": "$(must-not-execute)"}
         self.client.api("POST", "repos/test-owner/Konachan/releases", payload)
         arguments, body = self.calls[0]
         self.assertEqual(arguments[-2:], ["--input", "-"])
@@ -55,7 +55,7 @@ class GhClientTest(unittest.TestCase):
         with self.assertRaises(ReleaseError) as raised:
             self.client.api("PUT", "repos/test-owner/Konachan/contents/latest_version.json", {})
         self.assertEqual(raised.exception.status, 409)
-        self.assertNotIn("进程诊断", str(raised.exception))
+        self.assertNotIn("Process diagnostics", str(raised.exception))
 
     def test_delete_204_needs_no_json_body(self):
         self.http(204)
@@ -80,7 +80,7 @@ class GhClientTest(unittest.TestCase):
         self.assertIsNone(body)
 
     def test_upload_failure_is_explicit(self):
-        self.response = subprocess.CompletedProcess([], 1, "", "不应回显的进程诊断")
+        self.response = subprocess.CompletedProcess([], 1, "", "Process diagnostics that must not be echoed")
         with self.assertRaises(ReleaseError):
             self.client.upload("v1.9.6-7", Path("/tmp/signed.apk"))
 

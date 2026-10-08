@@ -23,27 +23,27 @@ public class PixivGifBean {
         this.id = id;
     }
 
-    // 获取fps和zipUrl的网址
+    // URL for retrieving fps and zipUrl
     public String getJsonUrl() {
         return "https://www.pixiv.net/ajax/illust/" + id + "/ugoira_meta?lang=zh";
     }
 
-    // 下载P站资源时需要传入Referer请求头
+    // Pixiv downloads require a Referer request header
     public String getRefererUrl() {
         return "https://www.pixiv.net/artworks/" + id;
     }
 
-    // zip本地缓存路径
+    // Local ZIP cache path
     public String getZipCacheDirPath() {
         return MyApp.getInstance().getCacheDir() + File.separator + id;
     }
 
-    // zip本地存储名
+    // Local ZIP filename
     public String getZipFileName() {
         return id + ".zip";
     }
 
-    // 生成Gif的文件路径
+    // Output GIF path
     public String getGifSavedPath() {
         if (gifSavedPath == null) {
             gifSavedPath = Constants.IMAGE_DIR + File.separator + "Pixiv_" + id + "_" + System.currentTimeMillis() + ".gif";
@@ -52,7 +52,7 @@ public class PixivGifBean {
     }
 
 
-    /********************* 进度状态 *********************/
+    /********************* Progress states *********************/
     public enum PixivDlState {
         CONNECT_PIXIV, DOWNLOAD_ZIP, EXTRACT_ZIP, MAKE_GIF, FINISH, CANCEL, NOT_GIF, ARTWORK_NOT_EXIST, NEED_LOGIN, LOGIN_EXPIRED
     }

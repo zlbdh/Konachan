@@ -41,7 +41,7 @@ public class SankakuParser extends HtmlParser {
                     JsonObject item = items.get(i).getAsJsonObject();
                     boolean needSignUp = item.get("redirect_to_signup").getAsBoolean();
                     if (needSignUp) {
-                        // 忽略需要登录才能显示的图片
+                        // Ignore images that require login
                         continue;
                     }
                     String id = item.get("id").getAsString();
@@ -49,7 +49,7 @@ public class SankakuParser extends HtmlParser {
                     int thumbHeight = item.get("preview_height").getAsInt() * 2;
                     String thumbUrl = item.get("preview_url").getAsString();
                     if (thumbUrl.contains("download-preview.png")) {
-                        // 封面为这张图片就是flash，不解析，无意义
+                        // This cover identifies Flash content; skip parsing because it cannot be displayed
                         continue;
                     }
                     int realWidth = item.get("width").getAsInt();
@@ -87,7 +87,7 @@ public class SankakuParser extends HtmlParser {
             String json = doc.text();
             JsonObject item = new JsonParser().parse(json).getAsJsonObject();
 
-            // 解析图片信息
+            // Parse image information
             builder.id(item.get("id").getAsString())
                     .createdTime(item.getAsJsonObject("created_at").get("s").getAsString())
                     .creatorId(item.getAsJsonObject("author").get("id").getAsString())
@@ -114,7 +114,7 @@ public class SankakuParser extends HtmlParser {
                     .hasChildren(item.get("has_children").getAsString())
                     .parentId(!item.get("parent_id").isJsonNull() ? item.get("parent_id").getAsString() : "");
 
-            // 解析tags
+            // Parse tags
             StringBuilder tags = new StringBuilder();
             JsonArray tagArray = item.getAsJsonArray("tags");
             for (int i = 0; i < tagArray.size(); i++) {
@@ -225,7 +225,7 @@ public class SankakuParser extends HtmlParser {
                     JsonObject item = items.get(i).getAsJsonObject();
                     boolean needSignUp = item.get("redirect_to_signup").getAsBoolean();
                     if (needSignUp) {
-                        // 忽略需要登录才能显示的图片
+                        // Ignore images that require login
                         continue;
                     }
                     boolean isDeleted = item.get("is_deleted").getAsBoolean();

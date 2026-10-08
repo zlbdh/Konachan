@@ -27,7 +27,7 @@ public class PixivLoginManager {
     private PixivLoginManager() {
     }
 
-    /***************************  登录接口  ***************************/
+    /***************************  Login interface ***************************/
 
     public void login(Context context) {
         Intent intent = new Intent(context, PixivLoginActivity.class);
@@ -63,7 +63,7 @@ public class PixivLoginManager {
         return PreferenceManager.getDefaultSharedPreferences(MyApp.getInstance());
     }
 
-    /***************************  监听器  ***************************/
+    /***************************  Listeners ***************************/
 
     private List<IPixivLoginListener> mLoginListener = new ArrayList<>();
 

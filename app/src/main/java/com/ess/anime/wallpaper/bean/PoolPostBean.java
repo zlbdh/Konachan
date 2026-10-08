@@ -7,23 +7,23 @@ import com.google.gson.annotations.SerializedName;
 
 public class PoolPostBean implements Parcelable {
 
-    public String id;  //（未知用处）
+    public String id;  //(Purpose unknown)
 
     @SerializedName(value = "poolId", alternate = "pool_id")
-    public String poolId;  //图集id
+    public String poolId;  //Album ID
 
     @SerializedName(value = "postId", alternate = "post_id")
-    public String postId;  //图片id
+    public String postId;  //Image ID
 
-    public boolean active;  //（未知用处，猜测为是否公开）
+    public boolean active;  //(Purpose unknown; possibly indicates public visibility)
 
-    public String sequence;  //图片在图集中的位置序号（值为String格式，有可能为NaN）
+    public String sequence;  //Position within the album (a String that may contain NaN)
 
     @SerializedName(value = "nextPostId", alternate = "next_post_id")
-    public String nextPostId;  //下张图片id
+    public String nextPostId;  //Next image ID
 
     @SerializedName(value = "prevPostId", alternate = "prev_post_id")
-    public String prevPostId;  //上张图片id
+    public String prevPostId;  //Previous image ID
 
     protected PoolPostBean(Parcel in) {
         id = in.readString();

@@ -19,7 +19,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Locale;
 
-/** 将自有媒体完整复制到公开相册；失败只回滚本次新媒体项，保留本地源文件。 */
+/** Copy app-owned media completely to the public gallery; on failure, roll back only the new item and preserve the local source. */
 public final class MediaStorePublisher {
 
     private static final String TAG = "MediaStorePublisher";
@@ -28,7 +28,7 @@ public final class MediaStorePublisher {
     private MediaStorePublisher() {
     }
 
-    /** API 29+ 发布成功才返回可读取的 content URI，失败返回 null。应在 IO 线程调用。 */
+    /** On API 29+, return a readable content URI only after successful publication, or null on failure. Call on an IO thread. */
     public static Uri publish(Context context, File source) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || !isReadableMedia(source)) {
             return null;
@@ -56,42 +56,42 @@ public final class MediaStorePublisher {
         try {
             created = resolver.insert(collection, values);
             if (created == null) {
-                throw new IOException("媒体库未创建目标文件");
+                throw new IOException("The media library did not create a destination file");
             }
             long copied = copyToUri(resolver, source, created);
             if (copied != expectedSize || !expectedSignature.equals(signature(source))) {
-                throw new IOException("媒体文件未完整复制或源文件在复制中改变");
+                throw new IOException("The media file was not fully copied or the source changed during copying");
             }
             try (ParcelFileDescriptor descriptor = resolver.openFileDescriptor(created, "r")) {
                 if (descriptor == null || descriptor.getStatSize() != expectedSize) {
-                    throw new IOException("媒体库文件大小校验失败");
+                    throw new IOException("Media library file-size verification failed");
                 }
             }
             ContentValues completed = new ContentValues();
             completed.put(MediaStore.MediaColumns.IS_PENDING, 0);
             if (resolver.update(created, completed, null, null) != 1) {
-                throw new IOException("媒体库未确认发布完成");
+                throw new IOException("The media library did not confirm publication");
             }
             String key = source.getAbsolutePath();
             if (!records(context).edit().putString(key, created.toString())
                     .putString(key + "|signature", expectedSignature).commit()) {
-                throw new IOException("媒体发布记录未能保存");
+                throw new IOException("Unable to save the media publication record");
             }
             return created;
         } catch (IOException | RuntimeException error) {
-            Log.e(TAG, "媒体发布失败，保留本地源文件", error);
+            Log.e(TAG, "Media publication failed; preserving the local source file", error);
             if (created != null) {
                 try {
                     resolver.delete(created, null, null);
                 } catch (RuntimeException cleanupError) {
-                    Log.e(TAG, "本次未完成媒体项清理失败", cleanupError);
+                    Log.e(TAG, "Unable to clean up this incomplete media item", cleanupError);
                 }
             }
             return null;
         }
     }
 
-    /** 只使用本应用发布记录中的 URI，不遍历或查询用户其他媒体。 */
+    /** Use only URIs in the app's publication records; do not enumerate or query other user media. */
     public static Uri findPublishedUri(Context context, File source) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || !isReadableMedia(source)) {
             return null;
@@ -122,7 +122,7 @@ public final class MediaStorePublisher {
         try (InputStream input = new FileInputStream(source);
              OutputStream output = resolver.openOutputStream(target, "w")) {
             if (output == null) {
-                throw new IOException("媒体库未提供输出流");
+                throw new IOException("The media library did not provide an output stream");
             }
             byte[] buffer = new byte[8192];
             long copied = 0;

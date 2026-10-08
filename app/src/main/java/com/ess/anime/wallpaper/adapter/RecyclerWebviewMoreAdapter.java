@@ -16,7 +16,7 @@ public class RecyclerWebviewMoreAdapter extends BaseQuickAdapter<String, BaseVie
 
     @Override
     protected void convert(BaseViewHolder holder, String function) {
-        // 功能文字
+        // Action label
         holder.setText(R.id.tv_function, function);
     }
 

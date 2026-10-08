@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * e621.net JSON API 解析器。
- * 列表 / 详情 / 评论全部走 JSON 接口（App 内经 Jsoup.parse 后从 body 文本还原 JSON）。
- * 注意 e621 对 User-Agent 有要求，App 全局已携带浏览器 UA。
+ * e621.net JSON API parser.
+ * Lists, details, and comments use JSON endpoints; recover JSON from body text after Jsoup.parse.
+ * e621 requires a User-Agent; the app already sends a browser User-Agent globally.
  */
 public class E621Parser extends HtmlParser {
 
@@ -173,7 +173,7 @@ public class E621Parser extends HtmlParser {
                     .height(String.valueOf(optInt(file, "height")))
                     .flagDetail(optString(post, "description"));
 
-            // 分类标签
+            // Categorized tags
             JsonObject tags = optObject(post, "tags");
             builder.addCopyrightTags(toStringArray(optArray(tags, "copyright")));
             builder.addCharacterTags(toStringArray(optArray(tags, "character")));
@@ -237,7 +237,7 @@ public class E621Parser extends HtmlParser {
     }
 
     private long parseTime(String iso) {
-        // 格式：2026-10-06T13:56:20.603-04:00
+        // Format: 2026-10-06T13:56:20.603-04:00
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US);
             return sdf.parse(iso).getTime() / 1000;

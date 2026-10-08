@@ -40,15 +40,15 @@ import okhttp3.Response;
 import static org.junit.Assert.*;
 
 /**
- * 独立外网冒烟套件，必须显式传入 -e runExternalSites true；默认跳过外网请求。
- * 用户指定的 Rule34 / AnimePictures 各仅一条明确 safe 结果：列表、详情、缩略图前 16 字节。
- * 没有 safe 元数据的结果不请求任何图片；不保存、不显示媒体。
- * 使用现有 Config 生成 URL，不携带私人 key；HTTP 403/验证码/空结果/超时均真实失败。
+ * Independent external-network smoke suite; requires explicit -e runExternalSites true. External requests are skipped by default.
+ * For each user-requested site, Rule34 and AnimePictures, inspect only one explicitly safe result: list, details, and the first 16 thumbnail bytes.
+ * Do not request images without safe metadata; do not save or display media.
+ * Generate URLs with the existing Config without private keys; HTTP 403, challenges, empty results, and timeouts are real failures.
  */
 @RunWith(AndroidJUnit4.class)
 public class ExternalSiteSmokeTest {
     @Before public void requireExplicitExternalOptIn() {
-        org.junit.Assume.assumeTrue("未显式启用外网冒烟，不执行图站请求",
+        org.junit.Assume.assumeTrue("External smoke testing was not explicitly enabled; skipping image-site requests",
                 "true".equals(InstrumentationRegistry.getArguments().getString("runExternalSites")));
     }
 
@@ -63,7 +63,7 @@ public class ExternalSiteSmokeTest {
     private void smoke(WebsiteConfig config) throws Exception {
         long deadline = SystemClock.elapsedRealtime() + 19000;
         ScheduledExecutorService watchdog = Executors.newSingleThreadScheduledExecutor(runnable -> {
-            Thread thread = new Thread(runnable, "图源冒烟限时");
+            Thread thread = new Thread(runnable, "Image-site smoke test time limit");
             thread.setDaemon(true);
             return thread;
         });
@@ -72,41 +72,41 @@ public class ExternalSiteSmokeTest {
                 .retryOnConnectionFailure(false).build();
         String name = config.getWebsiteName();
         try {
-            // Rule34 由服务器筛选 safe；AnimePictures 在原始 API 元数据中严格筛选。
+            // Rule34 filters safe content on the server; AnimePictures is filtered strictly using the original API metadata.
             String listUrl = config.getPostUrl(1, config instanceof Rule34Config
                     ? Collections.singletonList("rating:safe") : Collections.emptyList());
             String listBody = new String(fetch(client, watchdog, listUrl, config.getBaseUrl(),
-                    name + "/列表", deadline, 1024 * 1024, false), StandardCharsets.UTF_8);
+                    name + "/list", deadline, 1024 * 1024, false), StandardCharsets.UTF_8);
             Document listDocument = Jsoup.parse(listBody);
             List<ThumbBean> thumbs = config.getHtmlParser().getThumbList(listDocument);
-            assertFalse(name + "/列表没有可解析结果", thumbs.isEmpty());
+            assertFalse(name + "/list has no parseable results", thumbs.isEmpty());
             String safeId = firstSafeId(config, listBody, listDocument);
-            assertNotNull(name + "/API 未返回可确认的 safe 项，详情/媒体未验证", safeId);
+            assertNotNull(name + "/API returned no confirmed safe item; details and media were not verified", safeId);
             ThumbBean thumb = null;
             for (ThumbBean candidate : thumbs) {
                 if (safeId.equals(candidate.id)) { thumb = candidate; break; }
             }
-            assertNotNull(name + "/parser 未解析出 API 明确标记的首条 safe 项", thumb);
-            assertNotNull(name + "/列表缺少 ID", thumb.id);
-            assertNotNull(name + "/列表缺少详情地址", thumb.linkToShow);
+            assertNotNull(name + "/parser did not return the first item explicitly marked safe by the API", thumb);
+            assertNotNull(name + "/list is missing an ID", thumb.id);
+            assertNotNull(name + "/list is missing a details URL", thumb.linkToShow);
             String detailBody = new String(fetch(client, watchdog, thumb.linkToShow, config.getBaseUrl(),
-                    name + "/详情", deadline, 1024 * 1024, false), StandardCharsets.UTF_8);
+                    name + "/details", deadline, 1024 * 1024, false), StandardCharsets.UTF_8);
             ImageBean image = ImageBean.getImageDetailFromJson(config.getHtmlParser()
                     .getImageDetailJson(Jsoup.parse(detailBody)));
-            assertNotNull(name + "/详情无法解析 posts", image.posts);
-            assertTrue(name + "/详情为空", image.posts.length > 0 && image.posts[0] != null);
-            // 先证明详情 parser 本身能识别 ID，不能用 tempPost 的 ID 掩盖详情解析失败。
-            assertTrue(name + "/详情 ID 与列表不一致", thumb.checkImageBelongs(image));
+            assertNotNull(name + "/details posts could not be parsed", image.posts);
+            assertTrue(name + "/details are empty", image.posts.length > 0 && image.posts[0] != null);
+            // First prove that the details parser recognizes the ID; do not hide a parsing failure with the tempPost ID.
+            assertTrue(name + "/details ID does not match the list", thumb.checkImageBelongs(image));
             if (config instanceof AnimePicturesConfig) {
                 JsonObject root = new JsonParser().parse(detailBody).getAsJsonObject();
-                assertTrue(name + "/详情未明确确认 safe，缩略图未验证", root.has("post")
+                assertTrue(name + "/details did not explicitly confirm safe content; thumbnail was not verified", root.has("post")
                         && explicitSafe(root.getAsJsonObject("post")));
             }
             if (thumb.tempPost != null) image.posts[0].replaceDataIfNotNull(thumb.tempPost);
-            assertTrue(name + "/详情未提供媒体地址", image.hasPostBean());
+            assertTrue(name + "/details did not provide a media URL", image.hasPostBean());
             byte[] signature = fetch(client, watchdog, thumb.thumbUrl, config.getBaseUrl(),
-                    name + "/缩略图", deadline, 16, true);
-            assertTrue(name + "/缩略图响应不是图片内容", imageSignature(signature));
+                    name + "/thumbnail", deadline, 16, true);
+            assertTrue(name + "/thumbnail response is not image content", imageSignature(signature));
         } finally {
             watchdog.shutdownNow();
             client.dispatcher().cancelAll();
@@ -118,28 +118,28 @@ public class ExternalSiteSmokeTest {
                          String referer, String stage, long deadline, int maxBytes,
                          boolean thumbnail) throws Exception {
         long remaining = deadline - SystemClock.elapsedRealtime();
-        assertTrue(stage + "超过 19 秒总预算", remaining > 0);
+        assertTrue(stage + "Exceeded the 19-second total time budget", remaining > 0);
         Call call = client.newCall(new Request.Builder().url(OkHttp.convertSchemeToHttps(url))
                 .header("User-Agent", OkHttp.USER_AGENT).header("Referer", referer).build());
         ScheduledFuture<?> timeout = watchdog.schedule(call::cancel, remaining, TimeUnit.MILLISECONDS);
         try (Response response = call.execute()) {
-            assertEquals(stage + " HTTP 状态（不绕过验证码）", 200, response.code());
-            assertNotNull(stage + "响应为空", response.body());
+            assertEquals(stage + " HTTP status (do not bypass challenges)", 200, response.code());
+            assertNotNull(stage + "Empty response", response.body());
             if (thumbnail) {
                 String type = response.header("Content-Type", "");
-                assertTrue(stage + "响应类型错误，可能为验证页", type.startsWith("image/"));
+                assertTrue(stage + "Incorrect response type; this may be a verification page", type.startsWith("image/"));
             }
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             InputStream input = response.body().byteStream();
             byte[] buffer = new byte[Math.min(4096, maxBytes)];
             while (output.size() < maxBytes) {
-                assertTrue(stage + "超过 19 秒总预算", SystemClock.elapsedRealtime() < deadline);
+                assertTrue(stage + "Exceeded the 19-second total time budget", SystemClock.elapsedRealtime() < deadline);
                 int read = input.read(buffer, 0, Math.min(buffer.length, maxBytes - output.size()));
                 if (read < 0) break;
                 output.write(buffer, 0, read);
             }
-            if (!thumbnail) assertTrue(stage + "元数据超出 1 MiB 上限", output.size() < maxBytes);
-            assertTrue(stage + "内容为空", output.size() > 0);
+            if (!thumbnail) assertTrue(stage + "Metadata exceeds the 1 MiB limit", output.size() < maxBytes);
+            assertTrue(stage + "Empty content", output.size() > 0);
             return output.toByteArray();
         } finally {
             timeout.cancel(false);
@@ -166,7 +166,7 @@ public class ExternalSiteSmokeTest {
     }
 
     private boolean explicitSafe(JsonObject post) {
-        // 只接受 API 显式字段。erotics 缺失/null/非数字不能当作 0 或 safe。
+        // Accept only explicit API fields. Missing, null, or nonnumeric erotics values must not be treated as zero or safe.
         if (post.has("rating") && !post.get("rating").isJsonNull()
                 && safe(post.get("rating").getAsString())) return true;
         JsonElement erotics = post.get("erotics");

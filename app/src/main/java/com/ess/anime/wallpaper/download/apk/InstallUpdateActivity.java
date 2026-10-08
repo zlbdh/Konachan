@@ -14,7 +14,7 @@ import com.ess.anime.wallpaper.global.Constants;
 import com.ess.anime.wallpaper.utils.SystemUtils;
 import java.io.File;
 
-/** 只有用户点击通知或手动选择更新后才进入；缓存 APK 同样重新核验。 */
+/** Enter only after the user taps a notification or manually selects an update; reverify cached APKs too. */
 public class InstallUpdateActivity extends Activity {
     private ApkBean apk;
     private boolean awaitingPermission;
@@ -30,7 +30,7 @@ public class InstallUpdateActivity extends Activity {
         super.onCreate(state);
         apk = getIntent().getParcelableExtra(Constants.APK_BEAN);
         TextView status = new TextView(this);
-        status.setText("正在核验更新安装包…");
+        status.setText("Verifying the update package…");
         status.setGravity(Gravity.CENTER);
         setContentView(status);
         verifyThenInstall();
@@ -48,7 +48,7 @@ public class InstallUpdateActivity extends Activity {
             awaitingPermission = false;
             if (canInstall()) verifyThenInstall();
             else {
-                Toast.makeText(this, "需要允许本应用安装更新，下载文件已保留", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Allow this app to install updates. The downloaded file has been kept.", Toast.LENGTH_LONG).show();
                 finish();
             }
         }

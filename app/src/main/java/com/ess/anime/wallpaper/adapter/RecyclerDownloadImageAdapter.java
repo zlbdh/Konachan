@@ -55,7 +55,7 @@ public class RecyclerDownloadImageAdapter extends BaseQuickAdapter<DownloadBean,
     }
 
     private void updateItemState(@NonNull BaseViewHolder holder, DownloadBean downloadBean) {
-        // 预览图
+        // Preview image
         Map<String, String> headerMap = WebsiteManager.getInstance().getRequestHeaders();
         Glide.with(mContext)
                 .load(MyGlideModule.makeGlideUrl(downloadBean.thumbUrl, headerMap))
@@ -66,7 +66,7 @@ public class RecyclerDownloadImageAdapter extends BaseQuickAdapter<DownloadBean,
         // id
         holder.setText(R.id.tv_id, downloadBean.downloadTitle);
 
-        // 下载状态
+        // Download status
         CircleProgressView progressView = holder.getView(R.id.progress_view);
         String tag = downloadBean.downloadUrl;
         DownloadTask task = OkDownload.getInstance().getTask(tag);
@@ -97,7 +97,7 @@ public class RecyclerDownloadImageAdapter extends BaseQuickAdapter<DownloadBean,
             }
         }
 
-        // 重新下载按钮
+        // Retry download button
         holder.setGone(R.id.btn_restart, task != null && (task.progress.status == Progress.ERROR
                 || task.progress.status == Progress.PAUSE));
         holder.getView(R.id.btn_restart).setOnClickListener(v -> {
@@ -109,7 +109,7 @@ public class RecyclerDownloadImageAdapter extends BaseQuickAdapter<DownloadBean,
             }
         });
 
-        // 删除按钮
+        // Delete button
         boolean isLoading = task == null || (task.progress.status != Progress.ERROR
                 && task.progress.status != Progress.PAUSE && task.progress.status != Progress.FINISH);
         holder.getView(R.id.iv_delete).setOnClickListener(v -> {

@@ -96,8 +96,8 @@ public abstract class BaseWebActivity extends BaseActivity {
                 .setAgentWebParent(findViewById(R.id.layout_web_view),
                         new FrameLayout.LayoutParams(-1, -1))
                 .useDefaultIndicator(ResourcesCompat.getColor(getResources(), R.color.color_text_selected, null))
-                // 方法1：5.x机器的webview会出现资源Resources$NotFoundException错误，需对此进行适配
-                // 方法2：用androidx.appcompat:appcompat:1.0.2
+                // Method 1: handle Resources$NotFoundException from WebView on Android 5.x devices
+                // Method 2: use androidx.appcompat:appcompat:1.0.2
 //                .setWebView(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT ? new LollipopFixedWebView(this) : null)
                 .setMainFrameErrorView(View.inflate(this, R.layout.layout_webview_error, null))
                 .interceptUnkownUrl()
@@ -136,12 +136,12 @@ public abstract class BaseWebActivity extends BaseActivity {
             String title = webView.getTitle();
             String url = webView.getUrl();
             switch (position) {
-                case 0: // 复制链接
+                case 0: // Copy Link
                     SystemUtils.setClipString(this, url);
                     Toast.makeText(this, R.string.copied_link, Toast.LENGTH_SHORT).show();
                     break;
 
-                case 1: // 分享链接
+                case 1: // Share Link
                     String share = url;
                     if (!TextUtils.isEmpty(title)) {
                         share = title + "\n" + url;
@@ -152,12 +152,12 @@ public abstract class BaseWebActivity extends BaseActivity {
                     startActivity(Intent.createChooser(shareIntent, getString(R.string.share_title)));
                     break;
 
-                case 2: // 用浏览器打开
+                case 2: // Open in Browser
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                     startActivity(Intent.createChooser(intent, getString(R.string.browse_title)));
                     break;
 
-                case 3: // 打开我的收藏
+                case 3: // Open Favorites
                     startActivity(new Intent(this, CollectionActivity.class));
                     break;
             }
@@ -181,7 +181,7 @@ public abstract class BaseWebActivity extends BaseActivity {
         mPopup.getDialog().setOnDismissListener(dialog -> UIUtils.setBackgroundAlpha(this, 1f));
     }
 
-    // 使弹窗自适应文字宽度
+    // Size the popup to fit the text width
     private int computePopupItemMaxWidth(RecyclerWebviewMoreAdapter adapter) {
         float maxWidth = 0;
         View layout = View.inflate(this, R.layout.recyclerview_item_popup_webview_more, null);
@@ -240,7 +240,7 @@ public abstract class BaseWebActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PermissionHelper.REQ_CODE_PERMISSION) {
-            // 进入系统设置界面请求权限后的回调
+            // Callback after requesting permission in system settings
             if (!PermissionHelper.hasStoragePermissions(this)) {
                 finish();
             }

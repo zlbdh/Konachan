@@ -17,8 +17,8 @@ import java.lang.reflect.Method;
  */
 
 /**
- * 这个类描述了当前设备的配置中system bar的尺寸(StatusBar状态栏,NavigationBar虚拟按键栏,ActionBar标题栏)、
- * 屏幕宽高以及一些相关的特征。
+ * Describes system bar dimensions for the current device configuration: status bar, navigation bar, and ActionBar,
+ * plus screen dimensions and related properties.
  */
 public class SystemBarConfig {
 
@@ -52,10 +52,10 @@ public class SystemBarConfig {
 
     }
 
-    // 安卓系统允许修改系统的属性来控制navigation bar的显示和隐藏，此方法用来判断是否有修改过相关属性。
-    // (修改系统文件，在build.prop最后加入qemu.hw.mainkeys=1即可隐藏navigation bar)
-    // 相关属性模拟器中有使用。
-    // 当返回值等于"1"表示隐藏navigation bar，等于"0"表示显示navigation bar。
+    // Android system properties can control navigation bar visibility; check whether those properties were overridden.
+    // (Adding qemu.hw.mainkeys=1 at the end of build.prop hides the navigation bar)
+    // Emulators also use this property.
+    // A return value of "1" hides the navigation bar; "0" shows it.
     @TargetApi(19)
     private String getNavBarOverride() {
         String isNavBarOverride = null;
@@ -72,7 +72,7 @@ public class SystemBarConfig {
         return isNavBarOverride;
     }
 
-    //通过此方法获取action bar的高度
+    //Get ActionBar height
     @TargetApi(14)
     private int getActionBarHeight(Context context) {
         int result = 0;
@@ -84,7 +84,7 @@ public class SystemBarConfig {
         return result;
     }
 
-    //通过此方法获取navigation bar的高度
+    //Get navigation bar height
     @TargetApi(14)
     public int getNavigationBarHeight(Context context) {
         Resources res = context.getResources();
@@ -103,7 +103,7 @@ public class SystemBarConfig {
         return result;
     }
 
-    //通过此方法获取navigation bar的宽度
+    //Get navigation bar width
     @TargetApi(14)
     private int getNavigationBarWidth(Context context) {
         Resources res = context.getResources();
@@ -116,14 +116,14 @@ public class SystemBarConfig {
         return result;
     }
 
-    //通过此方法判断是否存在navigation bar
+    //Check whether a navigation bar exists
     @TargetApi(14)
     private boolean hasNavBar(Context context) {
         Resources res = context.getResources();
         int resourceId = res.getIdentifier(SHOW_NAV_BAR_RES_NAME, "bool", "android");
         if (resourceId != 0) {
             boolean hasNav = res.getBoolean(resourceId);
-            // 查看是否有通过系统属性来控制navigation bar。
+            // Check whether system properties control the navigation bar.
             if ("1".equals(getNavBarOverride())) {
                 hasNav = false;
             } else if ("0".equals(getNavBarOverride())) {
@@ -131,12 +131,12 @@ public class SystemBarConfig {
             }
             return hasNav;
         } else {
-            //可通过此方法来查看设备是否存在物理按键(menu,back,home键)。
+            //Check whether the device has physical menu, back, or home buttons.
             return !ViewConfiguration.get(context).hasPermanentMenuKey();
         }
     }
 
-    //通过此方法获取资源对应的像素值
+    //Get the pixel value for a resource
     private int getInternalDimensionSize(Resources res, String key) {
         int result = 0;
         int resourceId = res.getIdentifier(key, "dimen", "android");
@@ -146,20 +146,20 @@ public class SystemBarConfig {
         return result;
     }
 
-    //通过此方法获取最小一边的dp值，再通过这个dp值大小来判断设备的navigation bar是显示在底部还是右侧
+    //Get the smaller screen dimension in dp to determine whether the navigation bar appears at the bottom or right
     @TargetApi(17)
     private float getSmallestWidthDp(Activity activity) {
         DisplayMetrics metrics = new DisplayMetrics();
         float widthDp;
         float heightDp;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            //API 17之后使用，获取的像素宽高包含虚拟键所占空间，在API 17之前通过反射获取，
-            //获取的屏幕高度包含status bar和navigation bar
+            //On API 17+, measured dimensions include virtual navigation buttons; earlier APIs use reflection.
+            //The resulting screen height includes the status and navigation bars
             activity.getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
             widthDp = metrics.widthPixels / metrics.density;
             heightDp = metrics.heightPixels / metrics.density;
         } else {
-            //获取的屏幕高度包含status bar,但不包含navigation bar
+            //The resulting screen height includes the status bar but excludes the navigation bar
             activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
             widthDp = metrics.widthPixels / metrics.density;
             heightDp = (metrics.heightPixels + getNavigationBarWidth(activity)) / metrics.density;
@@ -167,14 +167,14 @@ public class SystemBarConfig {
         return Math.min(widthDp, heightDp);
     }
 
-    //通过此方法获取屏幕高度(不含status bar 和 navigation bar的高度)
+    //Get screen height excluding status and navigation bars
     private int getContentHeight(Activity activity) {
         DisplayMetrics metrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
         return metrics.heightPixels - getStatusBarHeight();
     }
 
-    //通过此方法获取屏幕的宽度(不含navigation bar的宽度)
+    //Get screen width excluding the navigation bar
     private int getContentWidth(Activity activity) {
         DisplayMetrics metrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -182,72 +182,72 @@ public class SystemBarConfig {
     }
 
     /**
-     * 判断navigation bar 是显示在底部还是显示在右侧
+     * Check whether the navigation bar is at the bottom or right
      *
-     * @return true表示在底部，false表示在右侧
+     * @return true for bottom, false for right
      */
     public boolean isNavigationAtBottom() {
         return (mSmallestWidthDp >= 600 || mInPortrait);
     }
 
     /**
-     * 获取status bar状态栏高度
+     * Get status bar height
      *
-     * @return 状态栏高度的像素值
+     * @return Status bar height in pixels
      */
     public int getStatusBarHeight() {
         return mStatusBarHeight;
     }
 
     /**
-     * 获取action bar的高度
+     * Get ActionBar height
      *
-     * @return action bar高度的像素值
+     * @return ActionBar height in pixels
      */
     public int getActionBarHeight() {
         return mActionBarHeight;
     }
 
     /**
-     * 判断此设备是否有navigation bar虚拟按键栏
+     * Check whether the device has an on-screen navigation bar
      *
-     * @return true表示有，false表示无
+     * @return true if present, otherwise false
      */
     public boolean hasNavigtionBar() {
         return mHasNavigationBar;
     }
 
     /**
-     * 获取navigation bar虚拟按键栏的高度
+     * Get on-screen navigation bar height
      *
-     * @return 返回navigation bar虚拟按键栏的高度的像素值，如果设备没有navigation bar虚拟按键栏则返回0
+     * @return Navigation bar height in pixels, or zero if absent
      */
     public int getNavigationBarHeight() {
         return mNavigationBarHeight;
     }
 
     /**
-     * 获取navigation bar虚拟按键栏的宽度（当navigation bar虚拟按键栏垂直显示在右侧时使用）
+     * Get on-screen navigation bar width when it is displayed vertically on the right
      *
-     * @return 返回navigation bar虚拟按键栏的宽度的像素值，如果设备没有navigation bar虚拟按键栏则返回0
+     * @return Navigation bar width in pixels, or zero if absent
      */
     public int getNavigationBarWidth() {
         return mNavigationBarWidth;
     }
 
     /**
-     * 获取屏幕高度(不含status bar 和 navigation bar的高度)
+     * Get screen height excluding status and navigation bars
      *
-     * @return 返回屏幕高度的像素值(不含status bar 和 navigation bar的高度)
+     * @return Screen height in pixels, excluding status and navigation bars
      */
     public int getContentHeight() {
         return mContentHeight;
     }
 
     /**
-     * 获取屏幕宽度(不含navigation bar的宽度)
+     * Get screen width excluding the navigation bar
      *
-     * @return 返回屏幕宽度的像素值(不含navigation bar的宽度)
+     * @return Screen width in pixels, excluding the navigation bar
      */
     public int getContentWidth() {
         return mContentWidth;

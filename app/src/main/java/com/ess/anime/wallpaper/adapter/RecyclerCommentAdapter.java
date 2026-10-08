@@ -26,7 +26,7 @@ public class RecyclerCommentAdapter extends BaseQuickAdapter<CommentBean, BaseVi
 
     @Override
     protected void convert(BaseViewHolder holder, CommentBean commentBean) {
-        //头像
+        //Avatar
         Map<String, String> headerMap = WebsiteManager.getInstance().getRequestHeaders();
         Glide.with(mContext)
                 .load(MyGlideModule.makeGlideUrl(commentBean.avatar, headerMap))
@@ -35,23 +35,23 @@ public class RecyclerCommentAdapter extends BaseQuickAdapter<CommentBean, BaseVi
                 .priority(Priority.NORMAL)
                 .into((ImageView) holder.getView(R.id.iv_head));
 
-        //作者
+        //Author
         holder.setText(R.id.tv_author, commentBean.author);
 
         //id
         holder.setText(R.id.tv_id, commentBean.id);
 
-        //时间
+        //Time
         holder.setText(R.id.tv_date, commentBean.date);
 
-        //引用
+        //Quote
         boolean hasQuote = !TextUtils.isEmpty(commentBean.quote);
         TextView tvQuote = holder.getView(R.id.tv_quote);
         tvQuote.setVisibility(hasQuote ? View.VISIBLE : View.GONE);
         tvQuote.setText(commentBean.quote);
         tvQuote.setMovementMethod(WebLinkMethod.getInstance().setOnHyperlinkListener(url -> HyperlinkActivity.launch(mContext, url)));
 
-        //评论
+        //Comment
         TextView tvComment = holder.getView(R.id.tv_comment);
         tvComment.setText(commentBean.comment);
         tvComment.setMovementMethod(WebLinkMethod.getInstance().setOnHyperlinkListener(url -> HyperlinkActivity.launch(mContext, url)));

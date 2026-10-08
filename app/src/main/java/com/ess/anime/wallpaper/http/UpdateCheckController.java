@@ -10,7 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-/** 网络检查的三态结果与有效缓存；无效响应不能污染最后有效缓存。 */
+/** Three-state network check result and valid cache; invalid responses must not replace the last valid cache. */
 public final class UpdateCheckController {
     public enum Status { AVAILABLE, LATEST, FAILED }
     public static final class Result {
@@ -50,7 +50,7 @@ public final class UpdateCheckController {
         this.network = network;
     }
     public synchronized void check(Callback callback) {
-        if (callback == null) throw new IllegalArgumentException("更新检查必须提供回调");
+        if (callback == null) throw new IllegalArgumentException("Update checks require a callback");
         cancel();
         final long request;
         synchronized (this) {
@@ -63,7 +63,7 @@ public final class UpdateCheckController {
                 @Override public void onFailure(String message) { complete(request, null, message); }
             });
         } catch (RuntimeException ignored) {
-            complete(request, null, "检查请求未能启动");
+            complete(request, null, "Unable to start the check request");
         }
     }
     public synchronized void cancel() {
@@ -74,7 +74,7 @@ public final class UpdateCheckController {
             pending = null;
         }
         network.cancel();
-        if (cancelled != null) deliver(cancelled, failure("检查已取消"));
+        if (cancelled != null) deliver(cancelled, failure("Check canceled"));
     }
     private void complete(long request, String json, String error) {
         Callback callback;
@@ -94,7 +94,7 @@ public final class UpdateCheckController {
         } catch (RuntimeException ignored) {
             apk = null;
         }
-        if (apk == null) return failure("更新信息无效");
+        if (apk == null) return failure("Invalid update information");
         FileOutputStream output = null;
         try {
             output = cache.startWrite();
@@ -102,7 +102,7 @@ public final class UpdateCheckController {
             cache.finishWrite(output);
         } catch (IOException ignored) {
             if (output != null) cache.failWrite(output);
-            return failure("更新信息未能保存");
+            return failure("Unable to save update information");
         }
         return new Result(apk.versionCode > installedVersion ? Status.AVAILABLE : Status.LATEST, apk, "");
     }

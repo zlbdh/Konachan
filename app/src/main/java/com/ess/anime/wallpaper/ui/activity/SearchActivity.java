@@ -68,7 +68,7 @@ public class SearchActivity extends BaseActivity {
     private RecyclerSearchModePopupAdapter mSpinnerAdapter;
     private int mSelectedPos;
 
-    // 判断EditText是用户输入还是setText的标志位，默认为true
+    // Distinguish user input from setText in EditText; true by default
     private boolean mUserInput = true;
 
     @Override
@@ -225,13 +225,13 @@ public class SearchActivity extends BaseActivity {
         mSmartTab.setViewPager(mVpSearch);
     }
 
-    // 下拉栏图标
+    // Dropdown icon
     private void changeSearchMode(View view) {
         mPopup.show(view);
         UIUtils.closeSoftInput(SearchActivity.this);
     }
 
-    // 清空搜索内容
+    // Clear the search text
     private void clearSearch() {
         mEtSearch.setText("");
     }
@@ -330,7 +330,7 @@ public class SearchActivity extends BaseActivity {
     }
 
     private void initListPopupWindow() {
-        // 选择搜索模式弹窗
+        // Search mode selection popup
         List<String> searchModeList = Arrays.asList(getResources().getStringArray(R.array.spinner_list_item_search_mode));
         mSpinnerAdapter = new RecyclerSearchModePopupAdapter(searchModeList);
         mSpinnerAdapter.setSelection(mSelectedPos);
@@ -365,7 +365,7 @@ public class SearchActivity extends BaseActivity {
         mPopup.getDialog().setOnDismissListener(dialog -> UIUtils.setBackgroundAlpha(this, 1f));
     }
 
-    // 使弹窗自适应文字宽度
+    // Size the popup to fit the text width
     private int computePopupItemMaxWidth() {
         float maxWidth = 0;
         View layout = View.inflate(this, R.layout.recyclerview_item_popup_search_mode, null);

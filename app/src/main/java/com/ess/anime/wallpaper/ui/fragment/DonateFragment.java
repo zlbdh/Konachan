@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.ess.anime.wallpaper.R;
 import com.ess.anime.wallpaper.listener.OnTouchScaleListener;
@@ -21,17 +22,16 @@ import com.ess.anime.wallpaper.ui.view.image.MyImageSwitcher;
 import com.ess.anime.wallpaper.utils.SystemUtils;
 import com.ess.anime.wallpaper.utils.UIUtils;
 
-import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 public class DonateFragment extends DialogFragment {
 
-    private MyImageSwitcher mSwitcherTitle;
+    private TextView mSwitcherTitle;
     private MyImageSwitcher mSwitcherImage;
     private ViewGroup mLayoutDonate;
-    private ImageView mIvAlipay;
+    private TextView mIvAlipay;
     private ImageView mIvWechat;
     private ImageView mIvClose;
 
@@ -76,18 +76,8 @@ public class DonateFragment extends DialogFragment {
         mIvAlipay.setOnTouchListener(listener);
         mIvWechat.setOnTouchListener(listener);
 
-        int index = new Random().nextInt(2);
-        int titleA = getResources().getIdentifier("ic_donate_title_a_" + index,
-                "drawable", getContext().getPackageName());
-        int titleB = getResources().getIdentifier("ic_donate_title_b_" + index,
-                "drawable", getContext().getPackageName());
-        mSwitcherTitle.loadImage(titleA, titleB);
-
-        int imgA = getResources().getIdentifier("img_donate_a_" + index,
-                "drawable", getContext().getPackageName());
-        int imgB = getResources().getIdentifier("img_donate_b_" + index,
-                "drawable", getContext().getPackageName());
-        mSwitcherImage.loadImage(imgA, imgB);
+        mSwitcherTitle.setText(R.string.donate_title);
+        mSwitcherImage.loadImage(R.drawable.img_donate_a_0, R.drawable.img_donate_b_0);
     }
 
     private void startAnim() {
@@ -170,7 +160,7 @@ public class DonateFragment extends DialogFragment {
             mHasFlipped = true;
             mIvAlipay.setVisibility(View.GONE);
             mIvWechat.setVisibility(View.GONE);
-            mSwitcherTitle.flipImage();
+            mSwitcherTitle.setText(R.string.donate_thanks);
             mSwitcherImage.flipImage();
         }
     }
@@ -188,7 +178,7 @@ public class DonateFragment extends DialogFragment {
         super.dismissAllowingStateLoss();
     }
 
-    /*************** 保持/恢复屏幕旋转 ***************/
+    /*************** Preserve and restore screen orientation ***************/
 
     private int originalScreenOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 

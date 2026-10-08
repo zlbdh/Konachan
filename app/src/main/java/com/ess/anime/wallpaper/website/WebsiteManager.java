@@ -43,7 +43,7 @@ public class WebsiteManager {
         }
     }
 
-    // 切换网站源
+    // Switch image sources
     public void changeWebsite(String baseUrl) {
         synchronized (WebsiteManager.class) {
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MyApp.getInstance());
@@ -157,7 +157,7 @@ public class WebsiteManager {
         }
     }
 
-    // 下载更新当前网站源的搜索下拉提示
+    // Download updated search dropdown suggestions for the current site
     public void updateCurrentTagJson() {
         synchronized (WebsiteManager.class) {
             if (mWebsiteConfig.hasTagJson()) {
@@ -220,7 +220,7 @@ public class WebsiteManager {
         }
     }
 
-    // 需要填充的Header信息，如AccessToken
+    // Headers to populate, such as AccessToken
     public Map<String, String> getRequestHeaders() {
         Map<String, String> headerMap = new HashMap<>();
         try {

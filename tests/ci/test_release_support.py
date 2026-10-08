@@ -1,4 +1,4 @@
-"""最终 APK、Gradle 输出元数据与公有签名校验记录必须一致。"""
+"""The final APK, Gradle output metadata, and public signing verification record must agree."""
 
 import hashlib
 import json

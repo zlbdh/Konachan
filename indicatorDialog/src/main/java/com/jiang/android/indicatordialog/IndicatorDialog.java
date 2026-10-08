@@ -30,7 +30,7 @@ public class IndicatorDialog {
     public static float ARROW_RECTAGE = 0.1f;
     int gravity = Gravity.TOP | Gravity.LEFT;
     /**
-     * 控件
+     * Controls
      */
     private Activity mContext;
     private Dialog mDialog;
@@ -43,7 +43,7 @@ public class IndicatorDialog {
     private View mShowView;
 
     /**
-     * 变量
+     * Variables
      */
     private int mArrowWidth;
     private int mWidth;
@@ -151,7 +151,7 @@ public class IndicatorDialog {
         ViewGroup.LayoutParams params = rootLayout.getLayoutParams();
 
 
-        //重新获取屏幕能接受的最大高度，如果当前高度超过屏幕能接受的恩最大高度，则设置为屏幕能接受的高度
+        //Recalculate the maximum screen-supported height and clamp the current height to it
         int canUseHeight = 0;
         if (mShowView != null) {
             int[] location = new int[2];
@@ -235,8 +235,8 @@ public class IndicatorDialog {
             gravity = Gravity.CENTER_HORIZONTAL | (mBuilder.arrowdirection != BOTTOM ? Gravity.TOP : Gravity.BOTTOM);
         }
         dialogWindow.setGravity(gravity);
-        lp.width = mBuilder.width; // 宽度
-        lp.height = height; // 高度
+        lp.width = mBuilder.width; // Width
+        lp.height = height; // Height
         dialogWindow.setAttributes(lp);
     }
 

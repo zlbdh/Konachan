@@ -79,12 +79,12 @@ public abstract class BaseDownloadProgressListener<T> {
     protected abstract String getNotifyTitle();
 
     /**
-     * 下载进度
+     * Download progress
      *
-     * @param progress    进度 [0, 100]
-     * @param currentSize 目前已经下载的byte大小
-     * @param totalSize   文件总大小
-     * @param speed       此时每秒下载的byte大小
+     * @param progress    Progress in [0, 100]
+     * @param currentSize Bytes downloaded so far
+     * @param totalSize   Total file size
+     * @param speed       Current download speed in bytes per second
      */
     public void onProgress(int progress, long currentSize, long totalSize, long speed) {
         if (TextUtils.equals(mFileAvailable, "-1B") || TextUtils.equals(mFileAvailable, "0B")) {
@@ -96,7 +96,7 @@ public abstract class BaseDownloadProgressListener<T> {
         mNotifyManager.notify(mNotifyId, mNotifyBuilder.build());
     }
 
-    // 下载完成
+    // Download complete
     public void onFinish() {
         createOperatePendingIntent();
         String finish = mContext.getString(R.string.download_finished, mFileAvailable);

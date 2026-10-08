@@ -39,12 +39,12 @@ public class WallpaperUtils {
     public final static int FLAG_BOTH = WallpaperManager.FLAG_SYSTEM | WallpaperManager.FLAG_LOCK;
 
     /**
-     * 直接设置系统壁纸，可选择壁纸模式（7.0及以上专用）
+     * Set wallpaper directly with a selectable destination (Android 7.0+)
      *
-     * @param context  上下文
-     * @param filePath 图片文件路径
-     * @param flag     系统壁纸模式 One of {@link #FLAG_HOME_SCREEN}, {@link #FLAG_LOCK_SCREEN}, or {@link #FLAG_BOTH}.
-     * @return 是否成功
+     * @param context  Context
+     * @param filePath Image file path
+     * @param flag     Wallpaper destination: {@link #FLAG_HOME_SCREEN}, {@link #FLAG_LOCK_SCREEN}, or {@link #FLAG_BOTH}.
+     * @return Whether the operation succeeded
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static boolean setWallpaperDirectly(Context context, String filePath, @WallpaperFlag int flag) {
@@ -54,7 +54,7 @@ public class WallpaperUtils {
 
         Bitmap bitmap = BitmapFactory.decodeFile(filePath);
         try {
-            // todo 小米和华为设置锁屏壁纸不生效
+            // TODO Lock-screen wallpaper does not apply on Xiaomi and Huawei devices
             WallpaperManager wallpaperManager = WallpaperManager.getInstance(context);
             int result = wallpaperManager.setBitmap(bitmap, null, true, flag);
             return result != 0;
@@ -69,11 +69,11 @@ public class WallpaperUtils {
     }
 
     /**
-     * 直接设置系统壁纸，同时设置桌面与锁屏（全版本通用）
+     * Set home-screen and lock-screen wallpaper directly on all supported versions
      *
-     * @param context  上下文
-     * @param filePath 图片文件路径
-     * @return 是否成功
+     * @param context  Context
+     * @param filePath Image file path
+     * @return Whether the operation succeeded
      */
     public static boolean setWallpaperDirectly(Context context, String filePath) {
         if (context == null || TextUtils.isEmpty(filePath)) {
@@ -96,10 +96,10 @@ public class WallpaperUtils {
     }
 
     /**
-     * 调用系统App设置壁纸
+     * Use a system app to set wallpaper
      *
-     * @param activity 上下文
-     * @param uri      图片Uri
+     * @param activity Activity context
+     * @param uri      Image URI
      */
     public static void setWallpaperBySystemApp(Activity activity, Uri uri) {
         if (!SystemUtils.isActivityActive(activity) || uri == null) {

@@ -6,9 +6,9 @@ import com.google.gson.JsonObject;
 import java.util.List;
 
 /**
- * Eporner（eporner.com）- 官方 v2 API，无需 key
+ * Eporner (eporner.com): official v2 API, no key required
  * GET eporner.com/api/v2/video/search/?query={q}&page={p}&per_page=30&thumbsize=big
- * 注意：id 字段叫 "id" 而不是 "video_id"。
+ * The ID field is "id", not "video_id".
  */
 public class EpornerConfig extends TubeConfig {
 

@@ -21,10 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * WordPress REST API 解析器（misskon.com、4khd.com）
+ * WordPress REST API parser for misskon.com and 4khd.com
  *
- * 列表接口已带 &_embed=wp:featuredmedia，首图直链直接从 _embedded 里取；
- * 取不到时再同步请求 media 接口做第二跳兜底。
+ * List requests include &_embed=wp:featuredmedia; read the featured image URL from _embedded,
+ * falling back to a synchronous second request to the media endpoint.
  */
 public class WordPressParser extends HtmlParser {
 
@@ -47,7 +47,7 @@ public class WordPressParser extends HtmlParser {
                     JsonObject post = items.get(i).getAsJsonObject();
                     String id = post.get("id").getAsString();
 
-                    // 标题（去掉 HTML 标签）
+                    // Title with HTML tags removed
                     String title = "";
                     try {
                         String rendered = post.getAsJsonObject("title").get("rendered").getAsString();
@@ -55,7 +55,7 @@ public class WordPressParser extends HtmlParser {
                     } catch (Exception ignore) {
                     }
 
-                    // 首图：优先 _embedded，其次同步请求 media 接口
+                    // Featured image: prefer _embedded, then synchronously request the media endpoint
                     String thumbUrl = "";
                     int mediaWidth = 0;
                     int mediaHeight = 0;
@@ -76,7 +76,7 @@ public class WordPressParser extends HtmlParser {
                         }
                     }
                     if (TextUtils.isEmpty(thumbUrl)) {
-                        // 拿不到直链就跳过，避免占位图刷屏
+                        // Skip entries without a direct URL to avoid a screen full of placeholders
                         continue;
                     }
 
@@ -85,7 +85,7 @@ public class WordPressParser extends HtmlParser {
                     String linkToShow = mWebsiteConfig.getPostDetailUrl(id);
                     ThumbBean thumbBean = new ThumbBean(id, mediaWidth, mediaHeight,
                             thumbUrl, realSize, linkToShow);
-                    // 列表数据已足够，直接拼出 ImageBean，详情页不再二次请求
+                    // List data is sufficient to build ImageBean directly without another details request
                     thumbBean.imageBean = buildImageBean(id, title, thumbUrl, mediaWidth, mediaHeight);
                     thumbList.add(thumbBean);
                 } catch (Exception e) {
@@ -98,7 +98,7 @@ public class WordPressParser extends HtmlParser {
         return thumbList;
     }
 
-    /** 从 _embedded['wp:featuredmedia'][0] 取首图信息 */
+    /** Get featured image information from _embedded['wp:featuredmedia'][0] */
     private JsonObject getEmbeddedMedia(JsonObject post) {
         try {
             JsonObject embedded = post.getAsJsonObject("_embedded");
@@ -114,7 +114,7 @@ public class WordPressParser extends HtmlParser {
         return null;
     }
 
-    /** 第二跳：同步请求 media 接口拿 source_url（_embed 没带回来时兜底） */
+    /** Second request: synchronously retrieve source_url from the media endpoint when _embed did not include it */
     private JsonObject fetchMedia(JsonObject post) {
         try {
             JsonElement fm = post.get("featured_media");
@@ -168,7 +168,7 @@ public class WordPressParser extends HtmlParser {
 
     @Override
     public String getImageDetailJson(Document doc) {
-        // 详情数据已在 getThumbList 里拼好（thumbBean.imageBean），这里兜底返回空
+        // Details are already built in getThumbList as thumbBean.imageBean; return empty as a fallback here
         return "";
     }
 

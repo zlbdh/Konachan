@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import okhttp3.Response;
 
-/** 串行准备媒体信息，并在主线程真正提交下载；完成只表示准备和入队结束。 */
+/** Prepare media metadata sequentially and submit downloads on the main thread; completion means preparation and queueing have ended. */
 public final class BatchDownloadHelper {
     public interface Callback {
         void onProgress(int done, int total);
@@ -67,7 +67,7 @@ public final class BatchDownloadHelper {
     public static Task downloadAll(Context context, List<ThumbBean> thumbs, int quality, Callback callback) {
         WebsiteConfig website;
         Map<String, String> headers;
-        // 与切站使用同一个锁，保证解析器、请求头和保存前缀来自同一图源。
+        // Use the same lock as site switching so the parser, headers, and saved-file prefix come from one source.
         synchronized (WebsiteManager.class) {
             WebsiteManager manager = WebsiteManager.getInstance();
             website = manager.getWebsiteConfig();
@@ -91,12 +91,12 @@ public final class BatchDownloadHelper {
                 if (task.isCancelled()) break;
                 try {
                     ImageBean image = resolveImage(thumb, website, null);
-                    // 列表已携带直链时直接使用，不重复访问所有详情页。
+                    // Use direct media links already present in the list without requesting every details page again.
                     if (!hasMedia(image)) image = resolveImage(thumb, website, loader.load(thumb, task));
                     if (task.isCancelled()) break;
                     DownloadBean bean = DownloadQualitySelector.select(
                             ImageDataHelper.makeDownloadChosenList(appContext, thumb, image, savedHead), quality);
-                    if (bean == null) throw new IOException("图源未提供可下载的媒体地址");
+                    if (bean == null) throw new IOException("The site did not provide a downloadable media URL");
                     Outcome outcome = enqueueOnMain(bean, task, main, starter);
                     if (task.isCancelled()) break;
                     if (outcome == Outcome.QUEUED) queued++;
@@ -108,7 +108,7 @@ public final class BatchDownloadHelper {
                     break;
                 } catch (Exception e) {
                     if (task.isCancelled()) break;
-                    // 不打印请求 URL、请求头或响应内容，避免凭据进入日志。
+                    // Do not log request URLs, headers, or response bodies to keep credentials out of logs.
                     failed++;
                 }
                 final int completed = ++done;
@@ -116,7 +116,7 @@ public final class BatchDownloadHelper {
             }
             Result result = new Result(queued, skipped, failed, snapshot.size(), task.isCancelled());
             main.post(() -> callback.onComplete(result));
-        }, "批量下载准备");
+        }, "Preparing batch downloads");
         task.worker.start();
         return task;
     }
@@ -126,8 +126,8 @@ public final class BatchDownloadHelper {
                 .tag(task).headers("User-Agent", OkHttp.USER_AGENT);
         for (Map.Entry<String, String> header : headers.entrySet()) request.headers(header.getKey(), header.getValue());
         try (Response response = request.execute()) {
-            if (!response.isSuccessful() || response.body() == null) throw new IOException("详情请求失败");
-            // JSON 和 HTML 均按原始 body 获取，避开 Jsoup HTTP 客户端的 MIME 限制。
+            if (!response.isSuccessful() || response.body() == null) throw new IOException("Details request failed");
+            // Fetch both JSON and HTML as raw response bodies to avoid Jsoup HTTP client MIME restrictions.
             return response.body().string();
         }
     }
@@ -140,10 +140,10 @@ public final class BatchDownloadHelper {
         if (source != null && source.posts != null && source.posts.length > 0 && source.posts[0] != null) {
             post.replaceDataIfNotNull(source.posts[0]);
         }
-        // 使用副本，避免后台任务修改 UI 线程正在预加载的 ThumbBean。
+        // Use a copy so background tasks do not modify the ThumbBean being preloaded on the UI thread.
         if (thumb.tempPost != null) post.replaceDataIfNotNull(thumb.tempPost);
         if (TextUtils.isEmpty(post.id)) post.id = thumb.id;
-        if (!TextUtils.equals(thumb.id, post.id)) throw new IllegalArgumentException("详情不属于该图片");
+        if (!TextUtils.equals(thumb.id, post.id)) throw new IllegalArgumentException("The details do not belong to this image");
         if (!DownloadQualitySelector.isMediaUrl(post.sampleUrl)) {
             post.sampleUrl = DownloadQualitySelector.isMediaUrl(post.fileUrl) ? post.fileUrl : post.jpegUrl;
         }

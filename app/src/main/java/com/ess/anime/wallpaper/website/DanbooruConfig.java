@@ -17,7 +17,7 @@ import java.util.Locale;
 
 public class DanbooruConfig extends WebsiteConfig<DanbooruParser> {
 
-    // Danbooru 登录后配 api_key 可提高频率限制（danbooru.donmai.us/users/home 获取）
+    // A Danbooru login and api_key increase the rate limit; get them at danbooru.donmai.us/users/home
     private String getApiKeySuffix() {
         try {
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MyApp.getInstance());
@@ -54,7 +54,7 @@ public class DanbooruConfig extends WebsiteConfig<DanbooruParser> {
 
     @Override
     public String getTagJsonUrl() {
-        // Danbooru没有搜索提示，借用Konachan(r18)的
+        // Danbooru has no search suggestions; use Konachan (R18) suggestions
         return TAG_JSON_URL_KONACHAN_E;
     }
 

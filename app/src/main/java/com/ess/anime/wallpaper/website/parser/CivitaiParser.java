@@ -19,15 +19,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Civitai API 解析器
+ * Civitai API parser
  *
- * 响应格式：
- * { items: [{id, url（image.civitai.com 直链）, width, height,
+ * Response format:
+ * { items: [{id, url (direct image.civitai.com URL), width, height,
  *            nsfwLevel, username, postId, meta:{prompt}}],
  *   metadata: {nextCursor} }
  *
- * url 即原图直链，无需第二跳；解析完把 metadata.nextCursor 回填给
- * CivitaiConfig，供下一页翻页使用。
+ * url points directly to the original image, with no second request. Pass metadata.nextCursor back to
+ * CivitaiConfig after parsing so it can request the next page.
  */
 public class CivitaiParser extends HtmlParser {
 
@@ -61,7 +61,7 @@ public class CivitaiParser extends HtmlParser {
                     String author = getAsString(item, "username");
                     String nsfwLevel = getAsString(item, "nsfwLevel");
 
-                    // prompt 藏在 meta 对象里，拿不到也不影响展示
+                    // The prompt is inside meta; a missing prompt does not prevent display
                     String prompt = "";
                     try {
                         JsonObject meta = item.getAsJsonObject("meta");
@@ -76,7 +76,7 @@ public class CivitaiParser extends HtmlParser {
                     String linkToShow = mWebsiteConfig.getPostDetailUrl(id);
                     ThumbBean thumbBean = new ThumbBean(id, width, height,
                             url, realSize, linkToShow);
-                    // 列表数据已足够，直接拼出 ImageBean，详情页不再二次请求
+                    // List data is sufficient to build ImageBean directly without another details request
                     thumbBean.imageBean = buildImageBean(id, url, width, height,
                             author, prompt, nsfwLevel);
                     thumbList.add(thumbBean);
@@ -84,7 +84,7 @@ public class CivitaiParser extends HtmlParser {
                     e.printStackTrace();
                 }
             }
-            // 回填 nextCursor 供下一页使用
+            // Store nextCursor for the next page
             try {
                 JsonObject metadata = root.getAsJsonObject("metadata");
                 if (metadata != null) {
@@ -121,7 +121,7 @@ public class CivitaiParser extends HtmlParser {
                 .jpegWidth(String.valueOf(width))
                 .jpegHeight(String.valueOf(height))
                 .jpegFileSize("-1")
-                .rating("e")  // 本站只拉 nsfw=true 的内容
+                .rating("e")  // This site requests only nsfw=true content
                 .hasChildren("false")
                 .parentId("");
         return ImageBean.getImageDetailFromJson(builder.build());
@@ -129,7 +129,7 @@ public class CivitaiParser extends HtmlParser {
 
     @Override
     public String getImageDetailJson(Document doc) {
-        // 详情数据已在 getThumbList 里拼好（thumbBean.imageBean），这里兜底返回空
+        // Details are already built in getThumbList as thumbBean.imageBean; return empty as a fallback here
         return "";
     }
 
@@ -143,7 +143,7 @@ public class CivitaiParser extends HtmlParser {
         return new ArrayList<>();
     }
 
-    /** 容错取字符串：兼容数字/布尔/null */
+    /** Safely read a string, accepting numbers, booleans, and null */
     private static String getAsString(JsonObject obj, String key) {
         try {
             JsonElement e = obj.get(key);
@@ -159,7 +159,7 @@ public class CivitaiParser extends HtmlParser {
         }
     }
 
-    /** 容错取整数 */
+    /** Safely read an integer */
     private static int getAsInt(JsonObject obj, String key, int defValue) {
         try {
             JsonElement e = obj.get(key);

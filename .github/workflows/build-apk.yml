@@ -1,4 +1,4 @@
-name: 构建 Debug APK
+name: Build Debug APK
 
 'on':
   push:
@@ -20,27 +20,27 @@ jobs:
       group: konachan-release-master
       cancel-in-progress: false
     steps:
-      - name: 拉取代码
+      - name: Check out code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - name: 验证发布逻辑
+      - name: Verify release logic
         run: python3 -m unittest discover -s tests/ci -v
 
-      - name: 配置 Java 17
+      - name: Set up Java 17
         uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: 配置 Gradle
+      - name: Set up Gradle
         uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
         with:
           cache-provider: basic
           dependency-graph: disabled
 
-      - name: 确认 Android SDK
+      - name: Verify Android SDK
         timeout-minutes: 6
         run: |
           set -euo pipefail
@@ -70,10 +70,10 @@ jobs:
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" version
           printf 'sdk.dir=%s\n' "$ANDROID_HOME" > local.properties
 
-      - name: 构建 APK
+      - name: Build APK
         run: bash ./gradlew --no-daemon --stacktrace :app:assembleDebug
 
-      - name: 使用项目固定签名并验证 APK
+      - name: Sign with the pinned project certificate and verify the APK
         id: signed
         env:
           KEYSTORE_B64: ${{ secrets.KONACHAN_SIGNING_KEYSTORE_B64 }}
@@ -99,11 +99,11 @@ jobs:
           "$ANDROID_HOME/build-tools/35.0.0/zipalign" -c -P 16 4 "$APK_FILE"
           echo "apk_path=$APK_FILE" >> "$GITHUB_OUTPUT"
 
-      - name: 清理临时签名材料
+      - name: Clean up temporary signing files
         if: always()
         run: rm -f -- "$RUNNER_TEMP/konachan-signing.p12"
 
-      - name: 上传 APK
+      - name: Upload APK
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: konachan-debug-apk
@@ -113,7 +113,7 @@ jobs:
           retention-days: 14
           archive: true
 
-      - name: 发布 Release 并更新版本文件
+      - name: Publish release and update version file
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           APK_PATH: ${{ steps.signed.outputs.apk_path }}

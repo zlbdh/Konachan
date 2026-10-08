@@ -22,7 +22,7 @@ import java.util.List;
 
 public class TagOperationHelper {
 
-    /************************** Tag 操作 **************************/
+    /************************** Tag operations **************************/
 
     public static void searchTag(Activity activity, String tag) {
         if (SystemUtils.isActivityActive(activity)) {

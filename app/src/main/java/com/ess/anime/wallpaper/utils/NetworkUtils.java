@@ -6,22 +6,22 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 
 /**
- * 获取手机网络状态信息的工具包
+ * Utilities for device network status
  *
  * @author Zero
  */
 public class NetworkUtils {
 
     /**
-     * 获取当前网络模式 <br/><br/>
-     * <b>需添加权限：</b><br/>
+     * Get the current network mode <br/><br/>
+     * <b>Required permission:</b><br/>
      * &emsp;&lt;uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /&gt;
      *
-     * @param context 上下文
+     * @param context Context
      * @return one of ConnectivityManager.TYPE_MOBILE, ConnectivityManager.TYPE_WIFI,
      * ConnectivityManager.TYPE_WIMAX, ConnectivityManager.TYPE_ETHERNET,
      * ConnectivityManager.TYPE_BLUETOOTH, or other types defined by ConnectivityManager，
-     * 如果无网络则返回-1
+     * Return -1 if no network is available
      */
     public static int getNetworkType(Context context) {
         ConnectivityManager connectivity = (ConnectivityManager)
@@ -38,11 +38,11 @@ public class NetworkUtils {
     }
 
     /**
-     * 获取当前wifi状态 <br/><br/>
-     * <b>需添加权限：</b><br/>
+     * Get the current Wi-Fi state <br/><br/>
+     * <b>Required permission:</b><br/>
      * &emsp;&lt;uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /&gt;
      *
-     * @param context 上下文
+     * @param context Context
      * @return One of WifiManager.WIFI_STATE_DISABLED, WifiManager.WIFI_STATE_DISABLING,
      * WifiManager.WIFI_STATE_ENABLED, WifiManager.WIFI_STATE_ENABLING,
      * WifiManager.WIFI_STATE_UNKNOWN

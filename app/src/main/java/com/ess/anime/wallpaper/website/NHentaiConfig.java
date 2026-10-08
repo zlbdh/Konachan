@@ -11,18 +11,18 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * nhentai.net - 官方 v2 REST API，无需 key
+ * nhentai.net: official v2 REST API, no key required
  *
- * 注意：实际 API 为新版紧凑格式（已实测，非旧版 images.pages 格式）：
- * - 列表：GET /api/v2/galleries?page=N → {result:[...], num_pages}
- *   单画廊：{id, media_id, english_title, thumbnail:"galleries/{mid}/thumb.jpg.webp",
+ * The API uses a verified compact format rather than the old images.pages format:
+ * - List: GET /api/v2/galleries?page=N → {result:[...], num_pages}
+ *   Single gallery: {id, media_id, english_title, thumbnail:"galleries/{mid}/thumb.jpg.webp",
  *            thumbnail_width/height, num_pages, num_favorites, tag_ids, blacklisted}
- * - 按 tag：GET /api/v2/galleries/tagged?tag_id={id}&page=N（同上格式）
- * - 搜索：GET /api/v2/search?query={q}&page=N（同上格式）
- * - 详情：GET /api/v2/galleries/{id} → {title:{english,pretty}, cover, thumbnail,
- *            scanlator, upload_date(epoch秒), tags:[{id,type,name}], num_pages,
+ * - By tag: GET /api/v2/galleries/tagged?tag_id={id}&page=N, using the same format
+ * - Search: GET /api/v2/search?query={q}&page=N, using the same format
+ * - Details: GET /api/v2/galleries/{id} → {title:{english,pretty}, cover, thumbnail,
+ *            scanlator, upload_date (epoch seconds), tags:[{id,type,name}], num_pages,
  *            pages:[{number, path:"galleries/{mid}/N.jpg", width, height, ...}]}
- * - 直链：https://i{N}.nhentai.net/{path}，N 取 1-4（path 自带真实扩展名）
+ * - Direct URL: https://i{N}.nhentai.net/{path}, where N is 1–4 and path includes the actual extension
  */
 public class NHentaiConfig extends WebsiteConfig<NHentaiParser> {
 
@@ -45,7 +45,7 @@ public class NHentaiConfig extends WebsiteConfig<NHentaiParser> {
 
     @Override
     public int getWebsiteLogoRes() {
-        // parent 接线时生成 ic_website_nhentai 图标
+        // The parent agent creates the ic_website_nhentai icon during integration
         return R.drawable.ic_website_nhentai;
     }
 
@@ -85,7 +85,7 @@ public class NHentaiConfig extends WebsiteConfig<NHentaiParser> {
             return getBaseUrl() + "api/v2/galleries?page=" + page;
         }
         if (tag.matches("\\d+")) {
-            // 纯数字视为 tag id，走 tagged 接口
+            // Treat a numeric query as a tag ID and use the tagged endpoint
             return getBaseUrl() + "api/v2/galleries/tagged?tag_id=" + tag + "&page=" + page;
         }
         return getBaseUrl() + "api/v2/search?query=" + encodeTag(tag) + "&page=" + page;
@@ -113,11 +113,11 @@ public class NHentaiConfig extends WebsiteConfig<NHentaiParser> {
 
     @Override
     public String getPostDetailUrl(String id) {
-        // App 用 linkToShow 拉取详情，这里给 API 地址（parser 按 JSON 解析）
+        // The app retrieves details through linkToShow; return an API URL because the parser expects JSON
         return getBaseUrl() + "api/v2/galleries/" + id;
     }
 
-    /** 网页版画廊地址（source 字段 / 用户查看用） */
+    /** Web gallery URL for the source field and user viewing */
     public String getGalleryWebUrl(String id) {
         return getBaseUrl() + "g/" + id + "/";
     }

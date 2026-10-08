@@ -5,7 +5,7 @@ import com.ess.anime.wallpaper.utils.StoragePaths;
 
 public class Constants {
 
-    // 用于Sound标志位
+    // Sound flag
     public static boolean sRestart = true;
     public static boolean sAllowPlaySound;
 
@@ -56,15 +56,15 @@ public class Constants {
     public final static int FULLSCREEN_CODE = 2000;
 
     // EventBus
-    public final static String CHECK_UPDATE = "checkUpdate";  // 检测到新版本后通知 MainActivity
-    public final static String GET_IMAGE_DETAIL = "getImageDetail";  // 获取到图片详细信息后通知详情页显示信息，PostFragment和PoolFragment更新adapter
-    public final static String RELOAD_DETAIL_BY_ID = "reloadDetailById";  // PoolPostFragment获取到imageBean后重新根据ID请求tempPost
-    public final static String LOCAL_FILES_CHANGED = "localFilesChanged";  // 收藏夹本地文件发生变动后通知FullscreenActivity退出页面
-    public final static String START_VIDEO = "startVideo";  // FullscreenActivity翻页后通知MultipleMediaLayout播放Video
-    public final static String RESUME_VIDEO = "resumeVideo";  // ImageFragment和FullscreenActivity触发onResume()后通知MultipleMediaLayout恢复Video
-    public final static String PAUSE_VIDEO = "pauseVideo";  // ImageFragment和FullscreenActivity触发onPause()后通知MultipleMediaLayout暂停Video
-    public final static String TOGGLE_VIDEO_CONTROLLER = "toggleVideoController";  // FullscreenActivity单击页面后通知MultipleMediaLayout切换视频播放控制器显隐
-    public final static String TOGGLE_SCREEN_ORIENTATION = "toggleScreenOrientation";  // 设置页切换强制横屏开关后通知各页面旋转屏幕
+    public final static String CHECK_UPDATE = "checkUpdate";  // Notify MainActivity when a new version is detected
+    public final static String GET_IMAGE_DETAIL = "getImageDetail";  // Notify details screens when image information arrives; PostFragment and PoolFragment update their adapters
+    public final static String RELOAD_DETAIL_BY_ID = "reloadDetailById";  // PoolPostFragment requests tempPost again by ID after receiving imageBean
+    public final static String LOCAL_FILES_CHANGED = "localFilesChanged";  // Notify FullscreenActivity to close when local favorite files change
+    public final static String START_VIDEO = "startVideo";  // Notify MultipleMediaLayout to play video after FullscreenActivity changes pages
+    public final static String RESUME_VIDEO = "resumeVideo";  // Resume MultipleMediaLayout video when ImageFragment or FullscreenActivity receives onResume()
+    public final static String PAUSE_VIDEO = "pauseVideo";  // Pause MultipleMediaLayout video when ImageFragment or FullscreenActivity receives onPause()
+    public final static String TOGGLE_VIDEO_CONTROLLER = "toggleVideoController";  // Toggle MultipleMediaLayout video controls when FullscreenActivity receives a single tap
+    public final static String TOGGLE_SCREEN_ORIENTATION = "toggleScreenOrientation";  // Notify screens to rotate after the force-landscape setting changes
 
     // Image Detail
     public final static String RATING_S = "s";

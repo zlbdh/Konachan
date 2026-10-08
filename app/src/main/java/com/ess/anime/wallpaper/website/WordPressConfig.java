@@ -10,20 +10,20 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * WordPress REST API 站点抽象基类（misskon.com、4khd.com 等 Cosplay 站）
+ * Abstract base class for WordPress REST API sites such as misskon.com and 4khd.com
  *
- * 子类只需覆盖 getWebsiteName / getBaseUrl / getWebsiteLogoRes / getSavedImageHead，
- * 以及 baseUrl 常量。URL 构造走 getRestBase()，4khd 这类 rest_route 形式的站点
- * 覆盖 getRestBase() 和 getMediaUrl(int) 即可。
+ * Subclasses override getWebsiteName, getBaseUrl, getWebsiteLogoRes, getSavedImageHead,
+ * and the baseUrl constant. URL construction uses getRestBase(); rest_route sites such as 4khd
+ * override getRestBase() and getMediaUrl(int).
  */
 public abstract class WordPressConfig extends WebsiteConfig<WordPressParser> {
 
     private WordPressParser mParser;
 
     /**
-     * 二级继承（MisskonConfig extends WordPressConfig）时，
-     * 父类构造函数的泛型反射拿不到 ParameterizedType，parser 会是 null，
-     * 这里直接创建，绕过反射。
+     * With two-level inheritance, such as MisskonConfig extending WordPressConfig,
+     * generic reflection in the parent constructor cannot get a ParameterizedType and leaves parser null;
+     * create it directly here to bypass reflection.
      */
     @Override
     public HtmlParser getHtmlParser() {
@@ -34,15 +34,15 @@ public abstract class WordPressConfig extends WebsiteConfig<WordPressParser> {
     }
 
     /**
-     * WP REST API 根地址，默认标准形式：{baseUrl}wp-json/wp/v2/
-     * 4khd.com 这类直接 /wp-json/ 会 301 的站点，子类覆盖为 rest_route 形式
+     * WordPress REST API root; default format: {baseUrl}wp-json/wp/v2/
+     * Sites such as 4khd.com that redirect /wp-json/ override this with rest_route
      */
     protected String getRestBase() {
         return getBaseUrl() + "wp-json/wp/v2/";
     }
 
     /**
-     * 单个 media 的 API 地址（featured_media 只是 id，需要第二跳拿 source_url）
+     * Single-media API URL; featured_media is only an ID, so a second request retrieves source_url
      */
     public String getMediaUrl(int mediaId) {
         return getRestBase() + "media/" + mediaId;
@@ -74,7 +74,7 @@ public abstract class WordPressConfig extends WebsiteConfig<WordPressParser> {
                 tags.append(encodeTag(tag)).append(" ");
             }
         }
-        // _embed=wp:featuredmedia 把首图直链直接嵌在 posts 响应里，避免 N+1 请求
+        // _embed=wp:featuredmedia includes the featured image URL in the posts response to avoid N+1 requests
         return getRestBase() + "posts?per_page=42&page=" + page
                 + "&search=" + tags.toString().trim()
                 + "&_embed=wp:featuredmedia";

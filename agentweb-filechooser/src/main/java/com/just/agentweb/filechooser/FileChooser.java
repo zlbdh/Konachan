@@ -94,19 +94,19 @@ public class FileChooser {
      */
     public static final int REQUEST_CODE = 0x254;
     /**
-     * 当前系统是否高于 Android 5.0 ；
+     * Whether the system is running Android 5.0 or later
      */
     private boolean mIsAboveLollipop = false;
     /**
-     * WebChromeClient.FileChooserParams 封装了 Intent ，mAcceptType  等参数
+     * WebChromeClient.FileChooserParams wraps Intent, mAcceptType, and other parameters
      */
     private WebChromeClient.FileChooserParams mFileChooserParams;
     /**
-     * 如果是通过 JavaScript 打开文件选择器 ，那么 mJsChannelCallback 不能为空
+     * mJsChannelCallback must be non-null when JavaScript opens the file chooser
      */
     private JsChannelCallback mJsChannelCallback;
     /**
-     * 是否为Js Channel
+     * Whether this is a JavaScript channel
      */
     private boolean mJsChannel = false;
     /**
@@ -114,31 +114,31 @@ public class FileChooser {
      */
     private static final String TAG = FileChooser.class.getSimpleName();
     /**
-     * 当前 WebView
+     * Current WebView
      */
     private WebView mWebView;
     /**
-     * 是否为 Camera State
+     * Whether the camera state is active
      */
     private boolean mCameraState = false;
     /**
-     * 权限拦截
+     * Permission interception
      */
     private PermissionInterceptor mPermissionInterceptor;
     /**
-     * FROM_INTENTION_CODE 用于表示当前Action
+     * FROM_INTENTION_CODE identifies the current action
      */
     private int FROM_INTENTION_CODE = 21;
     /**
-     * 当前 AbsAgentWebUIController
+     * Current AbsAgentWebUIController
      */
     private WeakReference<AbsAgentWebUIController> mAgentWebUIController = null;
     /**
-     * 选择文件类型
+     * Select the file type
      */
     private String mAcceptType = "*/*";
     /**
-     * 修复某些特定手机拍照后，立刻获取照片为空的情况
+     * Handle devices that return an empty photo immediately after capture
      */
     public static int MAX_WAIT_PHOTO_MS = 8 * 1000;
 
@@ -205,7 +205,7 @@ public class FileChooser {
     private Intent getFileChooserIntent() {
         Intent mIntent = null;
         if (mIsAboveLollipop && mFileChooserParams != null && (mIntent = mFileChooserParams.createIntent()) != null) {
-            // 多选
+            // Multiple selection
             /*if (mFileChooserParams.getMode() == WebChromeClient.FileChooserParams.MODE_OPEN_MULTIPLE) {
                 mIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             }*/
@@ -241,7 +241,7 @@ public class FileChooser {
     private void openFileChooserInternal() {
 
 
-        // 是否直接打开文件选择器
+        // Whether to open the file chooser directly
         if (this.mIsAboveLollipop && this.mFileChooserParams != null && this.mFileChooserParams.getAcceptTypes() != null) {
             boolean needCamera = false;
             String[] types = this.mFileChooserParams.getAcceptTypes();
@@ -407,7 +407,7 @@ public class FileChooser {
             return;
         }
 
-        //用户已经取消
+        //The user canceled
         if (resultCode == Activity.RESULT_CANCELED || data == null) {
             cancel();
             return;
@@ -418,20 +418,20 @@ public class FileChooser {
             return;
         }
 
-        //通过Js获取文件
+        //Get files through JavaScript
         if (mJsChannel) {
             convertFileAndCallback(mCameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
             return;
         }
 
-        //5.0以上系统通过input标签获取文件
+        //Get files through an input element on Android 5.0 and later
         if (mIsAboveLollipop) {
             aboveLollipopCheckFilesAndCallback(mCameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data), mCameraState);
             return;
         }
 
 
-        //4.4以下系统通过input标签获取文件
+        //Get files through an input element on Android 4.4 and earlier
         if (mUriValueCallback == null) {
             cancel();
             return;
@@ -557,8 +557,8 @@ public class FileChooser {
     }
 
     /**
-     * 经过多次的测试，在小米 MIUI ， 华为 ，多部分为 Android 6.0 左右系统相机获取到的文件
-     * length为0 ，导致前端 ，获取到的文件， 作预览的时候不正常 ，等待5S左右文件又正常了 ， 所以这里做了阻塞等待处理，
+     * Repeated testing on Xiaomi MIUI and Huawei devices, mostly running Android 6.0, showed that camera files
+     * can initially have a length of zero, breaking the web preview. They become available after about five seconds, so wait here.
      *
      * @param datas
      * @param isCamera
@@ -669,7 +669,7 @@ public class FileChooser {
         }
     }
 
-    // 必须执行在子线程, 会阻塞直到文件转换完成;
+    // Must run on a worker thread; blocks until file conversion finishes.
     public static Queue<FileParcel> convertFile(String[] paths) throws Exception {
 
         if (paths == null || paths.length == 0) {

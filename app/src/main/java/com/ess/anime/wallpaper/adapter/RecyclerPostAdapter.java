@@ -36,7 +36,7 @@ public class RecyclerPostAdapter extends BaseQuickAdapter<ThumbBean, BaseViewHol
 
     private String mHttpTag;
     private OnItemClickListener mItemClickListener;
-    private boolean mIsRectangular = true;  // 缩略图是否为方格
+    private boolean mIsRectangular = true;  // Whether thumbnails are square
 
     public RecyclerPostAdapter(String httpTag) {
         super(R.layout.recyclerview_item_post);
@@ -45,7 +45,7 @@ public class RecyclerPostAdapter extends BaseQuickAdapter<ThumbBean, BaseViewHol
 
     @Override
     protected void convert(@NonNull BaseViewHolder holder, @NonNull ThumbBean thumbBean) {
-        //缩略图尺寸（方格/瀑布流）
+        //Thumbnail dimensions (grid or waterfall)
         ImageView ivThumb = holder.getView(R.id.iv_post_thumb);
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) ivThumb.getLayoutParams();
         if (mIsRectangular) {
@@ -59,7 +59,7 @@ public class RecyclerPostAdapter extends BaseQuickAdapter<ThumbBean, BaseViewHol
         }
         ivThumb.setLayoutParams(layoutParams);
 
-        //缩略图
+        //thumbnail
         Map<String, String> headerMap = WebsiteManager.getInstance().getRequestHeaders();
         ivThumb.setScaleType(ImageView.ScaleType.FIT_CENTER);
         Glide.with(mContext)
@@ -81,10 +81,10 @@ public class RecyclerPostAdapter extends BaseQuickAdapter<ThumbBean, BaseViewHol
                 })
                 .into(ivThumb);
 
-        //尺寸
+        //Dimensions
         holder.setText(R.id.tv_size, thumbBean.realSize);
 
-        //点击进入详细页面
+        //Click to open the details screen
         holder.itemView.setOnClickListener(v -> {
             int index = holder.getLayoutPosition() - getHeaderLayoutCount();
             ImageDataHolder.setThumbList(mData, index);
@@ -103,13 +103,13 @@ public class RecyclerPostAdapter extends BaseQuickAdapter<ThumbBean, BaseViewHol
         super.convertPayloads(holder, thumbBean, payloads);
         for (Object payload : payloads) {
             if (payload.equals(REPLACE_DATA)) {
-                //尺寸
+                //Dimensions
                 holder.setText(R.id.tv_size, thumbBean.realSize);
             }
         }
     }
 
-    // 切换缩略图显示尺寸（方格/瀑布流）
+    // Switch thumbnail dimensions (grid or waterfall)
     public void changeImageShownFormat(boolean isRectangular) {
         if (mIsRectangular != isRectangular) {
             mIsRectangular = isRectangular;
@@ -127,7 +127,7 @@ public class RecyclerPostAdapter extends BaseQuickAdapter<ThumbBean, BaseViewHol
 
     private boolean addDatas(int position, List<ThumbBean> thumbList) {
         synchronized (this) {
-            //删掉更新时因网站新增图片导致thumbList出现的重复项
+            //Remove duplicate thumbList entries caused by new site images during refresh
             thumbList.removeAll(mData);
             if (!thumbList.isEmpty()) {
                 addData(position, thumbList);
@@ -152,7 +152,7 @@ public class RecyclerPostAdapter extends BaseQuickAdapter<ThumbBean, BaseViewHol
         Map<String, String> headerMap = WebsiteManager.getInstance().getRequestHeaders();
         for (ThumbBean thumbBean : thumbList) {
             if (SystemUtils.isActivityActive((Activity) mContext)) {
-                // 已有图片详情的，预加载预览图
+                // Preload previews when image details are already available
                 if (thumbBean.imageBean != null) {
                     String imageUrl = thumbBean.imageBean.posts[0].getMinSizeImageUrl();
                     if (!TextUtils.isEmpty(imageUrl)) {
@@ -160,7 +160,7 @@ public class RecyclerPostAdapter extends BaseQuickAdapter<ThumbBean, BaseViewHol
                     }
                 }
 
-                // 不预加载图片详情但已有预览图信息的，预加载预览图
+                // Preload previews when preview metadata exists without preloading full image details
                 if (!thumbBean.needPreloadImageDetail) {
                     if (thumbBean.tempPost != null) {
                         String imageUrl = thumbBean.tempPost.getMinSizeImageUrl();
@@ -191,7 +191,7 @@ public class RecyclerPostAdapter extends BaseQuickAdapter<ThumbBean, BaseViewHol
     }
 
     public interface OnItemClickListener {
-        //进入图片详细界面时收起fab
+        //Collapse the FAB when opening image details
         void onViewDetails();
     }
 

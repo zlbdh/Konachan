@@ -58,7 +58,7 @@ public class HandlerFuture<T> {
         Objects.requireNonNull(except);
         IO workIs = io == IO.WORK ? IO.WORK : IO.UI;
         HandlerFuture<V> future = new HandlerFuture<>(null, workIs, stop);
-        //构建一个任务
+        //Create a task
         FunctionTask<V> task = new FunctionTask<>(future, val -> {
             try {
                 return fun.apply(val);
@@ -67,10 +67,10 @@ public class HandlerFuture<T> {
             }
         });
         if (value != null) {
-            //如果当前有值则直接执行任务
+            //Run the task immediately if a value is already available
             executeTask(task);
         } else {
-            //否则延期直到可以执行任务的时候在执行
+            //Otherwise defer it until it can run
             pending = task;
         }
         return future;
@@ -88,7 +88,7 @@ public class HandlerFuture<T> {
         Objects.requireNonNull(except);
         IO workIs = io == IO.WORK ? IO.WORK : IO.UI;
         HandlerFuture<Void> future = new HandlerFuture<>(null, workIs, stop);
-        //构建一个任务
+        //Create a task
         ConsumerTask task = new ConsumerTask(future, val -> {
             try {
                 fun.accept(val);
@@ -97,10 +97,10 @@ public class HandlerFuture<T> {
             }
         });
         if (value != null) {
-            //如果当前有值则直接执行任务
+            //Run the task immediately if a value is already available
             executeTask(task);
         } else {
-            //否则延期直到可以执行任务的时候在执行
+            //Otherwise defer it until it can run
             pending = task;
         }
         return future;
@@ -118,7 +118,7 @@ public class HandlerFuture<T> {
         Objects.requireNonNull(except);
         IO workIs = io == IO.WORK ? IO.WORK : IO.UI;
         HandlerFuture<V> future = new HandlerFuture<>(null, workIs, stop);
-        //构建一个任务
+        //Create a task
         SupplierTask<V> task = new SupplierTask<>(future, () -> {
             try {
                 return fun.get();
@@ -127,10 +127,10 @@ public class HandlerFuture<T> {
             }
         });
         if (value != null) {
-            //如果当前有值则直接执行任务
+            //Run the task immediately if a value is already available
             executeTask(task);
         } else {
-            //否则延期直到可以执行任务的时候在执行
+            //Otherwise defer it until it can run
             pending = task;
         }
         return future;
@@ -185,7 +185,7 @@ public class HandlerFuture<T> {
         public boolean handleMessage(Message msg) {
             if (!stop.stop) {
                 V obj = fun.apply(value);
-                //现在可以执行下一个任务
+                //The next task can now run
                 chain.complete(obj);
             }
             closeThreadIfExist();
@@ -208,7 +208,7 @@ public class HandlerFuture<T> {
         public boolean handleMessage(Message msg) {
             if (!stop.stop) {
                 fun.accept(value);
-                //现在可以执行下一个任务
+                //The next task can now run
                 chain.complete(Void.TYPE.cast(null));
             }
             closeThreadIfExist();
@@ -232,7 +232,7 @@ public class HandlerFuture<T> {
         public boolean handleMessage(Message msg) {
             if (!stop.stop) {
                 V obj = fun.get();
-                //现在可以执行下一个任务
+                //The next task can now run
                 chain.complete(obj);
             }
             closeThreadIfExist();
@@ -247,11 +247,11 @@ public class HandlerFuture<T> {
 
     public enum IO {
         /**
-         * 使任务运行在工作线程，不会堵塞UI线程
+         * Run on a worker thread without blocking the UI thread
          */
         WORK,
         /**
-         * 使任务运行在UI线程
+         * Run on the UI thread
          */
         UI
     }

@@ -55,7 +55,7 @@ public class PopularActivity extends BaseActivity {
     }
 
     private void initToolBarLayout() {
-        //双击返回顶部
+        //Double tap to scroll to the top
         mToolbar = findViewById(R.id.tool_bar);
         DoubleTapEffector.addDoubleTapEffect(mToolbar, () -> {
             PagerAdapter adapter = mVpPopular.getAdapter();

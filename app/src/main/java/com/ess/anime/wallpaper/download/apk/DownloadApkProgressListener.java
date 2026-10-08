@@ -28,7 +28,7 @@ public class DownloadApkProgressListener extends BaseDownloadProgressListener<Ap
             mNotifyManager = (android.app.NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             if (android.os.Build.VERSION.SDK_INT >= 26) {
                 mNotifyManager.createNotificationChannel(new android.app.NotificationChannel(
-                        "application-updates", "应用更新", android.app.NotificationManager.IMPORTANCE_LOW));
+                        "application-updates", "App Update", android.app.NotificationManager.IMPORTANCE_LOW));
                 mNotifyBuilder = new android.app.Notification.Builder(mContext, "application-updates");
             } else mNotifyBuilder = new android.app.Notification.Builder(mContext);
             mNotifyId = (int) System.currentTimeMillis();
@@ -72,7 +72,7 @@ public class DownloadApkProgressListener extends BaseDownloadProgressListener<Ap
 
     @Override public void onFinish() {
         super.onFinish();
-        mNotifyBuilder.setContentText("更新已下载并校验，点击安装");
+        mNotifyBuilder.setContentText("Update downloaded and verified. Tap to install.");
         mNotifyManager.notify(mNotifyId, mNotifyBuilder.build());
     }
 

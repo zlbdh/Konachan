@@ -11,7 +11,7 @@ public class VideoCache {
         private static final VideoCache instance = new VideoCache();
     }
 
-    private HttpProxyCacheServer mProxy;  // 用于网络视频缓存
+    private HttpProxyCacheServer mProxy;  // Network video cache
 
     private VideoCache() {
     }

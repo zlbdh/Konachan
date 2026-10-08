@@ -28,11 +28,11 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * ================================================
- * 作    者：jeasonlzy（廖子尧）Github地址：https://github.com/jeasonlzy
- * 版    本：1.0
- * 创建日期：2016/1/22
- * 描    述：用于监听任务结束的回调
- * 修订历史：
+ * Author: jeasonlzy (廖子尧). GitHub: https://github.com/jeasonlzy
+ * Version: 1.0
+ * Created: 2016/1/22
+ * Description: Task completion listener
+ * Revision history:
  * ================================================
  */
 public class XExecutor extends ThreadPoolExecutor {
@@ -55,7 +55,7 @@ public class XExecutor extends ThreadPoolExecutor {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
     }
 
-    /** 任务结束后回调 */
+    /** Callback when a task finishes */
     @Override
     protected void afterExecute(final Runnable r, Throwable t) {
         super.afterExecute(r, t);
@@ -69,7 +69,7 @@ public class XExecutor extends ThreadPoolExecutor {
                 });
             }
         }
-        //当前正在运行的数量为1 表示当前正在停止的任务，同时队列中没有任务，表示所有任务下载完毕
+        //One running task is the task currently stopping; if the queue is also empty, all downloads are complete
         if (getActiveCount() == 1 && getQueue().size() == 0) {
             if (allTaskEndListenerList != null && allTaskEndListenerList.size() > 0) {
                 for (final OnAllTaskEndListener listener : allTaskEndListenerList) {

@@ -66,7 +66,7 @@ public class GridDividerItemDecoration extends RecyclerView.ItemDecoration {
             outRect.top = spaceTop;
         }
 
-        //设置最后一行有没有bottom
+        //Configure whether the last row has a bottom divider
         if (currentLine < totalLines) {
             outRect.bottom = spaceBottom;
         } else {

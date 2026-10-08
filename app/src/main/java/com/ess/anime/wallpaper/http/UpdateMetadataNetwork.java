@@ -14,7 +14,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-/** 单次零重试请求，整体 20 秒 watchdog；不改变其他图站的 HTTP 配置。 */
+/** One request without retries and a 20-second overall watchdog; do not change HTTP settings for other image sites. */
 final class UpdateMetadataNetwork implements UpdateCheckController.Network {
     private final OkHttpClient client = new OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS)
@@ -29,11 +29,11 @@ final class UpdateMetadataNetwork implements UpdateCheckController.Network {
         active = state;
         watchdog.postDelayed(state.timeout, 20000);
         state.call.enqueue(new Callback() {
-            @Override public void onFailure(Call call, IOException exception) { state.fail("网络请求失败"); }
+            @Override public void onFailure(Call call, IOException exception) { state.fail("Network request failed"); }
             @Override public void onResponse(Call call, Response response) {
                 try (Response closed = response) {
                     if (!closed.isSuccessful() || closed.body() == null) {
-                        state.fail("更新服务器返回失败");
+                        state.fail("The update server returned an error");
                         return;
                     }
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -41,7 +41,7 @@ final class UpdateMetadataNetwork implements UpdateCheckController.Network {
                         byte[] buffer = new byte[4096];
                         int length;
                         while ((length = input.read(buffer)) != -1) {
-                            if (bytes.size() + length > 65536) throw new IOException("更新信息过大");
+                            if (bytes.size() + length > 65536) throw new IOException("Update information is too large");
                             bytes.write(buffer, 0, length);
                         }
                     }
@@ -49,7 +49,7 @@ final class UpdateMetadataNetwork implements UpdateCheckController.Network {
                         watchdog.removeCallbacks(state.timeout);
                         callback.onSuccess(new String(bytes.toByteArray(), StandardCharsets.UTF_8));
                     }
-                } catch (IOException ignored) { state.fail("更新信息未能完整读取"); }
+                } catch (IOException ignored) { state.fail("Unable to read the complete update information"); }
             }
         });
     }
@@ -69,7 +69,7 @@ final class UpdateMetadataNetwork implements UpdateCheckController.Network {
         RequestState(Call call, UpdateCheckController.NetworkCallback callback) {
             this.call = call;
             this.callback = callback;
-            this.timeout = () -> { call.cancel(); fail("检查更新超时"); };
+            this.timeout = () -> { call.cancel(); fail("Update check timed out"); };
         }
         void fail(String message) {
             if (completed.compareAndSet(false, true)) {

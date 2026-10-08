@@ -16,7 +16,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 
-/** 保留旧入口名称，更新检查已使用 GitHub 的版本元数据。 */
+/** Retain the legacy entry-point name; update checks now use GitHub version metadata. */
 public class FireBase {
     private static class FirebaseHolder { private static final FireBase instance = new FireBase(); }
     public static FireBase getInstance() { return FirebaseHolder.instance; }
@@ -32,7 +32,7 @@ public class FireBase {
 
     private FireBase() { }
 
-    /** 启动时只检查一次；后台只保留有效缓存，前台才能提示或自动下载。 */
+    /** Check once at startup. Cache valid background results; only foreground sessions may prompt or download automatically. */
     public void checkUpdate() {
         controller.check(result -> {
             if (result.status != UpdateCheckController.Status.AVAILABLE) return;
@@ -40,7 +40,7 @@ public class FireBase {
         });
     }
 
-    /** 后台请求已完成时，恢复前台从有效缓存消费一次，不重复弹被忽略的版本。 */
+    /** After a background request completes, consume the valid cache once on returning to the foreground without repeating an ignored prompt. */
     public void resumeCachedUpdate() {
         File cache = new File(context.getExternalFilesDir(null), UPDATE_FILE_NAME);
         if (!cache.isFile() || cache.length() > 65536) return;
@@ -61,7 +61,7 @@ public class FireBase {
         }
     }
 
-    /** 手动检查真实联网，由调用页面展示有新版、已最新或失败。 */
+    /** Manual checks use the live network; the calling screen displays update available, up to date, or failure. */
     public void checkUpdate(Callback callback) { controller.check(callback::onComplete); }
 
     public void checkToAddUser() { }

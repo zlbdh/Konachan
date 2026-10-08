@@ -73,27 +73,27 @@ public abstract class WebsiteConfig<T extends HtmlParser> {
         }
     }
 
-    // 网站名
+    // Site name
     public abstract String getWebsiteName();
 
-    // 用于menu icon的网站图标
+    // Site icon used in the menu
     public abstract int getWebsiteLogoRes();
 
-    // 爬虫解析器
+    // Site content parser
     public HtmlParser getHtmlParser() {
         return mHtmlParser;
     }
 
-    // 网站域名
+    // Site domain
     public abstract String getBaseUrl();
 
-    // 是否有明确的搜索提示Json文件
+    // Whether the site provides a dedicated search suggestion JSON file
     public abstract boolean hasTagJson();
 
-    // 搜索提示的Json文件地址
+    // Search suggestion JSON URL
     public abstract String getTagJsonUrl();
 
-    // 存储TagJson文件
+    // Store the tag JSON file
     public void saveTagJson(String key, String json) {
         synchronized (WebsiteConfig.class) {
             String dir = MyApp.getInstance().getFilesDir().getPath();
@@ -103,7 +103,7 @@ public abstract class WebsiteConfig<T extends HtmlParser> {
         }
     }
 
-    // 获取TagJson内容
+    // Get tag JSON content
     public String getTagJson() {
         synchronized (WebsiteConfig.class) {
             if (TextUtils.isEmpty(mTagJson)) {
@@ -118,13 +118,13 @@ public abstract class WebsiteConfig<T extends HtmlParser> {
         }
     }
 
-    // 从TagJson解析搜索提示
+    // Parse search suggestions from tag JSON
     public abstract List<String> parseSearchAutoCompleteListFromTagJson(String search);
 
-    // 通过tags搜索图片
+    // Search images by tags
     public abstract String getPostUrl(int page, List<String> tagList);
 
-    // 搜索标签 URL 编码（中文/特殊字符不编码会构造出非法 URL）
+    // URL-encode search tags; unencoded Chinese or special characters would create invalid URLs
     protected static String encodeTag(String tag) {
         try {
             return java.net.URLEncoder.encode(tag, "UTF-8");
@@ -133,52 +133,52 @@ public abstract class WebsiteConfig<T extends HtmlParser> {
         }
     }
 
-    // 搜索日榜图片
+    // Search daily rankings
     public abstract String getPopularDailyUrl(int year, int month, int day, int page);
 
-    // 搜索周榜图片
+    // Search weekly rankings
     public abstract String getPopularWeeklyUrl(int year, int month, int day, int page);
 
-    // 搜索月榜图片
+    // Search monthly rankings
     public abstract String getPopularMonthlyUrl(int year, int month, int day, int page);
 
-    // 搜索总榜图片
+    // Search all-time rankings
     public abstract String getPopularOverallUrl(int year, int month, int day, int page);
 
-    // 通过id搜索图片详情
+    // Get image details by ID
     public abstract String getPostDetailUrl(String id);
 
-    // 通过id搜索图片评论
+    // Get image comments by ID
     public abstract String getCommentUrl(String id);
 
-    // 是否有图集列表
+    // Whether an album list is available
     public abstract boolean hasPool();
 
-    // 搜索图集
+    // Search albums
     public abstract String getPoolUrl(int page, String name);
 
-    // 搜索图集中的图片
+    // Search images within an album
     public abstract String getPoolPostUrl(String linkToShow, int page);
 
-    // 解析PoolPost之后是否需要根据postId重新进行一次Post查询
+    // Whether parsing PoolPost requires another Post request by postId
     public abstract boolean needReloadDetailByIdForPoolPost();
 
-    // 保存图片名前缀
+    // Saved image filename prefix
     public abstract String getSavedImageHead();
 
-    // 是否支持随机看图
+    // Whether random browsing is supported
     public abstract boolean isSupportRandomPost();
 
-    // 是否支持高级搜索
+    // Whether advanced search is supported
     public abstract boolean isSupportAdvancedSearch();
 
-    // 是否支持网络解析搜索提示
+    // Whether network-based search suggestions are supported
     public abstract boolean isSupportSearchAutoCompleteFromNetwork();
 
-    // 动态请求搜索提示的网址
+    // Dynamic search suggestion request URL
     public abstract String getSearchAutoCompleteUrl(String tag);
 
-    // 根据网络请求返回内容解析搜索提示
+    // Parse search suggestions from the network response
     public abstract List<String> parseSearchAutoCompleteListFromNetwork(String promptResult, String search);
 
 }

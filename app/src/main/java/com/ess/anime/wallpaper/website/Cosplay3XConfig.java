@@ -3,7 +3,7 @@ package com.ess.anime.wallpaper.website;
 import com.ess.anime.wallpaper.R;
 
 /**
- * Cosplay3X (cosplay3x.com) - WordPress 成人 Cosplay 站
+ * Cosplay3X (cosplay3x.com): WordPress adult cosplay site
  */
 public class Cosplay3XConfig extends WordPressConfig {
 

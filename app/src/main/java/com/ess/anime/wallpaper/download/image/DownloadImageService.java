@@ -30,7 +30,7 @@ public class DownloadImageService extends Service {
         return null;
     }
 
-    // 任务直到网络和最终保存都完成才结束，不能在线程提交异步下载后就停服务。
+    // Keep the task active until networking and final storage complete; submitting an asynchronous download must not stop the service.
     private final Set<String> mActiveUrls = new HashSet<>();
     private final Handler mMainHandler = new Handler(Looper.getMainLooper());
     private MyNotification mNotify;
@@ -76,8 +76,8 @@ public class DownloadImageService extends Service {
 
     private void downloadBitmap(Intent intent) {
         if (intent == null) {
-            // 下载过程中若关闭app会导致intent为null
-            // 此时终止下载并清除所有notification
+            // Closing the app during a download can produce a null intent
+            // Stop the download and clear all notifications in that case
             ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).cancelAll();
             return;
         }
@@ -86,7 +86,7 @@ public class DownloadImageService extends Service {
         String url = downloadBean.downloadUrl;
         String savePath = downloadBean.savePath;
 
-        // 绑定下载进度监听器
+        // Attach the download progress listener
         DownloadImageProgressListener listener;
         if (!OkHttp.isUrlInProgressListener(url)) {
             listener = new DownloadImageProgressListener(this, downloadBean, intent);
@@ -96,11 +96,11 @@ public class DownloadImageService extends Service {
             listener.prepareNotification();
         }
 
-        // 发布失败后的重试复用完整文件，避免再次下载和误判为已完成。
+        // Reuse the complete file after publication failure to avoid downloading it again or falsely reporting completion.
         File saved = new File(savePath);
         if (saved.isFile()) {
             boolean published = BitmapUtils.insertToMediaStore(this, saved);
-            DownloadTaskState.record(downloadBean, published, "相册发布失败，保留已下载文件");
+            DownloadTaskState.record(downloadBean, published, "Gallery publication failed; keeping the downloaded file");
             mMainHandler.post(() -> {
                 if (published) listener.onFinish(); else listener.onError();
                 DownloadImageManager.getInstance().addOrUpdate(downloadBean);
@@ -109,12 +109,12 @@ public class DownloadImageService extends Service {
             return;
         }
 
-        // 临时下载文件
+        // Temporary download file
         File tempFolder = new File(Constants.IMAGE_TEMP);
         String tempName = savePath.substring(savePath.lastIndexOf("/") + 1, savePath.lastIndexOf("."));
         File tempFile = new File(tempFolder, tempName);
         if (!tempFolder.isDirectory() && !tempFolder.mkdirs() && !tempFolder.isDirectory()) {
-            DownloadTaskState.record(downloadBean, false, "无法创建临时下载目录");
+            DownloadTaskState.record(downloadBean, false, "Unable to create the temporary download directory");
             mMainHandler.post(() -> {
                 listener.onError();
                 finishTask(url);
@@ -122,7 +122,7 @@ public class DownloadImageService extends Service {
             return;
         }
 
-        // 下载
+        // Download
         try {
             mMainHandler.post(() -> DownloadImageManager.getInstance().addOrUpdate(downloadBean));
             OkHttp.startDownloadFile(OkHttp.convertSchemeToHttps(url), tempFolder.getAbsolutePath(), tempName, null,
@@ -149,7 +149,7 @@ public class DownloadImageService extends Service {
                         public void onFinish(File file, Progress progress) {
                             HandlerFuture.ofWork(tempFile)
                                     .applyThen(tempFile -> {
-                                        // 下载成功，保存为图片
+                                        // Download succeeded; save as an image
                                         File saveFile = new File(savePath);
                                         boolean success = FileUtils.moveFile(tempFile, saveFile);
                                         success = success && BitmapUtils.insertToMediaStore(DownloadImageService.this, saveFile);
@@ -161,7 +161,7 @@ public class DownloadImageService extends Service {
                                             DownloadTaskState.record(downloadBean, true, "");
                                             listener.onFinish();
                                         } else {
-                                            DownloadTaskState.record(downloadBean, false, "下载文件未能完整保存或发布到相册");
+                                            DownloadTaskState.record(downloadBean, false, "The downloaded file could not be fully saved or published to the gallery");
                                             listener.onError();
                                         }
                                         DownloadImageManager.getInstance().addOrUpdate(downloadBean);
@@ -178,9 +178,9 @@ public class DownloadImageService extends Service {
                     });
         } catch (Exception e) {
             String position = e.getStackTrace().length == 0 ? "" : e.getStackTrace()[0].toString();
-            android.util.Log.e("DownloadImageService", "下载启动异常类型: "
+            android.util.Log.e("DownloadImageService", "Download startup exception type: "
                     + e.getClass().getName() + " @ " + position);
-            DownloadTaskState.record(downloadBean, false, "下载任务启动失败: " + e.getClass().getSimpleName());
+            DownloadTaskState.record(downloadBean, false, "Failed to start download task: " + e.getClass().getSimpleName());
             listener.onError();
             mMainHandler.post(() -> DownloadImageManager.getInstance().addOrUpdate(downloadBean));
             finishTask(url);

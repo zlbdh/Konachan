@@ -27,7 +27,7 @@ public class DateUtils {
         return calendar.getTime();
     }
 
-    // Calendar周日是每周的第一天，此处需要周日为每周的最后一天
+    // Calendar treats Sunday as the first day; this code uses Sunday as the last day
     public static Date getSundayOfWeek(int realYear, int realMonth, int realDay) {
         Calendar calendar = getCalendarByData(realYear, realMonth, realDay);
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
@@ -50,15 +50,15 @@ public class DateUtils {
 
     public static Calendar getCalendarByData(int realYear, int realMonth, int realDay) {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(realYear, realMonth - 1, realDay);  // calendar月份从0开始，所以需要减1
-        calendar.setFirstDayOfWeek(Calendar.MONDAY);  // 以周一为每周第一天
+        calendar.set(realYear, realMonth - 1, realDay);  // Calendar months are zero-based, so subtract one
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);  // Use Monday as the first day of the week
         return calendar;
     }
 
     public static Calendar getCalendarByDate(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        calendar.setFirstDayOfWeek(Calendar.MONDAY);  // 以周一为每周第一天
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);  // Use Monday as the first day of the week
         return calendar;
     }
 }

@@ -351,7 +351,7 @@ public class PixivGifDlManager {
     public void onConnected() {
         synchronized (mPixivMap) {
             mMainHandler.post(() -> {
-                // 网络可用时恢复所有断点下载
+                // Resume all paused downloads when the network becomes available
                 for (Map.Entry<String, PixivGifBean> entry : mPixivMap.entrySet()) {
                     String pixivId = entry.getKey();
                     PixivGifBean pixivGifBean = entry.getValue();

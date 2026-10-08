@@ -32,8 +32,8 @@ import androidx.annotation.Nullable;
 
 public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
-    private final static int DEFAULT_COLUMN = 3;  //默认拼图行列数
-    private final static float SPACE = 5;         //画拼图时每张之间的间隙宽度
+    private final static int DEFAULT_COLUMN = 3;  //Default puzzle row and column counts
+    private final static float SPACE = 5;         //Gap between puzzle tiles
 
     private SharedPreferences mPreferences;
     private int mColumn;
@@ -90,12 +90,12 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
             return;
         }
 
-        // 清理画布
+        // Clear the canvas
         mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         canvas.drawPaint(mPaint);
         mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
 
-        // 画拼图
+        // Draw the puzzle
         for (int row = 0; row < mColumn; row++) {
             for (int col = 0; col < mColumn; col++) {
                 int rectIndex = row * mColumn + col;
@@ -110,7 +110,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         RectF firstRect = mRectList.get(0);
         RectF lastRect = mRectList.get(mRectList.size() - 1);
 
-        // 记录当前步数
+        // Record the current move count
         String step = getContext().getString(R.string.game_current_step, mCurrentStep);
         float x = firstRect.left / 2f + getWidth() / 4f;
         float y = firstRect.top * 0.7f;
@@ -118,13 +118,13 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         mPaint.setTextSize(UIUtils.sp2px(getContext(), 18));
         canvas.drawText(step, x, y, mPaint);
 
-        // 显示最佳记录
+        // Show the best record
         String best = getContext().getString(R.string.game_best_step);
         best += mBestStep == -1 ? getContext().getString(R.string.game_none_best_step) : mBestStep;
         x = lastRect.right / 2f + getWidth() / 4f;
         canvas.drawText(best, x, y, mPaint);
 
-        // 判断是否完成拼图
+        // Check whether the puzzle is complete
         if (mCompleted) {
             x = getWidth() / 2f;
             y = lastRect.bottom + (getHeight() - lastRect.bottom) * 0.65f;
@@ -254,7 +254,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     }
 
     public interface OnActionListener {
-        // 切换图片
+        // Switch images
         void onChangeBitmap(Bitmap bitmap);
     }
 

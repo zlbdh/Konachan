@@ -129,7 +129,7 @@ public class FavoriteTagActivity extends BaseActivity {
         mRvTag.addItemDecoration(new GridDividerItemDecoration(
                 1, GridDividerItemDecoration.VERTICAL, spaceHor, spaceVer, true));
 
-        // 长按进入编辑模式
+        // Long press to enter edit mode
         mTagAdapter.setOnItemLongClickListener((baseQuickAdapter, view, i) -> {
             if (!mTagAdapter.isEditMode()) {
                 FavoriteTagBean tagBean = mTagAdapter.getItem(i);
@@ -142,7 +142,7 @@ public class FavoriteTagActivity extends BaseActivity {
             return false;
         });
 
-        // 切换选中/非选中监听器
+        // Selection toggle listener
         mTagAdapter.setOnSelectChangedListener((selectCount, allSelected) -> {
             mTvChooseCount.setText(String.valueOf(selectCount));
             mCbChooseAll.setChecked(allSelected);

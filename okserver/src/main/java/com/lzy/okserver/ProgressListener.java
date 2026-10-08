@@ -19,26 +19,26 @@ import com.lzy.okgo.model.Progress;
 
 /**
  * ================================================
- * 作    者：jeasonlzy（廖子尧）Github地址：https://github.com/jeasonlzy
- * 版    本：1.0
- * 创建日期：2017/6/4
- * 描    述：
- * 修订历史：
+ * Author: jeasonlzy (廖子尧). GitHub: https://github.com/jeasonlzy
+ * Version: 1.0
+ * Created: 2017/6/4
+ * Description:
+ * Revision history:
  * ================================================
  */
 public interface ProgressListener<T> {
-    /** 成功添加任务的回调 */
+    /** Callback after a task is added successfully */
     void onStart(Progress progress);
 
-    /** 下载进行时回调 */
+    /** Download progress callback */
     void onProgress(Progress progress);
 
-    /** 下载出错时回调 */
+    /** Download error callback */
     void onError(Progress progress);
 
-    /** 下载完成时回调 */
+    /** Download completion callback */
     void onFinish(T t, Progress progress);
 
-    /** 被移除时回调 */
+    /** Removal callback */
     void onRemove(Progress progress);
 }

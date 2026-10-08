@@ -65,7 +65,7 @@
                 android:textSize="9sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_annotation"
-                tools:text="收藏于：2021年10月5日" />
+                tools:text="Added to favorites: October 5, 2021" />
 
             <View
                 android:id="@+id/view_divide_line"

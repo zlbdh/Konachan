@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-/** 纯版本与前台决策，可在 JVM 和 Android instrumentation 中复验。 */
+/** Pure version and foreground-state decisions, testable on the JVM and with Android instrumentation. */
 public class UpdateDecisionTest {
     @Test public void sameOrOlderVersionDoesNothingInEitherMode() {
         for (boolean automatic : new boolean[]{false, true}) {

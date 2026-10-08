@@ -13,7 +13,7 @@ import java.util.List;
 
 import androidx.appcompat.app.AlertDialog;
 
-/** 列表页批量下载 UI 和生命周期；取消仅停止后续入队，已开始下载的任务继续。 */
+/** Batch download UI and lifecycle for list screens. Canceling stops further queueing; downloads already started continue. */
 public final class BatchDownloadController {
     private final Activity activity;
     private AlertDialog chooser;
@@ -27,7 +27,7 @@ public final class BatchDownloadController {
     public void show(List<ThumbBean> data) {
         if (!active() || data.isEmpty() || task != null || waitingPermission || chooser != null) return;
         List<ThumbBean> snapshot = new ArrayList<>(data);
-        // 读取默认清晰度设置：-1=每次询问，否则直接用
+        // Read the default quality setting: -1 asks each time; otherwise use it directly
         int defaultQuality = android.preference.PreferenceManager.getDefaultSharedPreferences(activity)
                 .getInt(com.ess.anime.wallpaper.global.Constants.BATCH_DOWNLOAD_QUALITY, -1);
         if (defaultQuality >= 0 && defaultQuality <= 2) {
@@ -38,9 +38,9 @@ public final class BatchDownloadController {
                 activity.getString(R.string.batch_download_large),
                 activity.getString(R.string.batch_download_original)};
         chooser = new AlertDialog.Builder(activity)
-                .setTitle("批量下载当前已加载列表（" + snapshot.size() + " 张）")
+                .setTitle("Download All Loaded Images (" + snapshot.size() + " images)")
                 .setItems(qualities, (dialog, quality) -> requestDownload(snapshot, quality))
-                .setNegativeButton(android.R.string.cancel, null).create();
+                .setNegativeButton(R.string.dialog_download_cancel, null).create();
         chooser.setOnDismissListener(dialog -> chooser = null);
         chooser.show();
     }
@@ -65,7 +65,7 @@ public final class BatchDownloadController {
         progress.setMessage(activity.getString(R.string.batch_download_preparing));
         progress.setCancelable(true);
         progress.setCanceledOnTouchOutside(false);
-        progress.setButton(DialogInterface.BUTTON_NEGATIVE, "停止加入队列", (dialog, which) -> cancelByUser());
+        progress.setButton(DialogInterface.BUTTON_NEGATIVE, "Stop Queueing", (dialog, which) -> cancelByUser());
         progress.setOnCancelListener(dialog -> cancelByUser());
         progress.show();
         task = BatchDownloadHelper.downloadAll(activity, data, quality, new BatchDownloadHelper.Callback() {
@@ -78,8 +78,8 @@ public final class BatchDownloadController {
                 if (!active() || run != generation) return;
                 task = null;
                 dismissProgress();
-                String message = "已加入队列 " + result.queued + " 张，已存在或正在下载 "
-                        + result.skipped + " 张，失败 " + result.failed + " 张";
+                String message = "Queued: " + result.queued + " images; already saved or downloading: "
+                        + result.skipped + " images; failed: " + result.failed + " images";
                 Toast.makeText(activity, message, Toast.LENGTH_LONG).show();
             }
         });
@@ -87,7 +87,7 @@ public final class BatchDownloadController {
 
     private void cancelByUser() {
         cancel();
-        if (active()) Toast.makeText(activity, "已停止准备，已加入队列的任务继续下载", Toast.LENGTH_LONG).show();
+        if (active()) Toast.makeText(activity, "Preparation stopped. Queued downloads will continue.", Toast.LENGTH_LONG).show();
     }
 
     public void cancel() {

@@ -85,7 +85,7 @@ public class PoolPostFragment extends BaseFragment implements BaseQuickAdapter.R
     private void initSwipeRefreshLayout() {
         mSwipeRefresh = mRootView.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefresh.setRefreshing(true);
-        //下拉刷新
+        //Pull to refresh
         mSwipeRefresh.setOnRefreshListener(() -> getNewPosts(1));
     }
 
@@ -121,7 +121,7 @@ public class PoolPostFragment extends BaseFragment implements BaseQuickAdapter.R
         }
     }
 
-    // 滑动加载更多
+    // Scroll to load more
     @Override
     public void onLoadMoreRequested() {
         if (!SystemUtils.isActivityActive(getActivity())) {
@@ -134,7 +134,7 @@ public class PoolPostFragment extends BaseFragment implements BaseQuickAdapter.R
             @Override
             public void onFailure(int errorCode, String errorMessage) {
                 if (errorCode == 404) {
-                    // 404按成功处理，UI显示无搜索结果而不是访问失败
+                    // Treat 404 as success so the UI shows no results rather than an access error
                     onSuccessful(errorMessage);
                 } else {
                     onLoadMoreRequested();
@@ -158,7 +158,7 @@ public class PoolPostFragment extends BaseFragment implements BaseQuickAdapter.R
         }, Request.Priority.IMMEDIATE);
     }
 
-    //加载更多完成后刷新界面
+    //Refresh the screen after loading more results
     private void addMoreThumbList(final List<ThumbBean> newList) {
         if (!SystemUtils.isActivityActive(getActivity()) || !mPostAdapter.isLoading()) {
             return;
@@ -183,7 +183,7 @@ public class PoolPostFragment extends BaseFragment implements BaseQuickAdapter.R
             @Override
             public void onFailure(int errorCode, String errorMessage) {
                 if (errorCode == 404) {
-                    // 404按成功处理，UI显示无搜索结果而不是访问失败
+                    // Treat 404 as success so the UI shows no results rather than an access error
                     onSuccessful(errorMessage);
                 } else {
                     getNewPosts(page);
@@ -207,7 +207,7 @@ public class PoolPostFragment extends BaseFragment implements BaseQuickAdapter.R
         }, Request.Priority.IMMEDIATE);
     }
 
-    // 搜索新内容或下拉刷新完成后刷新界面
+    // Refresh the screen after a new search or pull-to-refresh finishes
     private void refreshThumbList(List<ThumbBean> newList) {
         if (!SystemUtils.isActivityActive(getActivity()) || !mSwipeRefresh.isRefreshing()) {
             return;
@@ -228,7 +228,7 @@ public class PoolPostFragment extends BaseFragment implements BaseQuickAdapter.R
     }
 
 
-    //获取到图片详细信息后收到的通知，obj 为 Json (String)
+    //Notification after receiving image details; obj is JSON (String)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void setImageBean(MsgBean msgBean) {
         if (msgBean.msg.equals(Constants.GET_IMAGE_DETAIL)) {
@@ -251,9 +251,9 @@ public class PoolPostFragment extends BaseFragment implements BaseQuickAdapter.R
         }
     }
 
-    // 部分网站（如Gelbooru）在解析PoolPost的时候无法获取到tempPost，
-    // 需要根据postId重新进行一次Post查询
-    // 解析完成后再checkToReplacePostData()
+    // Some sites, such as Gelbooru, do not provide tempPost when parsing PoolPost,
+    // so request the Post again using postId
+    // Call checkToReplacePostData() after parsing finishes
     private void reloadDetailById(ThumbBean thumbBean) {
         List<String> tagList = new ArrayList<>();
         tagList.add("id:" + thumbBean.id);
@@ -280,7 +280,7 @@ public class PoolPostFragment extends BaseFragment implements BaseQuickAdapter.R
                             thumbBean1.imageBean = thumbBean.imageBean;
                             checkImageBean(thumbBean1);
                             mPostAdapter.replaceData(thumbBean1);
-                            // 发送通知到ImageFragment, DetailFragment
+                            // Notify ImageFragment and DetailFragment
                             EventBus.getDefault().post(new MsgBean(Constants.RELOAD_DETAIL_BY_ID, thumbBean1));
                         });
             }

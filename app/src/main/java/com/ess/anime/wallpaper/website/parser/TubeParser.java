@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 成人视频 tube 站解析器（PornHub / RedTube / Eporner）
+ * Parser for adult video sites: PornHub, RedTube, and Eporner
  *
- * 三家官方 API 都返回视频列表 + 多尺寸缩略图数组，直接当图片源浏览。
- * 缩略图策略：从 thumbs[] 里选面积最大的；取不到时用 thumb / default_thumb 兜底。
- * ImageBean 里 fileUrl/preview/sample 都用最大缩略图（视频站没有"原图"概念，
- * 最大缩略图即为可下载的最高质量）。
+ * All three official APIs return video lists with multiple thumbnail sizes, used directly as image sources.
+ * Choose the largest-area entry in thumbs[]; fall back to thumb or default_thumb.
+ * Use the largest thumbnail for ImageBean fileUrl, preview, and sample. Video sites have no original-image concept;
+ * the largest thumbnail is the highest downloadable quality.
  */
 public class TubeParser extends HtmlParser {
 
@@ -67,7 +67,7 @@ public class TubeParser extends HtmlParser {
                     } catch (Exception ignore) {
                     }
 
-                    // 选最大缩略图
+                    // Choose the largest thumbnail
                     String thumbUrl = pickBestThumb(video);
                     if (TextUtils.isEmpty(thumbUrl)) {
                         continue;
@@ -104,7 +104,7 @@ public class TubeParser extends HtmlParser {
     private int mBestThumbWidth;
     private int mBestThumbHeight;
 
-    /** 从 thumbs[] 选面积最大的；取不到时用 thumb / default_thumb 兜底 */
+    /** Choose the largest-area thumbs[] entry, falling back to thumb or default_thumb */
     private String pickBestThumb(JsonObject video) {
         mBestThumbWidth = 0;
         mBestThumbHeight = 0;
@@ -181,7 +181,7 @@ public class TubeParser extends HtmlParser {
         return ImageBean.getImageDetailFromJson(builder.build());
     }
 
-    /** 安全取字符串（兼容数字/布尔类型） */
+    /** Safely read a string, accepting numbers and booleans */
     private static String optString(JsonObject o, String key) {
         try {
             JsonElement e = o.get(key);
@@ -197,7 +197,7 @@ public class TubeParser extends HtmlParser {
         }
     }
 
-    /** 安全取 int（兼容 "240" 字符串和 240 数字两种形式） */
+    /** Safely read an int, accepting either "240" or numeric 240 */
     private static int optInt(JsonObject o, String key) {
         try {
             JsonElement e = o.get(key);
@@ -216,7 +216,7 @@ public class TubeParser extends HtmlParser {
 
     @Override
     public String getImageDetailJson(Document doc) {
-        // 详情数据已在 getThumbList 里拼好（thumbBean.imageBean），这里兜底返回空
+        // Details are already built in getThumbList as thumbBean.imageBean; return empty as a fallback here
         return "";
     }
 

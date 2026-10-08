@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 
-/** 统一失败终态，避免已有文件把未完成的相册发布当成成功。 */
+/** Use a consistent failure state so an existing file does not make incomplete gallery publication look successful. */
 public final class DownloadTaskState {
     private DownloadTaskState() { }
 

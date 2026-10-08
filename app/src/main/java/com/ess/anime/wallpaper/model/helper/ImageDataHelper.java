@@ -23,7 +23,7 @@ public class ImageDataHelper {
         return makeDownloadChosenList(context, thumbBean, imageBean, imgHead);
     }
 
-    // 批量任务传入启动时冻结的前缀，切站不会改变旧任务的保存名称。
+    // Batch tasks use a prefix captured at startup so switching sites does not rename earlier tasks.
     public static List<DownloadBean> makeDownloadChosenList(Context context, ThumbBean thumbBean,
                                                            ImageBean imageBean, String imgHead) {
         List<DownloadBean> downloadList = new ArrayList<>();
@@ -89,8 +89,8 @@ public class ImageDataHelper {
         String extension = "." + getFileExtension(url);
 //        url = url.substring(0, url.lastIndexOf(extension) + extension.length()).replaceAll(".com|.net", "");
 //        String bitmapName = getImageHead() + FileUtils.encodeMD5String(url) + extension;
-        // 图片命名方式改为"网站名-图片id-图片尺寸"样式，eg. Konachan-123456-Sample.jpg
-        // 但这样无法识别此版本(v1.7)之前下载的图片是下载过的
+        // Use the filename format "site-image_id-image_size", for example Konachan-123456-Sample.jpg
+        // This cannot recognize images downloaded before version 1.7 as already downloaded
         String bitmapName = imgHead + postId + fileType + extension;
         return new File(Constants.IMAGE_DIR, bitmapName);
     }

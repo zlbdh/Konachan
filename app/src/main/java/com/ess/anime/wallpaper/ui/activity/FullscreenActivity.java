@@ -93,7 +93,7 @@ public class FullscreenActivity extends BaseActivity implements OnPhotoTapListen
 
         CollectionBean collectionBean = getCurrentCollection();
         if (collectionBean != null) {
-            // 发送通知到MultipleMediaLayout
+            // Notify MultipleMediaLayout
             EventBus.getDefault().post(new MsgBean(Constants.RESUME_VIDEO, collectionBean.url));
         }
     }
@@ -103,7 +103,7 @@ public class FullscreenActivity extends BaseActivity implements OnPhotoTapListen
         super.onPause();
         CollectionBean collectionBean = getCurrentCollection();
         if (collectionBean != null) {
-            // 发送通知到MultipleMediaLayout
+            // Notify MultipleMediaLayout
             EventBus.getDefault().post(new MsgBean(Constants.PAUSE_VIDEO, collectionBean.url));
         }
     }
@@ -156,7 +156,7 @@ public class FullscreenActivity extends BaseActivity implements OnPhotoTapListen
 
                 CollectionBean collectionBean = mFullscreenAdapter.getItem(position);
                 if (collectionBean != null) {
-                    // 发送通知到MultipleMediaLayout
+                    // Notify MultipleMediaLayout
                     EventBus.getDefault().post(new MsgBean(Constants.START_VIDEO,
                             new Object[]{collectionBean.url, mLayoutOperate.getVisibility()}));
                 }
@@ -179,7 +179,7 @@ public class FullscreenActivity extends BaseActivity implements OnPhotoTapListen
     public void toggleOperateLayout() {
         int visibility = View.GONE - mLayoutOperate.getVisibility();
         mLayoutOperate.setVisibility(visibility);
-        // 发送通知到MultipleMediaLayout
+        // Notify MultipleMediaLayout
         EventBus.getDefault().post(new MsgBean(Constants.TOGGLE_VIDEO_CONTROLLER, visibility));
         if (visibility == View.VISIBLE) {
             QMUIDisplayHelper.cancelFullScreen(this);
@@ -286,7 +286,7 @@ public class FullscreenActivity extends BaseActivity implements OnPhotoTapListen
         ImageDataHolder.clearCollectionList();
     }
 
-    // 收藏夹本地文件发生变动后收到的通知，obj 为 null
+    // Notification when local favorite files change; obj is null
     @Subscribe
     public void localFilesChanged(MsgBean msgBean) {
         if (msgBean.msg.equals(Constants.LOCAL_FILES_CHANGED)) {

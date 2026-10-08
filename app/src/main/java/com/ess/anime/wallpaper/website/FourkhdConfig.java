@@ -3,9 +3,9 @@ package com.ess.anime.wallpaper.website;
 import com.ess.anime.wallpaper.R;
 
 /**
- * 4KHD (www.4khd.com) - WordPress 成人 Cosplay 站
+ * 4KHD (www.4khd.com): WordPress adult cosplay site
  *
- * 注意：该站直接访问 /wp-json/ 会 301，REST API 必须用 rest_route 形式。
+ * Direct /wp-json/ requests return 301; use rest_route for the REST API.
  */
 public class FourkhdConfig extends WordPressConfig {
 
@@ -18,7 +18,7 @@ public class FourkhdConfig extends WordPressConfig {
 
     @Override
     public String getPostUrl(int page, java.util.List<String> tagList) {
-        // rest_route 模式：参数用 & 连接，不能再加 ?
+        // In rest_route mode, join parameters with & rather than another ?
         if (tagList == null) {
             tagList = new java.util.ArrayList<>();
         }

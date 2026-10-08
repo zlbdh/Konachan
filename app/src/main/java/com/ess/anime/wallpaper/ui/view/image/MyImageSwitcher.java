@@ -81,7 +81,7 @@ public abstract class MyImageSwitcher extends FrameLayout {
     }
 
     /**
-     * 执行翻转动画
+     * Run the flip animation
      */
     public void flipImage() {
         if (mIvA.getVisibility() == View.VISIBLE) {
@@ -92,10 +92,10 @@ public abstract class MyImageSwitcher extends FrameLayout {
     }
 
     /**
-     * 设置两张图片加载的内容
+     * Set the content loaded by both image views
      *
-     * @param imgA 第一张内容
-     * @param imgB 第二张内容
+     * @param imgA Content for the first image
+     * @param imgB Content for the second image
      */
     public void loadImage(int imgA, int imgB) {
         loadImage(imgA, mIvA);

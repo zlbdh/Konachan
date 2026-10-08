@@ -15,12 +15,12 @@ import java.io.InputStream;
 public class DonateHelper {
 
     /**
-     * 支付宝支付
+     * Alipay payment
      */
     public static void donateViaAlipay(Activity activity) {
         if (AlipayDonate.hasInstalledAlipayClient(activity)) {
-            // 收款二维码里面的字符串，如 https://qr.alipay.com/stx00187oxldjvyo3ofaw60 ，
-            // 则payCode = stx00187oxldjvyo3ofaw60
+            // The string in the payment QR code, such as https://qr.alipay.com/stx00187oxldjvyo3ofaw60,
+            // gives payCode = stx00187oxldjvyo3ofaw60
             String payCode = "tsx08108dsd2cunrfgqsr64";
             AlipayDonate.startAlipayClient(activity, payCode);
         } else {
@@ -29,7 +29,7 @@ public class DonateHelper {
     }
 
     /**
-     * 需要提前准备好 微信收款码 照片，可通过微信客户端生成
+     * Prepare a WeChat payment QR image in advance using the WeChat app
      */
     public static void donateViaWechat(Activity activity) {
         InputStream inputStream = activity.getResources().openRawResource(R.raw.donate_wechat);

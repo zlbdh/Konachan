@@ -61,14 +61,14 @@ public class SearchFavoriteTagLayout extends FrameLayout {
                 R.layout.recycler_item_search_fav_tag_label_flow, new ArrayList<>()) {
             @Override
             public void bindView(View view, FavoriteTagBean tagBean, int position) {
-                // 显示标签
+                // Show tags
                 TextView tvTag = view.findViewById(R.id.tv_tag);
                 tvTag.setText(tagBean.getTag());
                 tvTag.setOnClickListener(v -> {
                     search(tagBean);
                 });
 
-                // 备注按钮
+                // Note button
                 ImageView ivAnnotation = view.findViewById(R.id.iv_annotation);
                 ivAnnotation.setOnClickListener(v -> {
                     CustomDialog.showEditTagAnnotationDialog(getContext(), tagBean.getTag(), false, null);

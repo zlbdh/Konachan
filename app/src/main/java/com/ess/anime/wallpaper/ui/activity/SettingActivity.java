@@ -280,7 +280,7 @@ public class SettingActivity extends BaseActivity {
                         public void onPositive() {
                             super.onPositive();
                             updateScreenOrientationItemUI();
-                            // 发送通知到各个页面
+                            // Notify all screens
                             EventBus.getDefault().post(new MsgBean(Constants.TOGGLE_SCREEN_ORIENTATION, null));
                         }
                     });
@@ -427,7 +427,7 @@ public class SettingActivity extends BaseActivity {
     private void checkUpdateManually() {
         if (mCheckingUpdate) return;
         mCheckingUpdate = true;
-        Toast.makeText(this, "正在检查更新…", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Checking for updates…", Toast.LENGTH_SHORT).show();
         FireBase.getInstance().checkUpdate(result -> {
             mCheckingUpdate = false;
             if (!SystemUtils.isActivityActive(this)
@@ -437,8 +437,8 @@ public class SettingActivity extends BaseActivity {
             } else if (result.status == UpdateCheckController.Status.LATEST) {
                 showNoNewVersionToast();
             } else {
-                if ("检查已取消".equals(result.message) || result.message.contains("替代")) return;
-                Toast.makeText(this, "检查更新失败，请稍后重试", Toast.LENGTH_LONG).show();
+                if ("Check canceled".equals(result.message) || result.message.contains("superseded")) return;
+                Toast.makeText(this, "Update check failed. Please try again later.", Toast.LENGTH_LONG).show();
             }
         });
     }

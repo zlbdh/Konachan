@@ -19,7 +19,7 @@ public class RecyclerSearchModePopupAdapter extends BaseQuickAdapter<String, Bas
 
     @Override
     protected void convert(BaseViewHolder holder, String mode) {
-        // 搜索模式文字
+        // Search mode label
         TextView tvMode = holder.getView(R.id.tv_search_mode);
         tvMode.setText(mode);
         tvMode.setSelected(holder.getLayoutPosition() == mSelectedPos);

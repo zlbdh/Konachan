@@ -79,7 +79,7 @@ public class CommentFragment extends BaseFragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        // 防止软件进入后台过久被系统回收导致切换回来时产生空指针异常
+        // Prevent a null pointer when returning after the system reclaims an app left in the background
         outState.putParcelable(Constants.THUMB_BEAN, mThumbBean);
     }
 
@@ -127,7 +127,7 @@ public class CommentFragment extends BaseFragment {
         }
     }
 
-    // 显示评论
+    // Show comments
     private void showComments(List<CommentBean> commentList) {
         if (mCommentAdapter.getEmptyView() == null) {
             mCommentAdapter.setEmptyView(getEmptyView());
@@ -145,7 +145,7 @@ public class CommentFragment extends BaseFragment {
         return tvEmpty;
     }
 
-    // 获取评论列表
+    // Get the comment list
     private void getCommentList() {
         String url = WebsiteManager.getInstance().getWebsiteConfig().getCommentUrl(mThumbBean.id);
         if (!TextUtils.isEmpty(url)) {
@@ -176,7 +176,7 @@ public class CommentFragment extends BaseFragment {
         }
     }
 
-    // 获取到评论列表后刷新界面
+    // Refresh the screen after receiving comments
     private void setCommentList(final List<CommentBean> commentList) {
         if (SystemUtils.isActivityActive(mActivity)) {
             showComments(commentList);

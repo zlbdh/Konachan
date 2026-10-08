@@ -11,17 +11,17 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Civitai (civitai.com) - AI 色图站
+ * Civitai (civitai.com): AI-generated adult image site
  *
  * API: GET https://civitai.com/api/v1/images?limit=20&nsfw=true&sort=Newest
- * 无需 key，匿名可拿 NSFW 内容。
- * 响应：{ items: [{id, url, width, height, nsfwLevel, username, meta:{prompt}, postId}],
+ * No key is required; anonymous requests can retrieve NSFW content.
+ * Response: { items: [{id, url, width, height, nsfwLevel, username, meta:{prompt}, postId}],
  *         metadata: {nextCursor} }
  *
- * 分页说明：Civitai 用 cursor 分页（metadata.nextCursor），不支持传统 page 参数。
- * 本类维护一个 cursor 列表实现顺序翻页：mCursors.get(i) 是请求第 i+2 页时要带的
- * cursor（即第 i+1 页响应返回的 nextCursor）。page=1（新搜索/刷新）时清空重置。
- * 跳页、回退重进等非顺序场景会退化为无 cursor 请求（API 返回第一页），属已知限制。
+ * Pagination: Civitai uses metadata.nextCursor rather than a traditional page parameter.
+ * Maintain a cursor list for sequential paging: mCursors.get(i) is the cursor for page i+2,
+ * returned as nextCursor by page i+1. Reset the list for page=1, a new search, or refresh.
+ * Nonsequential navigation, such as jumps or reentry, falls back to a request without a cursor and returns page one; this is a known limitation.
  */
 public class CivitaiConfig extends WebsiteConfig<CivitaiParser> {
 
@@ -32,12 +32,12 @@ public class CivitaiConfig extends WebsiteConfig<CivitaiParser> {
 
     private CivitaiParser mParser;
 
-    /** 分页 cursor 列表，mCursors.get(i) 对应第 i+2 页的 cursor */
+    /** Paging cursors; mCursors.get(i) corresponds to page i+2 */
     private final List<String> mCursors = new ArrayList<>();
 
     /**
-     * 直接创建 Parser，绕过父类构造函数的泛型反射
-     *（二级继承时 superclass 不是 ParameterizedType，反射拿不到 Parser 类型）
+     * Create the Parser directly to bypass generic reflection in the parent constructor
+     *(With two-level inheritance, superclass is not a ParameterizedType, so reflection cannot obtain the Parser type)
      */
     @Override
     public HtmlParser getHtmlParser() {
@@ -54,7 +54,7 @@ public class CivitaiConfig extends WebsiteConfig<CivitaiParser> {
 
     @Override
     public int getWebsiteLogoRes() {
-        // TODO: 正式图标由 parent 生成后替换（当前用 AIBooru 图标占位）
+        // TODO Replace the placeholder AIBooru icon when the parent agent provides the final icon
         return R.drawable.ic_website_civitai;
     }
 
@@ -64,8 +64,8 @@ public class CivitaiConfig extends WebsiteConfig<CivitaiParser> {
     }
 
     /**
-     * Parser 解析完一页后回填 nextCursor，供下一页翻页使用。
-     * 刷新同一页会返回相同 cursor，做去重避免列表无限增长。
+     * Store nextCursor after parsing a page so the next request can use it.
+     * Refreshing a page returns the same cursor; deduplicate it to prevent unlimited list growth.
      */
     public synchronized void saveNextCursor(String cursor) {
         if (TextUtils.isEmpty(cursor)) {
@@ -98,15 +98,15 @@ public class CivitaiConfig extends WebsiteConfig<CivitaiParser> {
         }
         synchronized (this) {
             if (page <= 1) {
-                // 新搜索 / 下拉刷新：重置分页状态
+                // Reset paging state for a new search or pull-to-refresh
                 mCursors.clear();
             } else {
                 int index = page - 2;
                 if (index >= 0 && index < mCursors.size()) {
                     url.append("&cursor=").append(encodeTag(mCursors.get(index)));
                 }
-                // cursor 缺失（非顺序翻页）时不带 cursor 参数，
-                // API 会返回第一页，属已知限制，见类注释
+                // Omit the cursor parameter if it is missing during nonsequential navigation;
+                // the API returns page one, as documented in the class comment
             }
         }
         return url.toString();

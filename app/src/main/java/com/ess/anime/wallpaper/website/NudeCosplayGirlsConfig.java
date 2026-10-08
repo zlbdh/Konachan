@@ -3,7 +3,7 @@ package com.ess.anime.wallpaper.website;
 import com.ess.anime.wallpaper.R;
 
 /**
- * NudeCosplayGirls (nudecosplaygirls.com) - WordPress 成人 Cosplay 站
+ * NudeCosplayGirls (nudecosplaygirls.com): WordPress adult cosplay site
  */
 public class NudeCosplayGirlsConfig extends WordPressConfig {
 

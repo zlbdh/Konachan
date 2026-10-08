@@ -19,10 +19,10 @@ import java.util.List;
 
 public class Rule34Config extends WebsiteConfig<AttrDapiParser> {
 
-    // rule34.xxx 的 dapi 必须走专用 API 域名（www 域名会返回 Missing authentication）
+    // rule34.xxx dapi must use the dedicated API host; the www host returns Missing authentication
     private final static String API_BASE_URL = "https://api.rule34.xxx/";
 
-    // Rule34 API 必须鉴权（api.rule34.xxx 注册账号后在 https://rule34.xxx/index.php?page=account&s=options 获取）
+    // Rule34 API requires authentication; create an account and retrieve credentials at https://rule34.xxx/index.php?page=account&s=options
     private String getApiKeySuffix() {
         try {
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MyApp.getInstance());

@@ -31,17 +31,17 @@ import java.util.Map;
 
 /**
  * ================================================
- * 作    者：jeasonlzy（廖子尧）Github地址：https://github.com/jeasonlzy
- * 版    本：1.0
- * 创建日期：2016/1/26
- * 描    述：全局的上传管理
- * 修订历史：
+ * Author: jeasonlzy (廖子尧). GitHub: https://github.com/jeasonlzy
+ * Version: 1.0
+ * Created: 2016/1/26
+ * Description: Global upload manager
+ * Revision history:
  * ================================================
  */
 public class OkUpload {
 
-    private Map<String, UploadTask<?>> taskMap;         //所有任务
-    private UploadThreadPool threadPool;                //上传的线程池
+    private Map<String, UploadTask<?>> taskMap;         //All tasks
+    private UploadThreadPool threadPool;                //Upload thread pool
 
     public static OkUpload getInstance() {
         return OkUploadHolder.instance;
@@ -55,7 +55,7 @@ public class OkUpload {
         threadPool = new UploadThreadPool();
         taskMap = new LinkedHashMap<>();
 
-        //校验数据的有效性，防止下载过程中退出，第二次进入的时候，由于状态没有更新导致的状态错误
+        //Validate records to prevent stale states when the app exits during a download and starts again
         List<Progress> taskList = UploadManager.getInstance().getUploading();
         for (Progress info : taskList) {
             if (info.status == Progress.WAITING || info.status == Progress.LOADING || info.status == Progress.PAUSE) {
@@ -76,7 +76,7 @@ public class OkUpload {
         return task;
     }
 
-    /** 从数据库中恢复任务 */
+    /** Restore tasks from the database */
     public static <T> UploadTask<T> restore(Progress progress) {
         Map<String, UploadTask<?>> taskMap = OkUpload.getInstance().getTaskMap();
         //noinspection unchecked
@@ -88,7 +88,7 @@ public class OkUpload {
         return task;
     }
 
-    /** 从数据库中恢复任务 */
+    /** Restore tasks from the database */
     public static List<UploadTask<?>> restore(List<Progress> progressList) {
         Map<String, UploadTask<?>> taskMap = OkUpload.getInstance().getTaskMap();
         List<UploadTask<?>> tasks = new ArrayList<>();
@@ -103,7 +103,7 @@ public class OkUpload {
         return tasks;
     }
 
-    /** 开始所有任务 */
+    /** Start all tasks */
     public void startAll() {
         for (Map.Entry<String, UploadTask<?>> entry : taskMap.entrySet()) {
             UploadTask<?> task = entry.getValue();
@@ -115,9 +115,9 @@ public class OkUpload {
         }
     }
 
-    /** 暂停全部任务 */
+    /** Pause all tasks */
     public void pauseAll() {
-        //先停止未开始的任务
+        //Stop tasks that have not started first
         for (Map.Entry<String, UploadTask<?>> entry : taskMap.entrySet()) {
             UploadTask<?> task = entry.getValue();
             if (task == null) {
@@ -128,7 +128,7 @@ public class OkUpload {
                 task.pause();
             }
         }
-        //再停止进行中的任务
+        //Then stop tasks in progress
         for (Map.Entry<String, UploadTask<?>> entry : taskMap.entrySet()) {
             UploadTask<?> task = entry.getValue();
             if (task == null) {
@@ -141,10 +141,10 @@ public class OkUpload {
         }
     }
 
-    /** 删除所有任务 */
+    /** Remove all tasks */
     public void removeAll() {
         Map<String, UploadTask<?>> map = new HashMap<>(taskMap);
-        //先删除未开始的任务
+        //Remove tasks that have not started first
         for (Map.Entry<String, UploadTask<?>> entry : map.entrySet()) {
             UploadTask<?> task = entry.getValue();
             if (task == null) {
@@ -155,7 +155,7 @@ public class OkUpload {
                 task.remove();
             }
         }
-        //再删除进行中的任务
+        //Then remove tasks in progress
         for (Map.Entry<String, UploadTask<?>> entry : map.entrySet()) {
             UploadTask<?> task = entry.getValue();
             if (task == null) {

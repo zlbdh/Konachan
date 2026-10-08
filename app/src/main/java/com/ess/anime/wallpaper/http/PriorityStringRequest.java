@@ -18,7 +18,7 @@ public class PriorityStringRequest extends StringRequest {
 
     public PriorityStringRequest(int method, String url, Response.Listener<String> listener, @Nullable Response.ErrorListener errorListener) {
         super(method, url, listener, errorListener);
-        // VPN 下延迟高，Volley 默认 2.5s 超时太短，提到 15s
+        // VPN latency makes Volley's default 2.5-second timeout too short; increase it to 15 seconds
         setRetryPolicy(new com.android.volley.DefaultRetryPolicy(15000, 1, 1.0f));
     }
 
@@ -37,7 +37,7 @@ public class PriorityStringRequest extends StringRequest {
     }
 
     protected Response<String> parseNetworkResponse(NetworkResponse response) {
-        // 解决中文乱码问题
+        // Prevent garbled Chinese text
         String parsed = new String(response.data, StandardCharsets.UTF_8);
         return Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response));
     }

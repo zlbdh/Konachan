@@ -64,7 +64,7 @@ public class SearchHistoryLayout extends FrameLayout {
                 R.layout.recycler_item_search_history_label_flow, getHistoryData()) {
             @Override
             public void bindView(View view, SearchTagBean searchTagBean, int position) {
-                // 显示标签
+                // Show tags
                 TextView tvTag = view.findViewById(R.id.tv_tag);
                 tvTag.setText(searchTagBean.getTag());
                 tvTag.setOnClickListener(v -> {
@@ -80,7 +80,7 @@ public class SearchHistoryLayout extends FrameLayout {
                     return true;
                 });
 
-                // 删除按钮
+                // Delete button
                 ImageView ivDelete = view.findViewById(R.id.iv_delete);
                 ivDelete.setVisibility(isEditing() ? VISIBLE : GONE);
                 ivDelete.setOnClickListener(v -> {

@@ -86,7 +86,7 @@ public class ImageDetailActivity extends BaseActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        // 防止软件进入后台过久被系统回收导致切换回来时产生空指针异常
+        // Prevent a null pointer when returning after the system reclaims an app left in the background
         outState.putParcelable(Constants.THUMB_BEAN, mThumbBean);
         outState.putParcelable(Constants.IMAGE_BEAN, mImageBean);
         outState.putInt(Constants.CURRENT_PAGE, mCurrentPage);
@@ -315,7 +315,7 @@ public class ImageDetailActivity extends BaseActivity {
         Toast.makeText(this, R.string.already_in_download_queue, Toast.LENGTH_SHORT).show();
     }
 
-    // 下载图片点击事件
+    // Download image click handler
     private void saveImage() {
         PermissionHelper.checkStoragePermissions(this, new PermissionHelper.SimpleRequestListener() {
             @Override
@@ -326,7 +326,7 @@ public class ImageDetailActivity extends BaseActivity {
         });
     }
 
-    // 查看上一张图片点击事件
+    // Previous image click handler
     private void previousImage() {
         ThumbBean thumbBean = ImageDataHolder.previousThumb();
         if (thumbBean != null) {
@@ -342,7 +342,7 @@ public class ImageDetailActivity extends BaseActivity {
         }
     }
 
-    // 查看下一张图片点击事件
+    // Next image click handler
     private void nextImage() {
         ThumbBean thumbBean = ImageDataHolder.nextThumb();
         if (thumbBean != null) {
@@ -358,7 +358,7 @@ public class ImageDetailActivity extends BaseActivity {
         }
     }
 
-    // 快速滑动查看上/下一张图片
+    // Swipe quickly to view the previous or next image
     public void flingToQuickSwitch(float velocityX, float velocityY) {
         if (Math.abs(velocityX) >= 4000) {
             double hypotenuse = Math.hypot(velocityX, velocityY);
@@ -378,7 +378,7 @@ public class ImageDetailActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PermissionHelper.REQ_CODE_PERMISSION) {
-            // 进入系统设置界面请求权限后的回调
+            // Callback after requesting permission in system settings
             if (PermissionHelper.hasStoragePermissions(this)) {
                 showChooseToDownloadDialog();
             }

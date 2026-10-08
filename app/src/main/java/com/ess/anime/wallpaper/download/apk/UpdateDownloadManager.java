@@ -8,7 +8,7 @@ import com.ess.anime.wallpaper.http.OkHttp;
 import com.google.gson.Gson;
 import androidx.core.content.ContextCompat;
 
-/** 更新下载统一入口，后台请求留到下一次前台，不绕过系统限制。 */
+/** Single update-download entry point. Defer background requests until the next foreground session without bypassing system restrictions. */
 public final class UpdateDownloadManager {
     public static final String AUTOMATIC = "automaticApkDownload";
     private UpdateDownloadManager() { }

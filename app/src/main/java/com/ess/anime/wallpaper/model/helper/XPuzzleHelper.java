@@ -50,10 +50,10 @@ public class XPuzzleHelper implements Parcelable {
                     }
                 }
 
-                // 有解条件：
-                // column为奇数，则需初始与目标状态的逆序数奇偶性相同
-                // column为偶数，则需初始与目标状态的逆序数奇偶性相同且空格位置为偶数，或逆序数奇偶性不同且空格位置为奇数
-                // 目标状态：1234...0（逆序数为偶数）
+                // Solvability conditions:
+                // For an odd column count, the initial and target inversion counts must have the same parity
+                // For an even column count, inversion parity must match with an even blank position, or differ with an odd blank position
+                // Target state: 1234...0, with an even inversion count
                 if (column % 2 == 1) {
                     canSolved = parity % 2 == 0;
                 } else {

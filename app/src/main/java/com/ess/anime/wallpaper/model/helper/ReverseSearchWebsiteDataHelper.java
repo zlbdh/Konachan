@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class ReverseSearchWebsiteDataHelper {
 
@@ -63,14 +62,7 @@ public class ReverseSearchWebsiteDataHelper {
     }
 
     private static String getCurrentLanguageAbbreviation() {
-        String code = Locale.getDefault().getCountry();
-        if (code.equals("CN")) {
-            return "zh_cn";
-        } else if (code.equals("TW") || code.equals("HK")) {
-            return "zh_hk";
-        } else {
-            return "en_us";
-        }
+        return "en_us";
     }
 
     /********************  Download  ********************/

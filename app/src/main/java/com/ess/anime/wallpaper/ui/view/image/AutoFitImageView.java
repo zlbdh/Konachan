@@ -11,33 +11,33 @@ import com.ess.anime.wallpaper.utils.UIUtils;
 import androidx.appcompat.widget.AppCompatImageView;
 
 /**
- * 以360dp * 640dp屏幕为基准，根据xml里设置的宽度和高度自动进行缩放适配
+ * Scale XML width and height automatically using a 360dp × 640dp screen as the baseline
  * version 1.0
- * 缺点：暂时只支持适配一个子View的尺寸
- * 属性：具体styles配置见最下方
- * scaleWidth(boolean)：layout_width为定值，且此属性为true时，自动适配View的宽度
- * scaleHeight(boolean)：layout_height为定值，且此属性为true时，自动适配View的高度
- * relativeTo(int)：需layout_width与layout_height均为定值，此时设置为相对于某一边，
- * 则此边相对于屏幕缩放，另一边按照原始宽高比缩放（此时scaleWidth
- * 与scaleHeight默认生效）
- * maxRatio(float)：最大缩放倍数
- * minRatio(float)：最小缩放倍数
+ * Limitation: currently supports sizing only one child View
+ * Attributes: see the style configuration below
+ * scaleWidth(boolean): automatically adapt width when layout_width is fixed and this attribute is true
+ * scaleHeight(boolean): automatically adapt height when layout_height is fixed and this attribute is true
+ * relativeTo(int): requires fixed layout_width and layout_height; choose one dimension as the reference,
+ * scale that dimension to the screen, and preserve the original aspect ratio for the other dimension
+ * (scaleWidth and scaleHeight are implicitly enabled in this mode)
+ * maxRatio(float): maximum scale factor
+ * minRatio(float): minimum scale factor
  */
 
 public class AutoFitImageView extends AppCompatImageView {
 
-    private final static int NONE = 0;  // 两边均以屏幕尺寸为基准进行缩放
-    private final static int RELATIVE_TO_WIDTH = 1;  // 以宽度为基准等比缩放高度
-    private final static int RELATIVE_TO_HEIGHT = 2; // 以高度为基准等比缩放宽度
+    private final static int NONE = 0;  // Scale both dimensions relative to the screen
+    private final static int RELATIVE_TO_WIDTH = 1;  // Scale height proportionally from width
+    private final static int RELATIVE_TO_HEIGHT = 2; // Scale width proportionally from height
 
-    private boolean mScaleWidth;   // 是否缩放宽度，默认为false
-    private boolean mScaleHeight;  // 是否缩放高度，默认为false
-    private int mRelative;    // 以哪边为基准等比缩放，默认为NONE
+    private boolean mScaleWidth;   // Whether to scale width; false by default
+    private boolean mScaleHeight;  // Whether to scale height; false by default
+    private int mRelative;    // Reference dimension for proportional scaling; NONE by default
 
-    private float mWidthRatio;  // 屏幕宽度与360dp的比例
-    private float mHeightRatio; // 屏幕高度与640dp的比例
-    private float mMaxRatio;    // 最大缩放倍数，默认为0
-    private float mMinRatio;    // 最小缩放倍数，默认为0
+    private float mWidthRatio;  // Screen width relative to 360dp
+    private float mHeightRatio; // Screen height relative to 640dp
+    private float mMaxRatio;    // Maximum scale factor; zero by default
+    private float mMinRatio;    // Minimum scale factor; zero by default
 
     public AutoFitImageView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -45,7 +45,7 @@ public class AutoFitImageView extends AppCompatImageView {
 
     public AutoFitImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        // 获取xml属性
+        // Read XML attributes
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.AutoFitImageView);
         mScaleWidth = typedArray.getBoolean(R.styleable.AutoFitImageView_scaleWidth, false);
         mScaleHeight = typedArray.getBoolean(R.styleable.AutoFitImageView_scaleHeight, false);
@@ -56,13 +56,13 @@ public class AutoFitImageView extends AppCompatImageView {
     }
 
     private void resetRatio() {
-        // 计算宽高需缩放倍数
+        // Calculate width and height scale factors
         Point point = UIUtils.getAppUsableScreenSize(getContext());
         mWidthRatio = balanceRatio(UIUtils.px2dp(getContext(), Math.min(point.x, point.y)) / 360f);
         mHeightRatio = balanceRatio(UIUtils.px2dp(getContext(), Math.max(point.x, point.y)) / 640f);
     }
 
-    // 根据最大和最小缩放比例进行取舍
+    // Apply the minimum and maximum scale factors
     private float balanceRatio(float ratio) {
         if (mMaxRatio > 0 && mMaxRatio >= mMinRatio) {
             ratio = Math.min(ratio, mMaxRatio);
@@ -76,48 +76,48 @@ public class AutoFitImageView extends AppCompatImageView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         resetRatio();
-        // UNSPECIFIED: 父容器不对View有任何限制，要多大给多大，一般用于系统内部，表示一种测量的状态
+        // UNSPECIFIED: the parent imposes no size restriction; generally an internal measurement state
         // EXACTLY: 100dp match_parent
         // AT_MOST: wrap_content
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
 
-        // 获取原始宽高值
+        // Get the original width and height
         int selfWidth = MeasureSpec.getSize(widthMeasureSpec);
         int selfHeight = MeasureSpec.getSize(heightMeasureSpec);
 
-        // 根据不同配置属性进行适配
+        // Adapt to the configured attributes
         if (widthMode == MeasureSpec.EXACTLY && heightMode == MeasureSpec.EXACTLY
                 && mRelative == RELATIVE_TO_WIDTH) {
-            // 宽高定值，宽度按屏幕缩放，高度按比例缩放
+            // Fixed dimensions: scale width to the screen and height proportionally
             float scale = selfHeight / 1f / selfWidth;
             selfWidth = (int) (selfWidth * mWidthRatio + 0.5f);
             selfHeight = (int) (selfWidth * scale + 0.5f);
         } else if (widthMode == MeasureSpec.EXACTLY && heightMode == MeasureSpec.EXACTLY
                 && mRelative == RELATIVE_TO_HEIGHT) {
-            // 宽高定值，高度按屏幕缩放，宽度按比例缩放
+            // Fixed dimensions: scale height to the screen and width proportionally
             float scale = selfWidth / 1f / selfHeight;
             selfHeight = (int) (selfHeight * mHeightRatio + 0.5f);
             selfWidth = (int) (selfHeight * scale + 0.5f);
         } else {
             if (widthMode == MeasureSpec.EXACTLY && mScaleWidth) {
-                // 宽度按屏幕缩放，无视高度
+                // Scale width to the screen independently of height
                 selfWidth = (int) (selfWidth * mWidthRatio + 0.5f);
             } else {
-                // 无缩放，未设置mScaleWidth或layout_width="wrap_content"
+                // No scaling: mScaleWidth is unset or layout_width="wrap_content"
                 selfWidth = getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec);
             }
 
             if (heightMode == MeasureSpec.EXACTLY && mScaleHeight) {
-                // 高度按屏幕缩放，无视宽度
+                // Scale height to the screen independently of width
                 selfHeight = (int) (selfHeight * mHeightRatio + 0.5f);
             } else {
-                // 无缩放，未设置mScaleHeight或layout_height="wrap_content"
+                // No scaling: mScaleHeight is unset or layout_height="wrap_content"
                 selfHeight = getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec);
             }
         }
 
-        // 保存缩放结果
+        // Save the scaling result
         setMeasuredDimension(selfWidth, selfHeight);
     }
 }

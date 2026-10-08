@@ -25,7 +25,7 @@ public class RecyclerPoolAdapter extends BaseQuickAdapter<PoolListBean, BaseView
 
     @Override
     protected void convert(BaseViewHolder holder, PoolListBean poolListBean) {
-        //缩略图
+        //thumbnail
         Map<String, String> headerMap = WebsiteManager.getInstance().getRequestHeaders();
         Object imgUrl = TextUtils.isEmpty(poolListBean.thumbUrl)
                 ? poolListBean
@@ -36,23 +36,23 @@ public class RecyclerPoolAdapter extends BaseQuickAdapter<PoolListBean, BaseView
                 .priority(Priority.HIGH)
                 .into((ImageView) holder.getView(R.id.iv_pool_thumb));
 
-        //图集名称
+        //Album name
         holder.setText(R.id.tv_name, poolListBean.name.replace("_", " "));
 
-        //创建者
+        //Creator
         String creator = TextUtils.isEmpty(poolListBean.creator)
                 ? mContext.getString(R.string.unknown)
                 : poolListBean.creator;
         holder.setText(R.id.tv_creator, creator);
 
-        //图片数量
+        //Image count
         holder.setGone(R.id.tv_post_count, !TextUtils.isEmpty(poolListBean.postCount));
         holder.setText(R.id.tv_post_count, poolListBean.postCount);
 
-        //创建时间
+        //Creation time
         holder.setText(R.id.tv_create_time, poolListBean.createTime);
 
-        //上传时间
+        //Upload time
         String update = TextUtils.isEmpty(poolListBean.updateTime)
                 ? mContext.getString(R.string.unknown)
                 : mContext.getString(R.string.pool_updated_time, poolListBean.updateTime);
@@ -69,7 +69,7 @@ public class RecyclerPoolAdapter extends BaseQuickAdapter<PoolListBean, BaseView
 
     private boolean addDatas(int position, List<PoolListBean> poolList) {
         synchronized (this) {
-            //删掉更新时因网站新增图片导致thumbList出现的重复项
+            //Remove duplicate thumbList entries caused by new site images during refresh
             poolList.removeAll(mData);
             if (!poolList.isEmpty()) {
                 addData(position, poolList);

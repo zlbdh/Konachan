@@ -1,4 +1,4 @@
-"""完全在内存模拟 GitHub，测试不会调用 gh 或网络。"""
+"""Simulate GitHub entirely in memory; tests never invoke gh or access the network."""
 
 import base64
 import copy
@@ -23,7 +23,7 @@ class FakeGitHub:
     def __init__(self, candidate):
         self.artifact = candidate
         self.latest = {"versionCode": 34, "versionName": "1.9.5",
-                       "updatedContentZh": "12 个站点", "updatedContentEn": "12 sites"}
+                       "updatedContentZh": "12 sites", "updatedContentEn": "12 sites"}
         self.blob = "blob-1"
         self.ref = None
         self.release = None
@@ -63,7 +63,7 @@ class FakeGitHub:
                     json.dumps(self.latest).encode()).decode()}
             if method == "PUT":
                 if self.fail_contents or payload.get("sha") != self.blob:
-                    raise ReleaseError("版本文件冲突", 409)
+                    raise ReleaseError("Version file conflict", 409)
                 self.latest = json.loads(base64.b64decode(payload["content"]))
                 self.blob = "blob-2"
                 return {"commit": {"sha": "d" * 40}}
@@ -88,7 +88,7 @@ class FakeGitHub:
         if endpoint == "releases/10":
             if method == "PATCH":
                 if self.fail_publish:
-                    raise ReleaseError("发布失败", 500)
+                    raise ReleaseError("Release failed", 500)
                 self.release.update(payload)
                 if not self.keep_untagged_after_publish:
                     for asset in self.release["assets"]:
@@ -98,15 +98,15 @@ class FakeGitHub:
                     self.latest["versionCode"] = self.artifact.version_code + 1
                     self.blob = "newer-blob"
             return copy.deepcopy(self.release)
-        raise AssertionError(f"未模拟的请求: {method} {path}")
+        raise AssertionError(f"Unexpected request in test double: {method} {path}")
 
     def upload(self, tag, apk):
         self.calls.append(("UPLOAD", tag, str(apk)))
         if self.fail_upload:
-            raise ReleaseError("上传失败")
+            raise ReleaseError("Upload failed")
         self.release["assets"] = [self.uploaded_asset()]
 
     def verify_download(self, candidate, url):
         self.calls.append(("DOWNLOAD", url, None))
         if self.fail_download or self.download_size_mismatch or self.download_hash_mismatch:
-            raise ReleaseError("公开 APK 下载验证失败；保留原版本文件")
+            raise ReleaseError("Public APK download verification failed; preserving the original version file")

@@ -23,15 +23,15 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * nhentai.net 解析器（官方 v2 REST API，JSON）
+ * nhentai.net parser for the official v2 REST JSON API
  *
- * 列表：result 数组，一画廊一条 ThumbBean，缩略图用 API 给的 thumbnail 路径；
- * 详情：pages 数组，第一页全图作为 fileUrl（App 的 ImageBean 为单图模型，
- * 多页画廊暂只展示/下载第一页，全页阅读需 App 层改造）。
+ * List: result array, one ThumbBean per gallery, using the API thumbnail path;
+ * details: pages array, with the first full-size page as fileUrl. ImageBean is a single-image model,
+ * so only the first page is displayed or downloaded; full-gallery reading requires app-level changes.
  */
 public class NHentaiParser extends HtmlParser {
 
-    /** 图片 CDN（i1-i4 均可用） */
+    /** Image CDN; i1 through i4 are available */
     private static final String IMG_HOST = "https://i3.nhentai.net/";
 
     public NHentaiParser(WebsiteConfig websiteConfig) {
@@ -46,7 +46,7 @@ public class NHentaiParser extends HtmlParser {
         return IMG_HOST + path;
     }
 
-    /** 安全取字符串（兼容数字/字符串两种类型） */
+    /** Safely read strings, accepting both numbers and strings */
     private static String optString(JsonObject o, String key) {
         try {
             JsonElement e = o.get(key);
@@ -129,7 +129,7 @@ public class NHentaiParser extends HtmlParser {
             JsonObject g = new JsonParser().parse(json).getAsJsonObject();
             String id = optString(g, "id");
 
-            // 标题
+            // Title
             String title = "";
             try {
                 JsonObject t = g.getAsJsonObject("title");
@@ -146,7 +146,7 @@ public class NHentaiParser extends HtmlParser {
                 title = Html.fromHtml(title).toString().trim();
             }
 
-            // 第一页全图（path 自带真实扩展名，如 galleries/4226053/1.jpg）
+            // First full-size page; path includes the actual extension, such as galleries/4226053/1.jpg
             String fileUrl = "";
             int width = 0;
             int height = 0;
@@ -164,7 +164,7 @@ public class NHentaiParser extends HtmlParser {
             } catch (Exception ignore) {
             }
 
-            // 封面（详情页缩略图兜底）
+            // Cover image, used as the details thumbnail fallback
             String previewUrl = "";
             int previewWidth = 0;
             int previewHeight = 0;
@@ -187,7 +187,7 @@ public class NHentaiParser extends HtmlParser {
                 fileUrl = previewUrl;
             }
 
-            // 标签（按 type 分类）+ 作者（artist tag 优先，其次 scanlator）
+            // Tags grouped by type, plus artist: prefer the artist tag, then scanlator
             StringBuilder tags = new StringBuilder();
             StringBuilder artists = new StringBuilder();
             try {
@@ -230,7 +230,7 @@ public class NHentaiParser extends HtmlParser {
                 author = getNHConfig().getWebsiteName();
             }
 
-            // 上传时间（epoch 秒）
+            // Upload time in epoch seconds
             String createdTime = "";
             try {
                 JsonElement ue = g.get("upload_date");

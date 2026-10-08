@@ -24,49 +24,49 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * ================================================
- * 作    者：jeasonlzy（廖子尧）Github地址：https://github.com/jeasonlzy
- * 版    本：1.0
- * 创建日期：2016/1/26
- * 描    述：上传管理的线程池
- * 修订历史：
+ * Author: jeasonlzy (廖子尧). GitHub: https://github.com/jeasonlzy
+ * Version: 1.0
+ * Created: 2016/1/26
+ * Description: Upload manager thread pool
+ * Revision history:
  * ================================================
  */
 public class UploadThreadPool {
-    private static final int MAX_IMUM_POOL_SIZE = 5;     //最大线程池的数量
-    private static final int KEEP_ALIVE_TIME = 1;        //存活的时间
-    private static final TimeUnit UNIT = TimeUnit.HOURS; //时间单位
-    private int corePoolSize = 1;                        //核心线程池的数量，同时能执行的线程数量，默认1个
-    private XExecutor executor;               //线程池执行器
+    private static final int MAX_IMUM_POOL_SIZE = 5;     //Maximum thread count
+    private static final int KEEP_ALIVE_TIME = 1;        //Keep-alive duration
+    private static final TimeUnit UNIT = TimeUnit.HOURS; //Time unit
+    private int corePoolSize = 1;                        //Core thread count and concurrent task limit; defaults to one
+    private XExecutor executor;               //Thread pool executor
 
     public XExecutor getExecutor() {
         if (executor == null) {
             synchronized (UploadThreadPool.class) {
                 if (executor == null) {
                     executor = new XExecutor(corePoolSize, MAX_IMUM_POOL_SIZE, KEEP_ALIVE_TIME, UNIT, //
-                                             new PriorityBlockingQueue<Runnable>(),   //无限容量的缓冲队列
-                                             Executors.defaultThreadFactory(),        //线程创建工厂
-                                             new ThreadPoolExecutor.AbortPolicy());   //继续超出上限的策略，阻止
+                                             new PriorityBlockingQueue<Runnable>(),   //Unbounded work queue
+                                             Executors.defaultThreadFactory(),        //Thread factory
+                                             new ThreadPoolExecutor.AbortPolicy());   //Reject tasks beyond the limit by blocking
                 }
             }
         }
         return executor;
     }
 
-    /** 必须在首次执行前设置，否者无效 ,范围1-5之间 */
+    /** Set before the first task runs; otherwise ineffective. Valid range: 1–5. */
     public void setCorePoolSize(int corePoolSize) {
         if (corePoolSize <= 0) corePoolSize = 1;
         if (corePoolSize > MAX_IMUM_POOL_SIZE) corePoolSize = MAX_IMUM_POOL_SIZE;
         this.corePoolSize = corePoolSize;
     }
 
-    /** 执行任务 */
+    /** Run a task */
     public void execute(Runnable runnable) {
         if (runnable != null) {
             getExecutor().execute(runnable);
         }
     }
 
-    /** 移除线程 */
+    /** Remove a thread */
     public void remove(Runnable runnable) {
         if (runnable != null) {
             getExecutor().remove(runnable);

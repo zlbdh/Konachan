@@ -10,7 +10,7 @@ import com.ess.anime.wallpaper.utils.FileUtils;
 
 import java.io.File;
 
-// 监听收藏夹sd卡文件变动
+// Watch favorite files on the SD card for changes
 public class LocalCollectionsListener extends FileObserver {
 
     private static final int EVENTS = CREATE | MOVED_TO | DELETE | DELETE_SELF | MOVED_FROM | MOVE_SELF | CLOSE_WRITE;

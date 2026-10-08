@@ -65,7 +65,7 @@ public class ImageFragment extends BaseFragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        // 防止软件进入后台过久被系统回收导致切换回来时产生空指针异常
+        // Prevent a null pointer when returning after the system reclaims an app left in the background
         outState.putParcelable(Constants.THUMB_BEAN, mThumbBean);
         outState.putParcelable(Constants.IMAGE_BEAN, mImageBean);
     }
@@ -73,14 +73,14 @@ public class ImageFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        // 发送通知到MultipleMediaLayout
+        // Notify MultipleMediaLayout
         EventBus.getDefault().post(new MsgBean(Constants.RESUME_VIDEO, mMediaLayout.getMediaPath()));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        // 发送通知到MultipleMediaLayout
+        // Notify MultipleMediaLayout
         EventBus.getDefault().post(new MsgBean(Constants.PAUSE_VIDEO, mMediaLayout.getMediaPath()));
     }
 
@@ -163,7 +163,7 @@ public class ImageFragment extends BaseFragment {
         }
     }
 
-    //获取到图片详细信息后收到的通知，obj 为 Json (String)
+    //Notification after receiving image details; obj is JSON (String)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getImageDetail(MsgBean msgBean) {
         if (msgBean.msg.equals(Constants.GET_IMAGE_DETAIL)) {
@@ -175,7 +175,7 @@ public class ImageFragment extends BaseFragment {
         }
     }
 
-    // PoolPostFragment获取到imageBean后重新根据ID请求tempPost后收到的通知，obj 为 thumbBean
+    // Notification after PoolPostFragment requests tempPost by ID following imageBean; obj is thumbBean
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void reloadDetailById(MsgBean msgBean) {
         if (msgBean.msg.equals(Constants.RELOAD_DETAIL_BY_ID)) {

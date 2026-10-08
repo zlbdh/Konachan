@@ -47,7 +47,7 @@ public class ApkBean implements Parcelable {
         return parse(context, json);
     }
 
-    /** 严格新 schema；坏数据返回 null，调用方只能在解析成功后替换缓存。 */
+    /** Strict new schema; invalid data returns null. Replace the cache only after successful parsing. */
     public static ApkBean parse(Context context, String json) {
         if (context == null || json == null || json.length() == 0 || json.length() > 65536) return null;
         try {
@@ -80,12 +80,12 @@ public class ApkBean implements Parcelable {
             bean.localFilePath = destination.getAbsolutePath();
             return bean;
         } catch (Exception invalid) {
-            // 不输出远端 body、URL 或本地路径；无效元数据不能进入下载和安装流程。
+            // Do not print remote bodies, URLs, or local paths; invalid metadata must never enter the download or installation flow.
             return null;
         }
     }
 
-    /** 收到 Parcelable 或直接构造的对象后也必须重新检查，不能只信首次解析。 */
+    /** Revalidate Parcelable and directly constructed objects; do not rely solely on initial parsing. */
     public boolean isDownloadable() {
         if (versionCode <= 0 || versionName == null || versionName.isEmpty() || versionName.length() > 64
                 || !versionName.equals(versionName.trim()) || !versionName.matches("[^\\p{Cntrl}]+")) return false;
@@ -114,7 +114,7 @@ public class ApkBean implements Parcelable {
     private static String requiredString(JsonObject root, String name) {
         JsonElement value = root.get(name);
         if (value == null || !value.isJsonPrimitive() || !value.getAsJsonPrimitive().isString()) {
-            throw new IllegalArgumentException("字段类型错误");
+            throw new IllegalArgumentException("Incorrect field type");
         }
         return value.getAsString();
     }
@@ -122,7 +122,7 @@ public class ApkBean implements Parcelable {
     private static long requiredInteger(JsonObject root, String name) {
         JsonElement value = root.get(name);
         if (value == null || !value.isJsonPrimitive() || !value.getAsJsonPrimitive().isNumber()) {
-            throw new IllegalArgumentException("数字字段类型错误");
+            throw new IllegalArgumentException("Incorrect numeric field type");
         }
         return value.getAsBigDecimal().longValueExact();
     }
@@ -130,7 +130,7 @@ public class ApkBean implements Parcelable {
     private static String optionalString(JsonObject root, String name) {
         if (!root.has(name) || root.get(name).isJsonNull()) return "";
         String value = requiredString(root, name);
-        if (value.length() > 10000) throw new IllegalArgumentException("更新说明过长");
+        if (value.length() > 10000) throw new IllegalArgumentException("Release notes are too long");
         return value;
     }
 

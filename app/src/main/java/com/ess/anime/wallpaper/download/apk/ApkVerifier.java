@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.util.Locale;
 
-/** 下载 APK 的唯一信任门禁。只验证，不安装，不删除失败文件。应在 IO 线程调用。 */
+/** The sole trust gate for downloaded APKs. Verifies only; does not install or delete failed files. Call on an IO thread. */
 public final class ApkVerifier {
     private static final String PACKAGE_NAME = "com.ess.anime.wallpaper";
     private ApkVerifier() { }
@@ -27,39 +27,39 @@ public final class ApkVerifier {
     }
 
     public static Result verify(Context context, File file, ApkBean metadata) {
-        if (metadata == null || !metadata.isDownloadable()) return failed("更新信息不完整或不可信");
+        if (metadata == null || !metadata.isDownloadable()) return failed("Update information is incomplete or untrusted");
         if (context == null || file == null || !file.isFile() || !file.canRead() || file.length() == 0) {
-            return failed("APK不存在、为空或不可读取");
+            return failed("The APK is missing, empty, or unreadable");
         }
-        if (file.length() != metadata.apkSize) return failed("APK大小与更新信息不一致");
+        if (file.length() != metadata.apkSize) return failed("The APK size does not match the update information");
         try {
-            if (!fileSha256(file).equalsIgnoreCase(metadata.apkSha256)) return failed("APK的SHA256校验失败");
+            if (!fileSha256(file).equalsIgnoreCase(metadata.apkSha256)) return failed("APK SHA-256 verification failed");
             PackageManager manager = context.getPackageManager();
             int flags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
                     ? PackageManager.GET_SIGNING_CERTIFICATES : PackageManager.GET_SIGNATURES;
             PackageInfo candidate = manager.getPackageArchiveInfo(file.getAbsolutePath(), flags);
-            if (candidate == null) return failed("无法解析APK安装包");
+            if (candidate == null) return failed("Unable to parse the APK package");
             if (!PACKAGE_NAME.equals(candidate.packageName) || !PACKAGE_NAME.equals(context.getPackageName())) {
-                return failed("APK包名与本应用不一致");
+                return failed("The APK package name does not match this app");
             }
             if (versionCode(candidate) != metadata.versionCode
                     || !metadata.versionName.equals(candidate.versionName)) {
-                return failed("APK实际版本与更新信息不一致");
+                return failed("The APK version does not match the update information");
             }
             PackageInfo installed = manager.getPackageInfo(PACKAGE_NAME, flags);
-            if (versionCode(candidate) <= versionCode(installed)) return failed("APK不是比当前安装版本更新的版本");
+            if (versionCode(candidate) <= versionCode(installed)) return failed("The APK is not newer than the installed version");
             String candidateCertificate = certificateSha256(candidate);
             String installedCertificate = certificateSha256(installed);
             if (candidateCertificate == null || installedCertificate == null
                     || !candidateCertificate.equals(installedCertificate)
                     || !candidateCertificate.equalsIgnoreCase(metadata.signingCertificateSha256)) {
-                return failed("APK签名与本机安装证书或更新信息不一致，请勿覆盖安装");
+                return failed("The APK signature does not match the installed certificate or update information. Do not install it over the current app.");
             }
-            // 校验过程中若文件大小变化，不能交给安装器。
-            if (file.length() != metadata.apkSize) return failed("APK在校验过程中发生变化");
-            return new Result(true, "APK完整性、版本和签名已校验");
+            // Do not pass the APK to the installer if its size changes during verification.
+            if (file.length() != metadata.apkSize) return failed("The APK changed during verification");
+            return new Result(true, "APK integrity, version, and signature verified");
         } catch (Exception verificationError) {
-            return failed("无法完成APK校验，请重新检查更新");
+            return failed("Unable to verify the APK. Check for updates again.");
         }
     }
 
@@ -74,7 +74,7 @@ public final class ApkVerifier {
         } else {
             signatures = info.signatures;
         }
-        // 本项目使用单一专属证书，普通更新不接受换证或多签名 APK。
+        // This project uses one dedicated certificate; routine updates do not accept certificate changes or multiple signatures.
         return signatures != null && signatures.length == 1
                 ? hex(MessageDigest.getInstance("SHA-256").digest(signatures[0].toByteArray())) : null;
     }

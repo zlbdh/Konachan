@@ -6,9 +6,9 @@ import com.google.gson.JsonObject;
 import java.util.List;
 
 /**
- * RedTube（redtube.com）- 官方公开 API，无需 key
+ * RedTube (redtube.com): official public API, no key required
  * GET api.redtube.com/?data=redtube.Videos.searchVideos&output=json&search={q}&page={p}
- * 注意：响应是 videos[].video 双层结构。
+ * The response has a nested videos[].video structure.
  */
 public class RedTubeConfig extends TubeConfig {
 

@@ -38,7 +38,7 @@ public class GelbooruParser extends HtmlParser {
                 int thumbHeight = Integer.parseInt(e.getElementsByTag("preview_height").first().text());
                 String thumbUrl = e.getElementsByTag("preview_url").first().text();
                 if (thumbUrl == null || thumbUrl.trim().isEmpty()) {
-                    // preview_url 为空时用 sample_url 兜底
+                    // Fall back to sample_url when preview_url is empty
                     try {
                         thumbUrl = e.getElementsByTag("sample_url").first().text();
                     } catch (Exception ex) {
@@ -107,7 +107,7 @@ public class GelbooruParser extends HtmlParser {
     public String getImageDetailJson(Document doc) {
         ImageBean.ImageJsonBuilder builder = new ImageBean.ImageJsonBuilder();
         try {
-            // 解析基础图片信息
+            // Parse basic image information
             for (Element li : doc.getElementsByTag("li")) {
                 if (li.text().startsWith("Id:")) {
                     try {
@@ -118,8 +118,8 @@ public class GelbooruParser extends HtmlParser {
                     }
                 } else if (li.text().startsWith("Posted:")) {
                     try {
-                        // 解析时间字符串，格式：2019-02-07 19:30:27
-                        // 注意PostBean.createdTime单位为second
+                        // Parse a timestamp in the format 2019-02-07 19:30:27
+                        // PostBean.createdTime is measured in seconds
                         String text = li.text();
                         String createdTime = text.substring(text.indexOf(":") + 1, text.indexOf("Uploader")).trim();
                         long mills = TimeFormat.timeToMills(createdTime, "yyyy-MM-dd HH:mm:ss");
@@ -130,7 +130,7 @@ public class GelbooruParser extends HtmlParser {
                     }
 
                     try {
-                        // 作者
+                        // Author
                         String author = li.getElementsByTag("a").first().text().trim();
                         builder.author(author);
                     } catch (Exception e) {
@@ -139,7 +139,7 @@ public class GelbooruParser extends HtmlParser {
                 }
             }
 
-            // 防止为null的参数
+            // Guard against null parameters
             builder.source("").parentId("");
 
             // tags

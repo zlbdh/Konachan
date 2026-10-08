@@ -21,19 +21,19 @@ import java.util.List;
 import androidx.core.content.FileProvider;
 
 /**
- * 通过ActivityManager获取当前系统中的Activity与Service的运行状态
- * ActivityManager需要权限<uses-permission android:name="android.permission.GET_TASKS" />
+ * Use ActivityManager to inspect running Activities and Services
+ * ActivityManager requires <uses-permission android:name="android.permission.GET_TASKS" />
  *
  * @author Zero
  */
 public class SystemUtils {
 
     /**
-     * 获取当前正在运行的Activity名称，Android 4.X(API 20)及以下完美支持，
-     * Android 5.0(API 21)及以上只支持获取本app内的activity名称
+     * Get the current Activity name; fully supported through Android 4.x (API 20).
+     * On Android 5.0 (API 21) and later, only this app's Activity names are available
      *
-     * @param context 上下文
-     * @return 当前正在运行的Activity名称
+     * @param context Context
+     * @return Name of the currently running Activity
      */
     public static String getRunningActivityName(Context context) {
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -44,11 +44,11 @@ public class SystemUtils {
     }
 
     /**
-     * 获取当前正在运行的应用包名，Android 4.X(API 20)及以下完美支持，
-     * Android 5.0(API 21)及以上只支持获取本app内的activity和home界面
+     * Get the current app package name; fully supported through Android 4.x (API 20).
+     * On Android 5.0 (API 21) and later, only this app's Activities and the home screen are available
      *
-     * @param context 上下文
-     * @return 当前正在运行的应用包名
+     * @param context Context
+     * @return Package name of the currently running app
      */
     public static String getRunningAppPackageName(Context context) {
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -56,15 +56,15 @@ public class SystemUtils {
     }
 
     /**
-     * 判断当前运行在前台的是否为本应用
+     * Check whether this app is in the foreground
      *
-     * @param context 上下文
-     * @return 当前运行在前台的是否为本应用
+     * @param context Context
+     * @return Whether this app is in the foreground
      */
     public static boolean isAppRunningForeground(Context context) {
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> infos = activityManager.getRunningAppProcesses();
-        // 枚举进程
+        // Enumerate processes
         for (ActivityManager.RunningAppProcessInfo info : infos) {
             if (info.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
                 if (info.processName.equals(context.getApplicationInfo().processName)) {
@@ -76,11 +76,11 @@ public class SystemUtils {
     }
 
     /**
-     * 判断某Service是否正在运行
+     * Check whether a Service is running
      *
-     * @param context 上下文
-     * @param clazz   目标Service类
-     * @return 是否正在运行
+     * @param context Context
+     * @param clazz   Target Service class
+     * @return Whether the Service is running
      */
     public static boolean isServiceRunning(Context context, Class<? extends Service> clazz) {
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -95,10 +95,10 @@ public class SystemUtils {
     }
 
     /**
-     * 获取手机可用内存大小
+     * Get available device memory
      *
-     * @param context 上下文
-     * @return 手机可用内存大小
+     * @param context Context
+     * @return Available device memory
      */
     public static long getAvailMemory(Context context) {
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -108,10 +108,10 @@ public class SystemUtils {
     }
 
     /**
-     * 获取手机总内存大小
+     * Get total device memory
      *
-     * @param context 上下文
-     * @return 手机总内存大小
+     * @param context Context
+     * @return Total device memory
      */
     public static long getTotalMemory(Context context) {
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -121,10 +121,10 @@ public class SystemUtils {
     }
 
     /**
-     * 获取app版本号
+     * Get the app version code
      *
-     * @param context 上下文
-     * @return app版本号
+     * @param context Context
+     * @return App version code
      */
     public static int getVersionCode(Context context) {
         int versionCode = 0;
@@ -139,10 +139,10 @@ public class SystemUtils {
     }
 
     /**
-     * 获取app版本名
+     * Get the app version name
      *
-     * @param context 上下文
-     * @return app版本名
+     * @param context Context
+     * @return App version name
      */
     public static String getVersionName(Context context) {
         String versionName = "";
@@ -157,11 +157,11 @@ public class SystemUtils {
     }
 
     /**
-     * 安装apk
+     * Install an APK
      *
-     * @param context 上下文
-     * @param apkFile apk文件
-     * @param start   是否直接启动安装
+     * @param context Context
+     * @param apkFile APK file
+     * @param start   Whether to launch installation immediately
      * @return intent
      */
     public static Intent installApk(Context context, File apkFile, boolean start) {
@@ -190,9 +190,9 @@ public class SystemUtils {
     }
 
     /**
-     * 获取设备Android Id
+     * Get the device Android ID
      *
-     * @param context 上下文
+     * @param context Context
      * @return Android Id
      */
     public static String getAndroidId(Context context) {
@@ -200,10 +200,10 @@ public class SystemUtils {
     }
 
     /**
-     * 将字符串复制到剪贴板
+     * Copy a string to the clipboard
      *
-     * @param context 上下文
-     * @param str     字符串
+     * @param context Context
+     * @param str     String
      */
     public static void setClipString(Context context, String str) {
         ClipboardManager manager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -214,10 +214,10 @@ public class SystemUtils {
     }
 
     /**
-     * 获取当前剪贴板内容
+     * Get the current clipboard content
      *
-     * @param context 上下文
-     * @return 剪贴板内容
+     * @param context Context
+     * @return Clipboard content
      */
     public static String getFirstClipString(Context context) {
         ClipboardManager manager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);

@@ -20,7 +20,7 @@ public class RecyclerCompleteSearchAdapter extends BaseQuickAdapter<String, Base
 
     @Override
     protected void convert(BaseViewHolder holder, String tag) {
-        // 搜索提示
+        // Search suggestion
         holder.setText(R.id.tv_auto_complete,tag);
     }
 

@@ -46,7 +46,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import static org.junit.Assert.*;
 
-/** 真正经 GitHub 公开小图、批量入口和下载服务落盘；不代表图站网络实测。 */
+/** Exercise a real public GitHub icon download through the batch entry point and download service; this does not test image-site connectivity. */
 @RunWith(AndroidJUnit4.class)
 public class DownloadPipelineTest {
     private static final String BASE = "https://raw.githubusercontent.com/zlbdh/Konachan/master/app/src/main/res/";
@@ -61,14 +61,14 @@ public class DownloadPipelineTest {
 
     @Test(timeout = 60000)
     public void realBatchDownloadsPublishReadableMediaAndSkipSecondRun() throws Exception {
-        assertTrue("本轮 scoped-storage 验收需要 Android 10+", Build.VERSION.SDK_INT >= 29);
+        assertTrue("This scoped-storage acceptance test requires Android 10 or later", Build.VERSION.SDK_INT >= 29);
         long deadline = SystemClock.elapsedRealtime() + 55000;
         try {
-            // 设置页保持应用前台，不启动首页的图站内容请求。
+            // Keep the app in the foreground on Settings without triggering home-screen image-site requests.
             foreground = instrumentation.startActivitySync(new Intent(context, SettingActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             List<ThumbBean> thumbs = prepareFixtures();
-            // 仅回收先前失败测试留下的、已验证 UUID 文件名的同一公开图标任务。
+            // Recover only the same public-icon task left by a failed test after validating its UUID filename.
             instrumentation.runOnMainSync(() -> {
                 for (String url : URLS) {
                     Progress old = com.lzy.okgo.db.DownloadManager.getInstance().get(url);
@@ -82,9 +82,9 @@ public class DownloadPipelineTest {
                 }
             });
             for (String url : URLS) {
-                assertFalse("不能占用已有下载 URL", OkHttp.isUrlInDownloadQueue(url));
-                assertNull("不能清理已有任务", OkDownload.getInstance().getTask(url));
-                assertNull("不能清理已有断点记录", com.lzy.okgo.db.DownloadManager.getInstance().get(url));
+                assertFalse("Do not take over an existing download URL", OkHttp.isUrlInDownloadQueue(url));
+                assertNull("Do not remove existing tasks", OkDownload.getInstance().getTask(url));
+                assertNull("Do not remove existing resume records", com.lzy.okgo.db.DownloadManager.getInstance().get(url));
             }
             ownsUrls = true;
             BatchDownloadHelper.Result first = runBatch(thumbs, deadline);
@@ -96,17 +96,17 @@ public class DownloadPipelineTest {
             AtomicBoolean duplicate = new AtomicBoolean(true);
             instrumentation.runOnMainSync(() -> duplicate.set(
                     DownloadImageManager.getInstance().enqueue(ownBeans.get(0))));
-            assertFalse("执行中或已完成的同一任务不能重复入队", duplicate.get());
+            assertFalse("Do not enqueue another copy of a running or completed task", duplicate.get());
             waitForRealFilesAndMedia(deadline);
-            assertEquals("本次只能有两个数据库任务", 2, countOwnRecords());
+            assertEquals("There must be exactly two database tasks in this test", 2, countOwnRecords());
 
             List<byte[]> downloaded = new ArrayList<>();
             for (DownloadBean bean : ownBeans) {
                 File file = new File(bean.savePath);
                 byte[] bytes = read(new FileInputStream(file));
-                assertTrue("公开图标应为非空 PNG", bytes.length > 8);
+                assertTrue("The public icon must be a nonempty PNG", bytes.length > 8);
                 assertArrayEquals(new byte[]{(byte) 137, 80, 78, 71, 13, 10, 26, 10}, Arrays.copyOf(bytes, 8));
-                assertArrayEquals("发布的媒体内容必须与下载文件一致", bytes,
+                assertArrayEquals("Published media must match the downloaded file", bytes,
                         read(context.getContentResolver().openInputStream(findOwnMedia(file.getName()))));
                 downloaded.add(bytes);
             }
@@ -115,24 +115,24 @@ public class DownloadPipelineTest {
             Uri missingPublished = findOwnMedia(retained.getName());
             context.getContentResolver().delete(missingPublished, null, null);
             com.ess.anime.wallpaper.download.image.DownloadTaskState.record(
-                    ownBeans.get(0), false, "模拟相册发布失败");
+                    ownBeans.get(0), false, "Simulate gallery publication failure");
             BatchDownloadHelper.Result recovery = runBatch(thumbs, deadline);
-            assertEquals("失败发布必须可重试", 1, recovery.queued);
+            assertEquals("A failed publication must be retryable", 1, recovery.queued);
             assertEquals(1, recovery.skipped);
             assertEquals(0, recovery.failed);
             waitForRealFilesAndMedia(deadline);
-            assertEquals("恢复应复用已下载文件", modifiedBeforeRecovery, retained.lastModified());
+            assertEquals("Recovery must reuse the downloaded file", modifiedBeforeRecovery, retained.lastModified());
             BatchDownloadHelper.Result second = runBatch(thumbs, deadline);
             assertEquals(2, second.total);
             assertEquals(0, second.queued);
             assertEquals(2, second.skipped);
             assertEquals(0, second.failed);
             assertFalse(second.cancelled);
-            assertEquals("第二次批量不能增加数据库任务", 2, countOwnRecords());
+            assertEquals("A second batch must not add database tasks", 2, countOwnRecords());
             for (int i = 0; i < ownBeans.size(); i++) {
                 File file = new File(ownBeans.get(i).savePath);
-                assertArrayEquals("跳过时不能重写下载文件", downloaded.get(i), read(new FileInputStream(file)));
-                assertNotNull("同名本应用媒体必须恰好一项", findOwnMedia(file.getName()));
+                assertArrayEquals("Skipping a download must not rewrite its file", downloaded.get(i), read(new FileInputStream(file)));
+                assertNotNull("There must be exactly one app-owned media item with this name", findOwnMedia(file.getName()));
             }
         } finally {
             cleanOwnFixtures();
@@ -175,7 +175,7 @@ public class DownloadPipelineTest {
                         complete.countDown();
                     }
                 })));
-        assertTrue("批量准备必须在总时限内完成", complete.await(remaining(deadline), TimeUnit.MILLISECONDS));
+        assertTrue("Batch preparation must finish within the overall time limit", complete.await(remaining(deadline), TimeUnit.MILLISECONDS));
         assertNotNull(result.get());
         return result.get();
     }
@@ -186,7 +186,7 @@ public class DownloadPipelineTest {
             for (DownloadBean bean : ownBeans) {
                 DownloadTask task = OkDownload.getInstance().getTask(bean.downloadUrl);
                 if (task != null && !OkHttp.isUrlInDownloadQueue(bean.downloadUrl))
-                    assertNotEquals("真实下载不能进入错误状态: " + task.progress.exception,
+                    assertNotEquals("The live download must not enter an error state: " + task.progress.exception,
                         Progress.ERROR, task.progress.status);
                 File file = new File(bean.savePath);
                 allReady &= file.isFile() && file.length() > 0 && task != null
@@ -197,7 +197,7 @@ public class DownloadPipelineTest {
             if (allReady) return;
             Thread.sleep(100);
         }
-        fail("公开 GitHub 图标未在 55 秒内完成下载、落盘和相册发布");
+        fail("The public GitHub icon did not finish downloading, saving, and gallery publication within 55 seconds");
     }
 
     private int countOwnRecords() {
@@ -212,9 +212,9 @@ public class DownloadPipelineTest {
         try (Cursor cursor = queryOwnMedia(name)) {
             assertNotNull(cursor);
             if (cursor.getCount() == 0) return null;
-            assertEquals("同名本应用媒体不能重复发布", 1, cursor.getCount());
+            assertEquals("Do not publish duplicate app-owned media with the same name", 1, cursor.getCount());
             assertTrue(cursor.moveToFirst());
-            assertEquals("完整发布后才能解除 pending", 0, cursor.getInt(1));
+            assertEquals("Clear pending only after publication finishes", 0, cursor.getInt(1));
             return ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cursor.getLong(0));
         }
     }
@@ -246,9 +246,9 @@ public class DownloadPipelineTest {
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cursor.getLong(0)), null, null);
                 }
             }
-            if (file.exists()) assertTrue("只删除本次 UUID 文件", file.delete());
+            if (file.exists()) assertTrue("Delete only this test UUID file", file.delete());
             File temp = new File(Constants.IMAGE_TEMP, file.getName().substring(0, file.getName().lastIndexOf('.')));
-            if (temp.exists()) assertTrue("只删除本次 UUID 临时文件", temp.delete());
+            if (temp.exists()) assertTrue("Delete only this test UUID temporary file", temp.delete());
         }
         if (foreground != null) instrumentation.runOnMainSync(() -> foreground.finish());
     }
@@ -256,7 +256,7 @@ public class DownloadPipelineTest {
     private static long remaining(long deadline) { return Math.max(0, deadline - SystemClock.elapsedRealtime()); }
 
     private byte[] read(InputStream input) throws Exception {
-        assertNotNull("媒体流必须可读", input);
+        assertNotNull("The media stream must be readable", input);
         try (InputStream in = input; ByteArrayOutputStream output = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[4096];
             int length;

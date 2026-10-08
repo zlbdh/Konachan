@@ -5,7 +5,7 @@ import com.ess.anime.wallpaper.R;
 import java.util.List;
 
 /**
- * PornHub（pornhub.com）- 官方 webmasters API，无需 key
+ * PornHub (pornhub.com): official webmasters API, no key required
  * GET /webmasters/search?search={q}&page={p}&thumbsize=medium
  */
 public class PornHubConfig extends TubeConfig {

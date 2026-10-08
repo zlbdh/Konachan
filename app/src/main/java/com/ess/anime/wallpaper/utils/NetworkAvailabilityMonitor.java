@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
 
-/** 只观察网络恢复，不读取电话或设备身份信息；最低 API 24。 */
+/** Observe only network recovery; do not read phone or device identifiers. Requires API 24 or later. */
 public final class NetworkAvailabilityMonitor {
     private NetworkAvailabilityMonitor() { }
 

@@ -29,48 +29,48 @@ public class OkHttp {
 
     public final static String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit / 537.36(KHTML, like Gecko) Chrome  47.0.2526.106 Safari / 537.36";
 
-    // 需要避免重复访问的url保存在这里
+    // URLs tracked to prevent duplicate requests
     private final static List<String> sUrlInQueueList = new ArrayList<>();
 
-    // 需要避免进度监听器重复添加的url保存在这里
+    // URLs tracked to prevent duplicate progress listeners
     private final static HashMap<String, BaseDownloadProgressListener> sUrlInListenerMap = new HashMap<>();
 
-    // 添加需要避免重复访问的url
+    // Add a URL to duplicate-request tracking
     public static void addUrlToDownloadQueue(String url) {
         synchronized (sUrlInQueueList) {
             sUrlInQueueList.add(url);
         }
     }
 
-    // url访问成功后即可从队列中移除，以便下次可以再次访问
+    // Remove the URL after a successful request so it can be requested again later
     public static void removeUrlFromDownloadQueue(String url) {
         synchronized (sUrlInQueueList) {
             sUrlInQueueList.remove(url);
         }
     }
 
-    // 判断当前url是否正在访问中
+    // Check whether this URL has an active request
     public static boolean isUrlInDownloadQueue(String url) {
         synchronized (sUrlInQueueList) {
             return sUrlInQueueList.contains(url);
         }
     }
 
-    // 添加需要避免进度监听器重复添加的url
+    // Add a URL to duplicate-progress-listener tracking
     public static void addUrlToProgressListener(String url, BaseDownloadProgressListener listener) {
         synchronized (sUrlInListenerMap) {
             sUrlInListenerMap.put(url, listener);
         }
     }
 
-    // 判断当前url是否已经添加到进度监听器中
+    // Check whether this URL already has a progress listener
     public static boolean isUrlInProgressListener(String url) {
         synchronized (sUrlInListenerMap) {
             return sUrlInListenerMap.containsKey(url);
         }
     }
 
-    // 获取url所对应的进度监听器
+    // Get the progress listener for this URL
     public static BaseDownloadProgressListener getProgressListener(String url) {
         synchronized (sUrlInListenerMap) {
             return sUrlInListenerMap.get(url);
@@ -79,9 +79,9 @@ public class OkHttp {
 
     private static RequestQueue sRequestQueue;
 
-    // 初始化全局配置
+    // Initialize global configuration
     public static void initHttpConfig(Application application) {
-        // 同步请求和下载文件用OkGo
+        // Use OkGo for synchronous requests and file downloads
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.readTimeout(15, TimeUnit.SECONDS);
         builder.writeTimeout(15, TimeUnit.SECONDS);
@@ -90,19 +90,19 @@ public class OkHttp {
                 .setOkHttpClient(builder.build())
                 .setRetryCount(0);
 
-        // 异步请求用Volley
+        // Use Volley for asynchronous requests
         sRequestQueue = Volley.newRequestQueue(application);
 
-        // 每次初始化恢复断点下载记录
+        // Restore resumable download records at each initialization
         OkDownload.restore(DownloadManager.getInstance().getAll());
     }
 
-    // 异步网络请求
+    // Asynchronous network request
     public static void connect(String url, Object tag, OkHttpCallback callback) {
         connect(url, tag, callback, Request.Priority.NORMAL);
     }
 
-    // 异步网络请求带优先级
+    // Asynchronous network request with priority
     public static void connect(String url, Object tag, OkHttpCallback callback, Request.Priority priority) {
         connect(url, tag, null, callback, priority);
     }
@@ -111,7 +111,7 @@ public class OkHttp {
         connectWithRetry(url, tag, headerMap, callback, priority, 0);
     }
 
-    // 带重试的异步请求（最多重试 2 次，间隔 1 秒）
+    // Asynchronous request with retries: up to two retries, one second apart
     private static final int MAX_RETRY = 2;
     private static void connectWithRetry(String url, Object tag, Map<String, String> headerMap,
                                          OkHttpCallback callback, Request.Priority priority, int retryCount) {
@@ -120,7 +120,7 @@ public class OkHttp {
                 callback::onSuccessful,
                 error -> {
                     if (retryCount < MAX_RETRY) {
-                        // 延迟 1 秒后重试
+                        // Retry after one second
                         new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(
                                 () -> connectWithRetry(url, tag, headerMap, callback, priority, retryCount + 1), 1000);
                     } else if (error.networkResponse != null) {
@@ -135,15 +135,15 @@ public class OkHttp {
         sRequestQueue.add(request);
     }
 
-    // Get同步网络请求
-    // 这里用OkGo进行同步请求，用Volley的话cancel同步请求无效
+    // Synchronous GET request
+    // Use OkGo because Volley cancellation does not work for synchronous requests
     public static okhttp3.Response execute(String url, Object tag) throws Exception {
         return OkGo.<String>get(convertSchemeToHttps(url))
                 .tag(tag)
                 .execute();
     }
 
-    // 断点下载文件
+    // Resumable file download
     public static void startDownloadFile(String url, String dirPath, String fileName, Map<String, String> headerMap, DownloadListener listener) {
         String tag = (String) listener.tag;
         DownloadTask task = OkDownload.getInstance().getTask(tag);
@@ -171,7 +171,7 @@ public class OkHttp {
         task.start();
     }
 
-    // 取消下载文件
+    // Cancel the file download
     public static void cancelDownloadFile(String tag) {
         DownloadTask task = OkDownload.getInstance().getTask(tag);
         if (task != null) {
@@ -185,12 +185,12 @@ public class OkHttp {
         }
     }
 
-    // 检测将http协议转换为https协议
+    // Convert HTTP URLs to HTTPS when needed
     public static String convertSchemeToHttps(String url) {
         return url.replace("http://", "https://");
     }
 
-    // 取消请求
+    // Cancel the request
     public static void cancel(Object tag) {
         sRequestQueue.cancelAll(tag);
         OkGo.getInstance().cancelTag(tag);

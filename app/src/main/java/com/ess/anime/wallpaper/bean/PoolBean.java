@@ -7,26 +7,26 @@ import com.google.gson.annotations.SerializedName;
 
 public class PoolBean implements Parcelable {
 
-    public String id;  //图集id
+    public String id;  //Album ID
 
-    public String name;  //图集名称
+    public String name;  //Album name
 
     @SerializedName(value = "createdTime", alternate = "created_at")
-    public String createdTime;  //创建时间（格式：2016-12-05T12:01:05.115Z）
+    public String createdTime;  //Creation time (format: 2016-12-05T12:01:05.115Z)
 
     @SerializedName(value = "updatedTime", alternate = "updated_at")
-    public String updatedTime;  //最后更新时间（格式：2016-12-05T12:03:05.979Z）
+    public String updatedTime;  //Last update time (format: 2016-12-05T12:03:05.979Z)
 
     @SerializedName(value = "userID", alternate = "user_id")
-    public String userID;  //用户id
+    public String userID;  //User ID
 
     @SerializedName(value = "isPublic", alternate = "is_public")
-    public boolean isPublic;  //是否公开
+    public boolean isPublic;  //Whether it is public
 
     @SerializedName(value = "postCount", alternate = "post_count")
-    public int postCount;  //图集中的图片数量
+    public int postCount;  //Number of images in the album
 
-    public String description;  //图集简介
+    public String description;  //Album description
 
     public PoolBean() {
     }

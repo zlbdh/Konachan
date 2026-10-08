@@ -23,7 +23,7 @@ public class SoundHelper {
 
     private MediaPlayer mMediaPlayer = new MediaPlayer();
 
-    // 允许播放声音
+    // Allow audio playback
     public void playSoundEnabled(Context context) {
         if (mMediaPlayer != null) {
             mMediaPlayer.reset();
@@ -32,14 +32,14 @@ public class SoundHelper {
         mMediaPlayer.start();
     }
 
-    // 禁止播放声音
+    // Disable audio playback
     public void playSoundDisabled() {
         if (mMediaPlayer != null) {
             mMediaPlayer.reset();
         }
     }
 
-    // 重启应用后在Splash页面播放
+    // Play on the splash screen after restarting the app
     public void playSplashWelcomeSound(Context context) {
         if (Constants.sRestart && Constants.sAllowPlaySound) {
             if (mMediaPlayer != null) {
@@ -51,7 +51,7 @@ public class SoundHelper {
         }
     }
 
-    // 切换到R18模式播放
+    // Play when switching to R18 mode
     public void playToggleR18ModeSound(Context context) {
         if (Constants.sAllowPlaySound) {
             if (mMediaPlayer != null) {
@@ -62,7 +62,7 @@ public class SoundHelper {
         }
     }
 
-    // 切换到Safe模式播放
+    // Play when switching to Safe mode
     public void playToggleSafeModeSound(Context context) {
         if (Constants.sAllowPlaySound) {
             if (mMediaPlayer != null) {
@@ -73,7 +73,7 @@ public class SoundHelper {
         }
     }
 
-    // 网络异常时播放
+    // Play on a network error
     public void playLoadNoNetworkSound(Context context) {
         if (Constants.sAllowPlaySound && mMediaPlayer != null && !mMediaPlayer.isPlaying()) {
             mMediaPlayer = MediaPlayer.create(context, R.raw.load_no_network);
@@ -81,7 +81,7 @@ public class SoundHelper {
         }
     }
 
-    // 搜索无结果时播放
+    // Play when a search has no results
     public void playLoadNothingSound(Context context) {
         if (Constants.sAllowPlaySound && mMediaPlayer != null && !mMediaPlayer.isPlaying()) {
             mMediaPlayer = MediaPlayer.create(context, R.raw.load_nothing);
@@ -89,7 +89,7 @@ public class SoundHelper {
         }
     }
 
-    // 游戏胜利时播放
+    // Play when the game is won
     public void playGameWinSound(Context context) {
         if (Constants.sAllowPlaySound) {
             if (mMediaPlayer != null) {
@@ -101,7 +101,7 @@ public class SoundHelper {
     }
 
 
-    // 退出应用时释放player
+    // Release the player when exiting the app
     public void release() {
         if (mMediaPlayer != null) {
             mMediaPlayer.release();

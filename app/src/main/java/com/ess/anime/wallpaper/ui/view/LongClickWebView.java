@@ -119,7 +119,7 @@ public class LongClickWebView extends WebView implements View.OnLongClickListene
         Object objToLoad = null;
         String fileName = "";
         if (imgUrl.startsWith("http")) {
-            // 普通http协议图片
+            // Image with a standard HTTP URL
             try {
                 URL url = new URL(imgUrl);
                 fileName = url.getPath();
@@ -132,8 +132,8 @@ public class LongClickWebView extends WebView implements View.OnLongClickListene
             }
             objToLoad = MyGlideModule.makeGlideUrlWithReferer(imgUrl, webUrl);
         } else if (imgUrl.startsWith("data:image/") && imgUrl.contains(";base64,")) {
-            // base64图片
-            // TODO 下载P站base64图片
+            // Base64 image
+            // TODO Download Pixiv Base64 images
             int index = imgUrl.indexOf(",");
             String base64 = imgUrl.substring(index + 1);
             objToLoad = Base64.decode(base64, Base64.DEFAULT);

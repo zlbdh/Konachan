@@ -114,7 +114,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    // 设置页切换强制横屏开关后收到的通知，obj 为 null
+    // Notification after the force-landscape setting changes; obj is null
     @Subscribe
     public void toggleScreenOrientation(MsgBean msgBean) {
         if (msgBean.msg.equals(Constants.TOGGLE_SCREEN_ORIENTATION)) {

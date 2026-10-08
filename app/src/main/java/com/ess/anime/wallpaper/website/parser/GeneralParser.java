@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Konachan,Yande通用
+ * Shared by Konachan and Yande.re
  */
 public class GeneralParser extends HtmlParser {
 
@@ -67,12 +67,12 @@ public class GeneralParser extends HtmlParser {
             String json = div.getElementsByTag("script").get(0).html();
             json = json.substring(json.indexOf("{"), json.lastIndexOf("}") + 1);
             json = json.replace("\\/", "/");
-            // konachan两种模式url格式总会不同
+            // The URL formats differ between the two Konachan modes
             if (!json.contains("http://konachan") && !json.contains("https://konachan")) {
                 json = json.replace("//konachan", "https://konachan");
             }
-            // lolibooru要把最后的"votes":[]统一为"votes":{}
-            // TODO 目前为止votes这一属性全部为空，但不排除某一天某个网站有了投票活动，到时后再改replace（懒癌）
+            // Normalize the final "votes":[] to "votes":{} for Lolibooru
+            // TODO votes has always been empty so far; revisit this replacement if a site starts returning votes
             json = json.replace("\"votes\":[]", "\"votes\":{}");
             return json;
         } catch (Exception e) {
@@ -114,7 +114,7 @@ public class GeneralParser extends HtmlParser {
 
     @Override
     public List<PoolListBean> getPoolListList(Document doc) {
-        //解析预览图和id
+        //Parse the preview image and ID
         List<PoolListBean> poolList = new ArrayList<>();
         PoolListBean poolListBean = new PoolListBean();
         Elements eleScripts = doc.getElementsByTag("script");
@@ -143,7 +143,7 @@ public class GeneralParser extends HtmlParser {
             }
         }
 
-        //根据id解析详细信息
+        //Parse details by ID
         for (PoolListBean pool : poolList) {
             Element poolDetail = doc.getElementById(pool.id);
             Elements tds = poolDetail.getElementsByTag("td");

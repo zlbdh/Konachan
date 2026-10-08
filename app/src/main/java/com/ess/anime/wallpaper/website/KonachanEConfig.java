@@ -67,7 +67,7 @@ public class KonachanEConfig extends WebsiteConfig<GeneralParser> {
 
     @Override
     public String getPopularDailyUrl(int year, int month, int day, int page) {
-        // K站当日热榜无数据，官方也是默认取前一天
+        // Konachan has no current-day rankings; the official site also defaults to the previous day
         if (day == Calendar.getInstance().get(Calendar.DAY_OF_MONTH)) {
             day -= 1;
         }

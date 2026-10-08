@@ -29,7 +29,7 @@ public class IndicatorBuilder {
     protected int radius = 8;
     protected int bgColor = Color.WHITE;
     protected int mArrowWidth;
-    protected float arrowercentage; //箭头位置
+    protected float arrowercentage; //Arrow position
     protected int arrowdirection = TOP;
     private Activity mContext;
     protected RecyclerView.LayoutManager mLayoutManager;
@@ -44,7 +44,7 @@ public class IndicatorBuilder {
     }
 
     /**
-     * 对话框宽度
+     * Dialog width
      *
      * @param width px
      * @return
@@ -55,9 +55,9 @@ public class IndicatorBuilder {
     }
 
     /**
-     * 对话框高度， -1则自动适配，否则如果内容真实的高度大于指定的高度，则使用指定的高度，否则使用真实的高度
+     * Dialog height: -1 sizes to content; otherwise cap the actual content height at the specified value
      *
-     * @param height 高度，单位px
+     * @param height Height in pixels
      * @return
      */
     public IndicatorBuilder height(int height) {
@@ -66,7 +66,7 @@ public class IndicatorBuilder {
     }
 
     /**
-     * 对话框背景颜色
+     * Dialog background color
      *
      * @param color
      * @return
@@ -78,9 +78,9 @@ public class IndicatorBuilder {
     }
 
     /**
-     * dialog的圆角度数 必须 >= 0
+     * Dialog corner radius, which must be >= 0
      *
-     * @param radius 四周圆角度数
+     * @param radius Corner radius
      * @return
      */
     public IndicatorBuilder radius(int radius) {
@@ -93,7 +93,7 @@ public class IndicatorBuilder {
     }
 
     /**
-     * 为dialog添加进入退出动画
+     * Add dialog enter and exit animations
      *
      * @param animator
      * @return
@@ -104,12 +104,12 @@ public class IndicatorBuilder {
     }
 
     /**
-     * 三角箭头的宽高，因为他是正方形的。
-     * 如果不填则默认是用 {@IndicatorDialog.ARROW_RECTAGE} 这个属性，把Dialog的width属性取出来 mBuilder.width * ARROW_RECTAGE 来获取这个箭头的宽度
-     * 单位px
-     * 当然，你也可以修改{@IndicatorDialog.ARROW_RECTAGE} 这个属性，但是注意： 它是static的，所以会对全局起效。
+     * Arrow width and height; the arrow bounds are square.
+     * If omitted, use {@IndicatorDialog.ARROW_RECTAGE} and calculate the width as mBuilder.width * ARROW_RECTAGE
+     * Measured in pixels
+     * You can change {@IndicatorDialog.ARROW_RECTAGE}, but it is static and therefore affects all instances.
      *
-     * @param width 箭头的宽高
+     * @param width Arrow width and height
      * @return
      */
     public IndicatorBuilder arrowWidth(int width) {
@@ -118,8 +118,8 @@ public class IndicatorBuilder {
     }
 
     /**
-     * 箭头的drawable，你可以通过继承BaseDrawable来实现自定义箭头的样式，默认会将箭头的高度/2往view方向偏移。
-     * 不填则是用默认的三角箭头
+     * Arrow drawable; extend BaseDrawable for a custom shape. By default, offset toward the view by half the arrow height.
+     * Use the default triangular arrow when omitted
      *
      * @param drawable
      * @return
@@ -130,7 +130,7 @@ public class IndicatorBuilder {
     }
 
     /**
-     * 箭头的位置，如果是上下方向，则 view的位置为 width*rectage,如果是左右方向，则 view的位置为 {@IndicatorDialog.mResultHeight} *rectage
+     * Arrow position: width * rectage for top/bottom, or {@IndicatorDialog.mResultHeight} * rectage for left/right
      *
      * @param rectage
      * @return
@@ -144,7 +144,7 @@ public class IndicatorBuilder {
     }
 
     /**
-     * 箭头方向
+     * Arrow direction
      *
      * @param direction
      * @return
@@ -156,9 +156,9 @@ public class IndicatorBuilder {
 
 
     /**
-     * 背景模糊效果，默认true
+     * Background dimming; true by default
      *
-     * @param enable 默认true
+     * @param enable true by default
      * @return
      */
     public IndicatorBuilder dimEnabled(boolean enable) {

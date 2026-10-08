@@ -52,7 +52,7 @@ public class ApkVerifierTest {
         bean.apkSize++;
         ApkVerifier.Result result = ApkVerifier.verify(context, file, bean);
         assertFalse(result.valid);
-        assertTrue(result.message.contains("大小"));
+        assertTrue(result.message.contains("Size"));
         assertTrue(file.isFile());
     }
 
@@ -68,7 +68,7 @@ public class ApkVerifierTest {
         bean.versionCode = 0;
         ApkVerifier.Result result = ApkVerifier.verify(context, file, bean);
         assertFalse(result.valid);
-        assertTrue(result.message.contains("更新信息"));
+        assertTrue(result.message.contains("Update details"));
         assertTrue(file.isFile());
     }
 

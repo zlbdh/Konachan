@@ -5,7 +5,7 @@ import android.app.Application;
 import android.os.Bundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/** 仅记录应用是否可见，不持有页面或用户数据。 */
+/** Track only app visibility; do not retain screens or user data. */
 public final class AppForegroundState implements Application.ActivityLifecycleCallbacks {
     private static final AtomicInteger started = new AtomicInteger();
     private AppForegroundState() { }

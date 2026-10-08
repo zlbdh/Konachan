@@ -107,7 +107,7 @@
             android:src="@drawable/ic_image_next" />
     </FrameLayout>
 
-    <!-- 手势功能引导 -->
+    <!-- Gesture guide -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_gesture_guide"
         android:layout_width="match_parent"
@@ -119,7 +119,7 @@
         android:visibility="gone"
         tools:visibility="visible">
 
-        <!-- 提示左右滑动切换 -->
+        <!-- Show how to swipe between images -->
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_guide_tip_1"
             android:layout_width="wrap_content"
@@ -166,7 +166,7 @@
             app:layout_constraintStart_toStartOf="@id/guide_tip_1_desc"
             app:layout_constraintTop_toBottomOf="@+id/guide_tip_1_desc" />
 
-        <!-- 提示点击按钮切换 -->
+        <!-- Show how to switch images with buttons -->
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_guide_tip_2"
             android:layout_width="wrap_content"
@@ -225,7 +225,7 @@
             app:layout_constraintEnd_toStartOf="@+id/guide_button_next"
             app:layout_constraintStart_toEndOf="@+id/guide_button_previous" />
 
-        <!-- 提示按钮可以拖动 -->
+        <!-- Show that the buttons can be dragged -->
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_guide_tip_3"
             android:layout_width="wrap_content"
@@ -284,7 +284,7 @@
             app:layout_constraintEnd_toStartOf="@+id/guide_button_next"
             app:layout_constraintStart_toEndOf="@+id/guide_button_previous" />
 
-        <!-- 按钮View -->
+        <!-- Button view -->
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_guide_switch_button"
             android:layout_width="wrap_content"

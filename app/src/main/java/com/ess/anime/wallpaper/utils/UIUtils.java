@@ -26,17 +26,17 @@ import androidx.annotation.ColorInt;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
- * 获取手机窗口属性
+ * Get device window properties
  *
  * @author Zero
  */
 public class UIUtils {
 
     /**
-     * 获取屏幕宽度
+     * Get screen width
      *
-     * @param context 上下文
-     * @return 屏幕宽度
+     * @param context Context
+     * @return Screen width
      */
     public static int getScreenWidth(Context context) {
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
@@ -44,10 +44,10 @@ public class UIUtils {
     }
 
     /**
-     * 获取屏幕高度
+     * Get screen height
      *
-     * @param context 上下文
-     * @return 屏幕高度
+     * @param context Context
+     * @return Screen height
      */
     public static int getScreenHeight(Context context) {
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
@@ -55,10 +55,10 @@ public class UIUtils {
     }
 
     /**
-     * 获取状态栏高度
+     * Get status bar height
      *
-     * @param context 上下文
-     * @return 状态栏高度
+     * @param context Context
+     * @return Status bar height
      */
     public static int getStatusBarHeight(Context context) {
         int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
@@ -66,10 +66,10 @@ public class UIUtils {
     }
 
     /**
-     * 获取ActionBar高度
+     * Get ActionBar height
      *
-     * @param context 上下文
-     * @return ActionBar高度
+     * @param context Context
+     * @return ActionBar height
      */
     public static int getActionBarHeight(Context context) {
         TypedValue typedValue = new TypedValue();
@@ -78,10 +78,10 @@ public class UIUtils {
     }
 
     /**
-     * 获取底部导航栏尺寸
+     * Get bottom navigation bar dimensions
      *
-     * @param activity 上下文
-     * @return 导航栏高度 Point （宽：point.x, 高：point.y）
+     * @param activity Activity context
+     * @return Navigation bar dimensions as Point (width: point.x, height: point.y)
      */
     public static Point getNavigationBarSize(Activity activity) {
         Point appUsablePoint = getAppUsableScreenSize(activity);
@@ -102,13 +102,13 @@ public class UIUtils {
     }
 
     /**
-     * 获取用户正在使用的屏幕尺寸
+     * Get the usable screen dimensions
      *
      * @param context context
-     * @return 屏幕使用尺寸 Point （宽：point.x, 高：point.y）
+     * @return Usable screen dimensions as Point (width: point.x, height: point.y)
      */
     public static Point getAppUsableScreenSize(Context context) {
-        // 使用application才能真正获得正在使用部分的尺寸
+        // Use the application context to get the actual usable area
         context = context.getApplicationContext();
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
@@ -118,10 +118,10 @@ public class UIUtils {
     }
 
     /**
-     * 获取屏幕实际尺寸
+     * Get physical screen dimensions
      *
      * @param activity activity
-     * @return 屏幕实际尺寸 Point （宽：point.x, 高：point.y）
+     * @return Physical screen dimensions as Point (width: point.x, height: point.y)
      */
     public static Point getRealScreenSize(Activity activity) {
         WindowManager windowManager = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
@@ -160,10 +160,10 @@ public class UIUtils {
     }
 
     /**
-     * 设置背景透明度
+     * Set background opacity
      *
-     * @param activity 上下文
-     * @param alpha    透明度, 1.0为完全不透明，0.0为完全透明
+     * @param activity Activity context
+     * @param alpha    Opacity: 1.0 is fully opaque and 0.0 is fully transparent
      */
     public static void setBackgroundAlpha(Activity activity, float alpha) {
         WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
@@ -172,10 +172,10 @@ public class UIUtils {
     }
 
     /**
-     * 隐藏状态栏
-     * 在onCreate和onWindowFocusChanged中都要调用
+     * Hide the status bar
+     * Call from both onCreate and onWindowFocusChanged
      *
-     * @param activity 上下文
+     * @param activity Activity context
      */
     public static void hideStatusBar(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -189,10 +189,10 @@ public class UIUtils {
     }
 
     /**
-     * 隐藏虚拟键
-     * 在onCreate和onWindowFocusChanged中都要调用
+     * Hide virtual navigation buttons
+     * Call from both onCreate and onWindowFocusChanged
      *
-     * @param activity 上下文
+     * @param activity Activity context
      */
     public static void hideNavigationBar(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -206,10 +206,10 @@ public class UIUtils {
     }
 
     /**
-     * 获得软键盘高度
+     * Get soft keyboard height
      *
-     * @param view 当前view层
-     * @return 软键盘的高度，int值
+     * @param view Current view
+     * @return Soft keyboard height as an int
      */
     public static int getSoftInputHeight(View view) {
         Rect r = new Rect();
@@ -219,9 +219,9 @@ public class UIUtils {
     }
 
     /**
-     * 显示软键盘
+     * Show the soft keyboard
      *
-     * @param context 上下文
+     * @param context Context
      * @param view    EditText
      */
     public static void showSoftInput(Context context, View view) {
@@ -234,9 +234,9 @@ public class UIUtils {
     }
 
     /**
-     * 关闭软键盘
+     * Hide the soft keyboard
      *
-     * @param activity 上下文
+     * @param activity Activity context
      */
     public static void closeSoftInput(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.
@@ -249,9 +249,9 @@ public class UIUtils {
     }
 
     /**
-     * 切换软键盘开关状态
+     * Toggle the soft keyboard
      *
-     * @param context 上下文
+     * @param context Context
      */
     public static void toggleSoftInput(Context context) {
         InputMethodManager imm = (InputMethodManager) context.
@@ -264,9 +264,9 @@ public class UIUtils {
     }
 
     /**
-     * 避免输入法导致内存泄露的问题，在onDestroy()中使用
+     * Prevent input-method memory leaks; call from onDestroy()
      *
-     * @param destContext 上下文
+     * @param destContext Context to release
      */
     public static void fixInputMethodManagerLeak(Context destContext) {
         if (destContext == null) {
@@ -290,10 +290,10 @@ public class UIUtils {
                 obj_get = f.get(imm);
                 if (obj_get != null && obj_get instanceof View) {
                     View v_get = (View) obj_get;
-                    if (v_get.getContext() == destContext) { // 被InputMethodManager持有引用的context是想要目标销毁的
-                        f.set(imm, null); // 置空，破坏掉path to gc节点
+                    if (v_get.getContext() == destContext) { // The context retained by InputMethodManager is the one being destroyed
+                        f.set(imm, null); // Clear the reference to break the path from the GC root
                     } else {
-                        // 不是想要目标销毁的，即为又进了另一层界面了，不要处理，避免影响原逻辑,也就不用继续for循环了
+                        // A different screen is active; leave its context alone and stop the loop to preserve existing behavior
                         break;
                     }
                 }
@@ -304,11 +304,11 @@ public class UIUtils {
     }
 
     /**
-     * 改变侧拉栏分割线高度、颜色
+     * Change navigation drawer divider height and color
      *
-     * @param navigationView 侧拉栏的navigationView
-     * @param color          颜色
-     * @param height         高度
+     * @param navigationView Drawer NavigationView
+     * @param color          Color
+     * @param height         Height
      */
     public static void setNavigationMenuLineStyle(NavigationView navigationView, @ColorInt final int color, final int height) {
         try {
@@ -342,7 +342,7 @@ public class UIUtils {
     }
 
     /**
-     * 获得View的Activity，兼容4.x机器
+     * Get the Activity for a View, including on Android 4.x
      *
      * @param view View
      * @return Activity

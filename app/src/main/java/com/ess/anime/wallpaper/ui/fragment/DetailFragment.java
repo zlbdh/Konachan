@@ -90,7 +90,7 @@ public class DetailFragment extends BaseFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        // 防止软件进入后台过久被系统回收导致切换回来时产生空指针异常
+        // Prevent a null pointer when returning after the system reclaims an app left in the background
         outState.putParcelable(Constants.THUMB_BEAN, mThumbBean);
         outState.putParcelable(Constants.IMAGE_BEAN, mImageBean);
     }
@@ -134,7 +134,7 @@ public class DetailFragment extends BaseFragment {
         }
     }
 
-    // 图片详情
+    // Image details
     private void showImageDetail(ImageBean imageBean) {
         if (imageBean == null || imageBean.posts.length == 0) {
             return;
@@ -142,30 +142,30 @@ public class DetailFragment extends BaseFragment {
 
         /****************** Posts ******************/
         PostBean postBean = imageBean.posts[0];
-        // 图片Id
+        // Image ID
         setText(R.id.post_id, R.string.detail_post_id, postBean.id);
 
-        // 上传时间
+        // Upload time
         String postCreatedTime = TimeFormat.dateFormat(postBean.createdTime * 1000, "yyyy-MM-dd  HH:mm:ss");
         setText(R.id.post_created_time, R.string.detail_post_created_time, postCreatedTime);
 
-        // 用户Id
+        // User ID
         String creatorId = TextUtils.isEmpty(postBean.creatorId)
                 ? getString(R.string.unknown)
                 : postBean.creatorId;
         setText(R.id.post_creator_id, R.string.detail_post_creator_id, creatorId);
 
-        // 用户名
+        // Username
         String author = TextUtils.isEmpty(postBean.author)
                 ? getString(R.string.unknown)
                 : postBean.author.replace("_", " ");
         setText(R.id.post_author, R.string.detail_post_author, author);
 
-        // 图片分辨率
+        // Image resolution
         String size = postBean.jpegWidth + " x " + postBean.jpegHeight;
         setText(R.id.post_size, R.string.detail_post_size, size);
 
-        // 图片大小
+        // Image size
         String fileSize;
         if (postBean.jpegFileSize != 0) {
             fileSize = FileUtils.computeFileSize(postBean.jpegFileSize);
@@ -174,7 +174,7 @@ public class DetailFragment extends BaseFragment {
         }
         setText(R.id.post_file_size, R.string.detail_post_file_size, fileSize);
 
-        // 图片来源
+        // Image source
         String source = postBean.source;
         boolean hyperlinkValue = true;
         if (TextUtils.isEmpty(source)) {
@@ -183,14 +183,14 @@ public class DetailFragment extends BaseFragment {
         }
         setText(R.id.post_source, R.string.detail_post_source, source, hyperlinkValue);
 
-        // 图片原作者
+        // Original artist
         List<String> artistList = imageBean.tags.artist;
         String artist = artistList.isEmpty()
                 ? getString(R.string.unknown)
                 : artistList.get(0).replace("_", " ");
         setText(R.id.post_artist, R.string.detail_post_artist, artist);
 
-        // 图片评级
+        // Image rating
         String rating;
         switch (postBean.rating) {
             case Constants.RATING_S:
@@ -206,7 +206,7 @@ public class DetailFragment extends BaseFragment {
         }
         setText(R.id.post_rating, R.string.detail_post_rating, rating);
 
-        // 图片评分
+        // Image score
         String score = String.valueOf(postBean.score);
         setText(R.id.post_score, R.string.detail_post_score, score);
 
@@ -228,27 +228,27 @@ public class DetailFragment extends BaseFragment {
         ViewStub viewStub = mRootView.findViewById(R.id.view_stub_detail_pool);
         viewStub.inflate();
 
-        // 图集Id
+        // Album ID
         setText(R.id.pool_id, R.string.detail_pool_id, poolBean.id);
 
-        // 图集名称
+        // Album name
         setText(R.id.pool_name, R.string.detail_pool_name, poolBean.name.replace("_", " "));
 
-        // 创建时间
+        // Creation time
         String poolCreatedTime = poolBean.createdTime;
         poolCreatedTime = TextUtils.isEmpty(poolCreatedTime)
                 ? getString(R.string.unknown)
                 : formatPoolTime(poolCreatedTime);
         setText(R.id.pool_created_time, R.string.detail_pool_created_time, poolCreatedTime);
 
-        // 最后更新时间
+        // Last update time
         String poolUpdatedTime = poolBean.updatedTime;
         poolUpdatedTime = TextUtils.isEmpty(poolUpdatedTime)
                 ? getString(R.string.unknown)
                 : formatPoolTime(poolUpdatedTime);
         setText(R.id.pool_updated_time, R.string.detail_pool_updated_time, poolUpdatedTime);
 
-        // 图集简介
+        // Album description
         String description = poolBean.description;
         if (TextUtils.isEmpty(description)) {
             description = getString(R.string.detail_pool_no_description);
@@ -280,21 +280,21 @@ public class DetailFragment extends BaseFragment {
     private void addTagViews(ViewGroup parentLayout, List<String> tagList, int colorId) {
         for (String tag : tagList) {
             View view = View.inflate(mActivity, R.layout.layout_tag_item, null);
-            // tag内容
+            // Tag text
             TextView tvTag = view.findViewById(R.id.tv_tag);
             tvTag.setText(tag);
             tvTag.setTextColor(getResources().getColor(colorId));
-            // 收藏
+            // Favorite
             ToggleImageView ivFavorite = view.findViewById(R.id.iv_favorite);
             ivFavorite.setChecked(GreenDaoUtils.isFavoriteTag(tag));
             ivFavorite.setOnClickListener(v -> {
                 TagOperationHelper.setTagFavorite(tag, ivFavorite.isChecked());
             });
-            // 备注
+            // Note
             view.findViewById(R.id.iv_annotation).setOnClickListener(v -> {
                 showTagAnnotation(tag);
             });
-            // 更多菜单
+            // More menu
             view.findViewById(R.id.iv_more).setOnClickListener(v -> {
                 showMoreMenu(v, tag);
             });
@@ -370,13 +370,13 @@ public class DetailFragment extends BaseFragment {
         }
     }
 
-    // konachan,yandere格式：2017-09-19T19:42:58.325Z
-    // lolibooru格式：2017-11-23 05:14:44
+    // Konachan and Yande.re format: 2017-09-19T19:42:58.325Z
+    // Lolibooru format: 2017-11-23 05:14:44
     private String formatPoolTime(String time) {
         return time.contains(".") ? time.substring(0, time.lastIndexOf(".")).replace("T", " ") : time;
     }
 
-    //获取到图片详细信息后收到的通知，obj 为 Json (String)
+    //Notification after receiving image details; obj is JSON (String)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getImageDetail(MsgBean msgBean) {
         if (msgBean.msg.equals(Constants.GET_IMAGE_DETAIL)) {
@@ -388,7 +388,7 @@ public class DetailFragment extends BaseFragment {
         }
     }
 
-    // PoolPostFragment获取到imageBean后重新根据ID请求tempPost后收到的通知，obj 为 thumbBean
+    // Notification after PoolPostFragment requests tempPost by ID following imageBean; obj is thumbBean
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void reloadDetailById(MsgBean msgBean) {
         if (msgBean.msg.equals(Constants.RELOAD_DETAIL_BY_ID)) {

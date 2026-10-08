@@ -12,20 +12,20 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 成人视频 tube 站抽象基类（PornHub / RedTube / Eporner）
+ * Abstract base class for adult video sites: PornHub, RedTube, and Eporner
  *
- * 三家都是视频站，但官方公开 API 返回多尺寸缩略图数组，直接当图片浏览源。
- * 子类只需实现 getPostUrl / extractVideoItems / unwrapVideoItem / getVideoId，
- * 以及名称、域名、图标、保存前缀。
+ * All three public APIs return thumbnails in multiple sizes, which are used as browsable image sources.
+ * Subclasses implement getPostUrl, extractVideoItems, unwrapVideoItem, and getVideoId,
+ * plus the name, host, icon, and saved-file prefix.
  */
 public abstract class TubeConfig extends WebsiteConfig<TubeParser> {
 
     private TubeParser mParser;
 
     /**
-     * 二级继承（PornHubConfig extends TubeConfig）时，
-     * 父类构造函数的泛型反射拿不到 ParameterizedType，parser 会是 null，
-     * 这里直接创建，绕过反射（同 WordPressConfig）。
+     * With two-level inheritance, such as PornHubConfig extending TubeConfig,
+     * generic reflection in the parent constructor cannot get a ParameterizedType and leaves parser null;
+     * create it directly here, as in WordPressConfig, to bypass reflection.
      */
     @Override
     public HtmlParser getHtmlParser() {
@@ -36,8 +36,8 @@ public abstract class TubeConfig extends WebsiteConfig<TubeParser> {
     }
 
     /**
-     * 从 API 响应根 JSON 提取视频条目数组。
-     * 默认 root.getAsJsonArray("videos")，三家目前都是这个结构。
+     * Extract the video item array from the API response root JSON.
+     * The default is root.getAsJsonArray("videos"), which all three currently use.
      */
     public JsonArray extractVideoItems(JsonObject root) {
         try {
@@ -48,15 +48,15 @@ public abstract class TubeConfig extends WebsiteConfig<TubeParser> {
     }
 
     /**
-     * 解开单条视频对象。RedTube 是 videos[].video 双层结构，子类覆盖；
-     * PornHub / Eporner 直接返回 item 本身。
+     * Unwrap one video object. RedTube nests it in videos[].video and overrides this method;
+     * PornHub and Eporner return the item directly.
      */
     public JsonObject unwrapVideoItem(JsonObject item) {
         return item;
     }
 
     /**
-     * 视频唯一 id。PornHub/RedTube 用 video_id，Eporner 用 id。
+     * Unique video ID: PornHub and RedTube use video_id; Eporner uses id.
      */
     public String getVideoId(JsonObject video) {
         try {
@@ -156,7 +156,7 @@ public abstract class TubeConfig extends WebsiteConfig<TubeParser> {
         return Collections.emptyList();
     }
 
-    /** 搜索词 join 成 API 的 query 参数（空 tags 时返回空字符串） */
+    /** Join search terms into the API query parameter; return an empty string for empty tags */
     protected String joinTags(List<String> tagList) {
         if (tagList == null) {
             tagList = new ArrayList<>();

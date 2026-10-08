@@ -5,60 +5,60 @@
     <color name="colorAccent">#F1F1F1</color>
     <color name="colorWindowBackground">#222222</color>
 
-    <!-- 点击按钮时的ripple颜色 -->
+    <!-- Button ripple color -->
     <color name="color_ripple_button">#30FFFFFF</color>
-    <!-- 点击Setting里的item时的ripple颜色-->
+    <!-- Settings item ripple color-->
     <color name="color_ripple_setting_item">#33F1F1F1</color>
 
-    <!-- 点击选择搜索模式弹窗时的背景色 -->
+    <!-- Search mode popup selection background -->
     <color name="color_popup_item_pressed">#1A000000</color>
 
-    <!-- nav选中时背景色 -->
+    <!-- Selected navigation background -->
     <color name="color_nav_item_selected_bg">#3B3B3B</color>
-    <!-- 文字选中时颜色 -->
+    <!-- Selected text color -->
     <color name="color_text_selected">#EE8887</color>
-    <!-- 文字未选中时颜色 -->
+    <!-- Unselected text color -->
     <color name="color_text_unselected">#A9A9A9</color>
 
-    <!-- TextView背景色 -->
+    <!-- TextView background color -->
     <color name="color_text_bg">#373737</color>
-    <!-- TextView普通文字颜色 -->
+    <!-- TextView normal text color -->
     <color name="color_text_general">#8F8F8F</color>
-    <!-- TextView浅色文字颜色 -->
+    <!-- TextView light text color -->
     <color name="color_text_light">#59F1F1F1</color>
-    <!-- TextView特殊文字颜色 -->
+    <!-- TextView accent text color -->
     <color name="color_text_extra">#8290A3</color>
 
-    <!-- Comment中quote的背景色 -->
+    <!-- Comment quote background color -->
     <color name="color_quote_bg">#5C5C5C</color>
 
-    <!-- 上拉加载更多图标颜色 -->
+    <!-- Load-more icon color -->
     <color name="color_load_more">#8F8F8F</color>
 
-    <!-- scrollBar颜色 -->
+    <!-- Scrollbar color -->
     <color name="color_scroll_bar_thumb">#555555</color>
 
-    <!-- 视频控制器进度条颜色 -->
+    <!-- Video controller progress color -->
     <color name="color_video_controller_bg">#555555</color>
     <color name="color_video_controller_progress">#F1F1F1</color>
     <color name="color_video_controller_second_progress">#808080</color>
 
-    <!-- 程序内部hyperlink颜色 -->
+    <!-- In-app hyperlink color -->
     <color name="color_link">#5E97C8</color>
 
-    <!-- Dialog颜色 -->
+    <!-- Dialog colors -->
     <color name="color_dialog_text">#F1F1F1</color>
     <color name="color_dialog_hint">#80F1F1F1</color>
     <color name="color_dialog_button">#EE8887</color>
     <color name="color_dialog_bg">#3B3B3B</color>
 
-    <!-- Checkbox Button颜色-->
+    <!-- Checkbox button colors-->
     <color name="color_checkbox_checked">#EE8887</color>
     <color name="color_checkbox_unchecked_dark">#3B3B3B</color>
     <color name="color_checkbox_unchecked_light">#F1F1F1</color>
     <color name="color_checkbox_unchecked_general">#A9A9A9</color>
 
-    <!-- Tags颜色-->
+    <!-- Tag colors-->
     <color name="color_copyright">#DD00DD</color>
     <color name="color_character">#00AA00</color>
     <color name="color_artist">#CCCC00</color>
@@ -66,10 +66,10 @@
     <color name="color_style">#FF2020</color>
     <color name="color_general">#EE8887</color>
 
-    <!-- UCrop颜色 -->
+    <!-- UCrop colors -->
     <color name="ucrop_color_widget_background" tools:override="true">@color/colorPrimary</color>
 
-    <!-- Pixiv GIF Dl 进度条颜色 -->
+    <!-- Pixiv GIF download progress color -->
     <color name="pixiv_gif_dl_progress_active_color">#EE8887</color>
     <color name="pixiv_gif_dl_progress_inactive_color">#A9A9A9</color>
 </resources>

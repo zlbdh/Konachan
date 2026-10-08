@@ -118,7 +118,7 @@ public class DownloadImageManager {
     public void onConnected() {
         synchronized (mDownloadList) {
             mMainHandler.post(() -> {
-                // 网络可用时恢复所有断点下载
+                // Resume all paused downloads when the network becomes available
                 for (DownloadBean downloadBean : mDownloadList) {
                     String tag = downloadBean.downloadUrl;
                     DownloadTask task = OkDownload.getInstance().getTask(tag);
@@ -133,7 +133,7 @@ public class DownloadImageManager {
     public void onDisconnected() {
     }
 
-    /** 将一项任务真正交给下载服务；必须在主线程调用。 */
+    /** Submit a task to the download service; must be called on the main thread. */
     public boolean enqueue(DownloadBean downloadBean) {
         if (downloadBean == null || downloadBean.downloadUrl == null
                 || downloadBean.savePath == null || DownloadTaskState.isFinishedFile(downloadBean)) {
@@ -156,7 +156,7 @@ public class DownloadImageManager {
             return true;
         } catch (RuntimeException exception) {
             OkHttp.removeUrlFromDownloadQueue(downloadBean.downloadUrl);
-            android.util.Log.w("DownloadImageManager", "下载服务未能启动", exception);
+            android.util.Log.w("DownloadImageManager", "Unable to start the download service", exception);
             return false;
         }
     }

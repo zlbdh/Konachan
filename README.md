@@ -1,13 +1,14 @@
-# K Anime Wallpaper (K动漫壁纸)
-一款动漫图片搜索软件，集合了多网站图源，可在线预览、标签/中文搜索，多尺寸下载、分享给好友、设为手机壁纸。
+# K Anime Wallpaper
 
+An anime image search app that brings together multiple image sites. Preview images, search by tags or Chinese character names, download different sizes, share images, and set them as your phone wallpaper.
 
+## Latest Version: v1.9.4
 
-## 最新版本【v1.9.4】
-* 地址1：[百度云盘下载](https://pan.baidu.com/s/1HA--EyLwirZ5dzkNDaRLuQ?pwd=xntw)，提取码: xntw
-* 地址2：[国内源地址下载](https://opentext.oss-cn-shenzhen.aliyuncs.com/apk/kanimeG1.9.4.apk)
+- [Download from Baidu Netdisk](https://pan.baidu.com/s/1HA--EyLwirZ5dzkNDaRLuQ?pwd=xntw), access code: `xntw`
+- [Download from the China-hosted mirror](https://opentext.oss-cn-shenzhen.aliyuncs.com/apk/kanimeG1.9.4.apk)
 
-## 应用展示
+## App Preview
+
 <a href="https://github.com/EternalSoySauce/images/blob/master/k_pre_1.jpg"><img src="https://github.com/EternalSoySauce/images/blob/master/k_pre_1.jpg" width="30%"/></a> <a href="https://github.com/EternalSoySauce/images/blob/master/k_pre_2.jpg"><img src="https://github.com/EternalSoySauce/images/blob/master/k_pre_2.jpg" width="30%"/></a> <a href="https://github.com/EternalSoySauce/images/blob/master/k_pre_3.jpg"><img src="https://github.com/EternalSoySauce/images/blob/master/k_pre_3.jpg" width="30%"/></a>
 
 <a href="https://github.com/EternalSoySauce/images/blob/master/k_pre_13.jpg"><img src="https://github.com/EternalSoySauce/images/blob/master/k_pre_13.jpg" width="30%"/></a> <a href="https://github.com/EternalSoySauce/images/blob/master/k_pre_14.jpg"><img src="https://github.com/EternalSoySauce/images/blob/master/k_pre_14.jpg" width="30%"/></a> <a href="https://github.com/EternalSoySauce/images/blob/master/k_pre_15.jpg"><img src="https://github.com/EternalSoySauce/images/blob/master/k_pre_15.jpg" width="30%"/></a>
@@ -23,206 +24,238 @@
 
 <a href="https://github.com/EternalSoySauce/images/blob/master/k_pre_19.jpg"><img src="https://github.com/EternalSoySauce/images/blob/master/k_pre_19.jpg" width="30%"/></a>
 
-## 使用说明
-* 详见[Wiki](https://github.com/EternalSoySauce/Konachan/wiki)
+## Usage
 
-## 常见问题
-* #### 我总是显示网络有问题加载不出来数据怎么办
-```
-    1. 多下拉刷新几次
-    2. 多切换几个网站源试试
-    3. 开VPN
-```
+See the [Wiki](https://github.com/EternalSoySauce/Konachan/wiki).
 
-* #### 我搜索『汉语名/图片ID』怎么什么都搜不到啊
-```
-    应用内提供了四种搜索模式以满足不同用户的需求，『标签搜索』、『ID搜索』、『中文搜索』、『高级搜索』
-    请先切换到对应的搜索模式后再进行搜索
-```
+## Frequently Asked Questions
 
-## 网站支持
-#### 目前已支持网站源：
-* Konachan
-* Yande.re
-* Danbooru
-* Safebooru
-* Gelbooru
-* Lolibooru
-* Sankaku
-* Zerochan
-* Wallhalla
-* Wallhaven
+### The app reports a network problem and does not load data. What should I do?
 
+1. Pull to refresh a few times.
+2. Try switching to a different image site.
+3. Try a VPN.
 
-#### 后续即将支持网站源：
-* 3dbooru
-* E-shuushuu
-* Xbooru
-* The anime gallery
-* 其他
+### Why does searching for a Chinese name or image ID return no results?
 
-## 历史更新
-* 【v1.9.4】
-  * 修复各图站解析失败，修复中文搜索异常。
-  * 兼容 avif 格式图片展示。
-  * K站增加了人机校验，必须使用美国节点的梯子才能访问。
-  * 其它站点随意，如遇无法访问建议尝试香港或日本节点。
-  * Lolibooru站点倒闭了，默哀。
+The app offers four search modes: Tag Search, ID Search, Chinese Name Search, and Advanced Search. Select the matching mode before searching.
 
-* 【v1.9.3】
-  * 图片详情页支持快速滑动查看上/下一张图片。
-  * 图片详情页支持移动切换按钮位置。
+## Supported Websites
 
-* 【v1.9.2】
-  * 修复 Danbooru 无法显示图片内容。
+Currently supported:
 
-* 【v1.9.1】
-    * 集成 Wallhaven 图源（无需翻墙），仅展示该站动漫和AI图片。
-    * 集成 Wallhalla 图源（无需翻墙），4K高清壁纸，新生图站目前图片素材有限。
-    * 新增可长按首页左上角网站图标切换图源。
-    * 新增热门排行榜功能，可点击右下角悬浮按钮选择进入。
-    * 修复 Danbooru 网站无法访问，且新增支持随机看图。
-    * 修复 Gelbooru 搜索自动补全提示词解析失败，且新增支持随机看图。
-    * 修复 Sankaku 图片、图集列表解析失败，且新增支持显示该站会员图片，修复搜索自动补全提示词解析失败。
-    * 优化 Zerochan 图片详情加载逻辑，且新增支持显示该站 NSFW 图片。
-    * 优化【中文搜索】解析罗马音规则。
-    * 优化各网站加载速度，图片详情页优先加载已下载的本地图片。
+- Konachan
+- Yande.re
+- Danbooru
+- Safebooru
+- Gelbooru
+- Lolibooru
+- Sankaku
+- Zerochan
+- Wallhalla
+- Wallhaven
 
-* 【v1.8.12】
-    * 修复zerochan图片详情解析异常，且现在支持多标签及id搜索
-    * 修复sankaku解析、下载图片异常。该站现在限制了同个IP的访问速度，如遇到加载不出来的情况请稍等两三分钟后再试
-    * 优化下载大文件成功后，移动文件耗时卡顿问题
+Planned support:
 
-* 【v1.8.11】
-    * 新增支持横屏功能，可在设置中选择开启
-    * 逆向搜索网站中添加\"搜图bot酱\"，且改为服务器动态配置网站列表
+- 3dbooru
+- E-shuushuu
+- Xbooru
+- The Anime Gallery
+- Other sites
 
-* 【v1.8.10】
-    * 修复Gelbooru数据解析失败，并兼容mp4/gif等类型素材
-    * 修复Danbooru数据解析失败，并优化缩略图清晰度及图集信息
+## Release History
 
-* 【v1.8.9】
-    * 修复P站GIF下载器一直解析失败。由于中转服务器失效，现改为直接访问P站地址，因此需要挂梯子才可以下载，部分受限作品需要先登录P站帐号才可访问
-    * 修复Gelbooru叕解析图集数据失败
-    * 优化中文搜索功能
+### v1.9.4
 
-* 【v1.8.8】
-    * 新增详情页长按图片可触发下载
-    * 新增标签收藏与备注功能
-    * 逆向搜索网站整合到独立页面
-    * 逆向搜索网站添加ascii2d和yandex
-    * 设置页添加仅wifi下预加载图片开关
-    * 设置页添加清除缓存功能
+- Fixed parsing failures on image sites and errors in Chinese Name Search.
+- Added AVIF image support.
+- Konachan added a verification challenge; this release required a VPN endpoint in the United States to access it.
+- Other sites could use any endpoint. If access failed, the recommendation was to try Hong Kong or Japan.
+- Lolibooru shut down. Rest in peace.
 
-* 【v1.8.7】
-    * 修复Danbooru图片页加载不出数据
+### v1.9.3
 
-* 【v1.8.6】
-    * 修复Gelbooru详情标签、评论获取异常，不常用此网站的朋友们可以忽略更新 o_O
+- Added quick swiping between images on the image details screen.
+- Added support for repositioning the image navigation buttons.
 
-* 【v1.8.5】
-    * 来了来了，P站GIF又可以下原尺寸了，棒！
-    * 米纳桑元旦快乐 ꉂ(ˊᗜˋ*)
-	
-* 【v1.8.4】
-    * 修复P站GIF无法下载（不过貌似P站现在没法下原尺寸的gif了，我再看看有没办法解决）
-    * 杀掉app后不清除下载管理列表记录，防止异常退出导致戴上痛苦面具
-    * 修复Gelbooru搜索联想失效（低版本会闪退）
-	
-* 【v1.8.3】
-    * 后台反馈上个版本崩溃率有点高，算是紧急修复版，各位视情况更新
-    * 修复详情页点击下载时崩溃
-    * 修复其他如弹窗、设置壁纸崩溃等
-	
-* 【v1.8.2】
-    * 侧拉栏新增下载列表管理页，图片支持断点下载
-    * 侧拉栏新增Pixiv Gif下载工具页
-    * 新增详情页可以点击Tag进行搜索或复制到剪贴板
-    * 新增搜索历史记录
-    * 新增内置浏览器连接跳转
-    * 修复Gelbooru图集显示异常
-    * 修复其他部分已知问题
+### v1.9.2
 
-* 【v1.8.1】
-    * 修复v1.8.0打包错误
-	
-* 【v1.8.0】
-    * 集成Safebooru和Zerochan图源，在侧拉栏中点滑稽切换
-    * 新增首页左上角显示当前所选网站logo
-    * 新增播放视频文件时显示控制器
-    * 优化标签搜索联想提示算法
-    * 修复闪退和其他已知问题
-	
-* 【v1.7.5】
-    * 紧急修复Danbooru网站图片详情页无数据的问题
-    * 啊啊啊啊这个沙雕Danbooru我真是佛了，你们的程序猿是天天闲的没事干吗总改网页标签？！！
-	
-* 【v1.7.4】
-    * 紧急修复Danbooru网站图片详情标签栏无数据的问题
-    * 修复安卓5.0手机打开SauceNAO和TraceMoe闪退的问题
-	
-* 【v1.7.3】
-    * 紧急修复Danbooru网站无法访问的问题
+- Fixed images not appearing on Danbooru.
 
-* 【v1.7.2】
-    * 修复安卓10闪退问题
-    * 预览图界面新增“网格-瀑布流”两种浏览模式切换功能
-    * 内置bugly自动收集app崩溃信息
+### v1.9.1
 
-* 【v1.7.1】
-    * 修复部分刘海屏设备侧栏中的滑稽按钮被遮挡
-    * 修复小米、华为等设备设置壁纸时只有联系人选项
-    * 增加自定义裁剪壁纸功能，以适配更多机型
-    * 修复下载过程中点击通知栏无法跳转到收藏页
-    * 适配平板UI
-	
-* 【v1.7】
-    * 集成Gelbooru图源，在侧拉栏中点滑稽切换
-    * 修改保存图片时的自动命名规则为"网站名-图片id-图片尺寸"样式，方便反向查找
-    * SauceNAO中增加长按图片保存功能
-    * 添加Trace.moe动画逆向搜索功能
-    * 优化图片加载速度
-	
-* 【v1.6.2】
-    * 图片和图集添加页码跳转功能
-    * 优化一些文案与素材
+- Added Wallhaven, accessible without a VPN from the original deployment region; only anime and AI images are shown.
+- Added Wallhalla, also accessible without a VPN from that region. This newer 4K wallpaper site initially had a limited collection.
+- Added a shortcut to switch image sources by holding the site icon at the top left of the home screen.
+- Added popular rankings, accessible from the floating button at the bottom right.
+- Fixed Danbooru access and added random image browsing.
+- Fixed Gelbooru search autocomplete parsing and added random image browsing.
+- Fixed Sankaku image lists, album lists, and search autocomplete; added display support for member images.
+- Improved Zerochan image details loading and added support for its NSFW images.
+- Improved romanization rules in Chinese Name Search.
+- Improved loading speed across sites and prioritized downloaded local images on the details screen.
 
-* 【v1.6.1】
-    * 优化预览图加载速度
-    * 播放视频时保持屏幕常亮
-      * 增加反馈功能，可发送邮件反馈问题或建议
-      * 修复一些已知问题
-  
-* 【v1.6】
-    * 集成Danbooru和Sankaku图源，在侧拉栏中点滑稽切换
-    * 支持显示图片、动图、视频等多种媒体格式
-      * 修复一些已知问题
- 
-* 【v1.5.2】
-    * 支持在图片详情界面上下翻页浏览
-    * 支持多种尺寸选择下载图片，不单单能下载原图
-      * 全屏查看本地收藏图片页面加入分享与设置为手机壁纸功能
-      * 集成SauceNAO图片搜索功能
-  
-* 【v1.5.1】
-    * 正式版
-  
-* 【v1.0 ~ v1.4】
-    * 测试版
+### v1.8.12
 
-## 有问题或者有功能提议
-* 欢迎提 [Issues](https://github.com/EternalSoySauce/Konachan/issues)，我会尽快回复
+- Fixed Zerochan image details parsing and added multiple-tag and ID searches.
+- Fixed Sankaku image parsing and downloads. The site began limiting requests per IP; wait two or three minutes before retrying if content fails to load.
+- Reduced pauses when moving large files after download.
 
-## 打赏
-各位看官老爷要是喜欢这款应用的话，有钱的捧个钱场，没钱的回家取个钱来捧个钱场！
+### v1.8.11
 
-谢谢大家的支持~
+- Added optional landscape orientation in Settings.
+- Added Soutu Bot to reverse image search and moved the website list to server-provided configuration.
 
-<a href="https://github.com/EternalSoySauce/images/blob/master/alipay.jpg"><img src="https://github.com/EternalSoySauce/images/blob/master/alipay.jpg" width="30%"/></a> <a href="https://github.com/EternalSoySauce/images/blob/master/wechat_pay.png"><img src="https://github.com/EternalSoySauce/images/blob/master/wechat_pay.png" width="37.5%"/>
+### v1.8.10
 
-## License 
-```
-Copyright ©  EternalSoySauce(https://github.com/EternalSoySauce/Konachan)
+- Fixed Gelbooru parsing and added MP4, GIF, and related media support.
+- Fixed Danbooru parsing and improved thumbnail clarity and album information.
 
-本项目源码仅供学习与讨论使用，禁止商用，违者必究。
+### v1.8.9
+
+- Fixed repeated Pixiv GIF parsing failures. With the relay server unavailable, downloads now use Pixiv directly and may require a VPN. Some restricted works require a Pixiv login.
+- Fixed another Gelbooru album parsing failure.
+- Improved Chinese Name Search.
+
+### v1.8.8
+
+- Added downloads by holding an image on the details screen.
+- Added favorite tags and tag notes.
+- Moved reverse image search sites to a separate screen.
+- Added ascii2d and Yandex to reverse image search.
+- Added a Wi-Fi-only image preloading setting.
+- Added a clear-cache setting.
+
+### v1.8.7
+
+- Fixed missing data on Danbooru image pages.
+
+### v1.8.6
+
+- Fixed Gelbooru details tags and comments. Users who rarely visit this site could skip this update.
+
+### v1.8.5
+
+- Restored original-size Pixiv GIF downloads.
+- Happy New Year, everyone! ꉂ(ˊᗜˋ*)
+
+### v1.8.4
+
+- Fixed Pixiv GIF downloads, although original-size GIFs still needed further investigation.
+- Preserved the download list when the app is killed so unexpected exits do not erase it.
+- Fixed Gelbooru search suggestions, including crashes on older Android versions.
+
+### v1.8.3
+
+- Emergency maintenance release following elevated crash reports for the previous version.
+- Fixed crashes when downloading from the details screen.
+- Fixed other crashes involving dialogs and setting wallpaper.
+
+### v1.8.2
+
+- Added a download manager in the navigation drawer, with resumable image downloads.
+- Added a Pixiv GIF downloader in the navigation drawer.
+- Added tag search and clipboard actions on the details screen.
+- Added search history.
+- Added links that open in the built-in browser.
+- Fixed Gelbooru album display issues.
+- Fixed other known issues.
+
+### v1.8.1
+
+- Fixed the v1.8.0 packaging error.
+
+### v1.8.0
+
+- Added Safebooru and Zerochan; use the smiley button in the navigation drawer to switch sources.
+- Added the selected site logo to the top left of the home screen.
+- Added controls for video playback.
+- Improved tag autocomplete suggestions.
+- Fixed crashes and other known issues.
+
+### v1.7.5
+
+- Emergency fix for missing Danbooru image details.
+- A frustrated note from the original maintainer: repeated Danbooru HTML changes kept breaking the parser.
+
+### v1.7.4
+
+- Emergency fix for missing tags on Danbooru image details pages.
+- Fixed crashes when opening SauceNAO and TraceMoe on Android 5.0.
+
+### v1.7.3
+
+- Emergency fix for Danbooru access failures.
+
+### v1.7.2
+
+- Fixed crashes on Android 10.
+- Added grid and waterfall browsing modes to the image preview screen.
+- Integrated Bugly for automatic crash reporting.
+
+### v1.7.1
+
+- Fixed the smiley button being obscured in the drawer on some devices with display cutouts.
+- Fixed wallpaper actions showing only the Contacts option on devices from Xiaomi, Huawei, and other vendors.
+- Added custom wallpaper cropping for broader device compatibility.
+- Fixed download notifications failing to open Favorites.
+- Adapted the interface for tablets.
+
+### v1.7
+
+- Added Gelbooru; use the smiley button in the navigation drawer to switch sources.
+- Changed saved image names to `site-image_id-image_size` for easier reverse lookup.
+- Added image saving by holding images in SauceNAO.
+- Added Trace.moe reverse anime search.
+- Improved image loading speed.
+
+### v1.6.2
+
+- Added page-number navigation for image and album lists.
+- Improved copy and assets.
+
+### v1.6.1
+
+- Improved preview image loading speed.
+- Kept the screen awake during video playback.
+- Added email feedback for issues and suggestions.
+- Fixed known issues.
+
+### v1.6
+
+- Added Danbooru and Sankaku; use the smiley button in the navigation drawer to switch sources.
+- Added support for images, animations, videos, and other media formats.
+- Fixed known issues.
+
+### v1.5.2
+
+- Added previous/next navigation on the image details screen.
+- Added image downloads in multiple sizes rather than only the original.
+- Added sharing and wallpaper actions to full-screen local favorites.
+- Integrated SauceNAO image search.
+
+### v1.5.1
+
+- Stable release.
+
+### v1.0–v1.4
+
+- Test releases.
+
+## Questions and Feature Requests
+
+Open an [issue](https://github.com/EternalSoySauce/Konachan/issues). The original maintainer aims to respond promptly.
+
+## Donations
+
+If you enjoy this app, please consider supporting its original maintainer. Thank you for your support!
+
+<a href="https://github.com/EternalSoySauce/images/blob/master/alipay.jpg"><img src="https://github.com/EternalSoySauce/images/blob/master/alipay.jpg" width="30%"/></a> <a href="https://github.com/EternalSoySauce/images/blob/master/wechat_pay.png"><img src="https://github.com/EternalSoySauce/images/blob/master/wechat_pay.png" width="37.5%"/></a>
+
+## License
+
+```text
+Copyright © EternalSoySauce (https://github.com/EternalSoySauce/Konachan)
+
+This source code is provided solely for learning and discussion. Commercial use is prohibited. Violations will be pursued.
 ```

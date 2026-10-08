@@ -19,7 +19,7 @@ public class SplashActivity extends BaseActivity {
     private boolean mIsForeground;
     private boolean mCanGotoNextPage;
 
-    // 更新检查每天只做一次，避免每次启动都请求
+    // Check for updates once a day rather than on every launch
     private void checkUpdateOncePerDay() {
         try {
             android.content.SharedPreferences sp = android.preference.PreferenceManager

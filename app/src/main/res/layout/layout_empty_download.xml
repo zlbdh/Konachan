@@ -4,11 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
+    <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:src="@drawable/ic_empty_download"
+        android:text="@string/empty_downloads"
+        android:textSize="18sp"
+        android:textColor="@color/color_text_unselected"
+        android:gravity="center"
+        android:padding="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

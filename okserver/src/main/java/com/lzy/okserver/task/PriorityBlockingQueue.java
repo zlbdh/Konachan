@@ -29,11 +29,11 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * ================================================
- * 作    者：jeasonlzy（廖子尧）Github地址：https://github.com/jeasonlzy
- * 版    本：1.0
- * 创建日期：2016/1/19
- * 描    述：带有优先级的阻塞队列
- * 修订历史：
+ * Author: jeasonlzy (廖子尧). GitHub: https://github.com/jeasonlzy
+ * Version: 1.0
+ * Created: 2016/1/19
+ * Description: Priority blocking queue
+ * Revision history:
  * ================================================
  */
 public class PriorityBlockingQueue<E> extends AbstractQueue<E> implements BlockingQueue<E>, java.io.Serializable {

@@ -44,7 +44,7 @@ public class PopularWebsiteViewModel extends ViewModel {
         return getCalenderYear();
     }
 
-    // Calendar月份从0开始，此处需要返回真实月份
+    // Calendar months are zero-based; return the actual month number here
     public int getRealMonth() {
         return getCalenderMonth() + 1;
     }

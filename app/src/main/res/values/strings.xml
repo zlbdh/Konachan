@@ -3,37 +3,37 @@
 
     <!-- Toast -->
     <string name="back_again">Press again to exit the application.</string>
-    <string name="no_more_load">Nothing more</string>
-    <string name="check_network">Load failed. Please check your network and pull to refresh again.</string>
-    <string name="loading">Don\'t worry, it\'s OK right away.</string>
-    <string name="load_no_pool">This website doesn\'t have album.</string>
-    <string name="webview_error">Emm, it seems that something has gone wrong.\nTap to refresh.</string>
-    <string name="loading_image">Obtaining image information, please wait.</string>
-    <string name="check_no_new_version">Currently is the latest version</string>
-    <string name="already_first_image">It is already the first image</string>
-    <string name="already_last_image">It is already the last image</string>
-    <string name="cannot_set_as_wallpaper">Can not set as wallpaper</string>
-    <string name="cannot_search_random">The current website does not support random viewing</string>
-    <string name="copied_link">Copied link</string>
-    <string name="save_successfully">Save successfully</string>
-    <string name="save_failed">Save failed</string>
+    <string name="no_more_load">No more results</string>
+    <string name="check_network">Unable to load. Check your connection and pull to refresh.</string>
+    <string name="loading">Loading, please wait.</string>
+    <string name="load_no_pool">This site has no albums.</string>
+    <string name="webview_error">Something went wrong.\nTap to refresh.</string>
+    <string name="loading_image">Loading image details, please wait.</string>
+    <string name="check_no_new_version">You are using the latest version</string>
+    <string name="already_first_image">This is the first image</string>
+    <string name="already_last_image">This is the last image</string>
+    <string name="cannot_set_as_wallpaper">Unable to set wallpaper</string>
+    <string name="cannot_search_random">This site does not support random browsing</string>
+    <string name="copied_link">Link copied</string>
+    <string name="save_successfully">Saved successfully</string>
+    <string name="save_failed">Unable to save</string>
     <string name="click_to_view"><u>Click to view</u></string>
     <string name="choose_qr_image_from_album">Please select the first QR code image from the album</string>
     <string name="alipay_not_installed">Alipay is not installed</string>
     <string name="already_set_clipboard">Copied to clipboard</string>
-    <string name="already_add_to_clipboard">Appended to the last copied tag</string>
-    <string name="already_in_download_queue">Already in download queue</string>
-    <string name="not_support_ffmpeg">Your device cannot synthesize GIF</string>
+    <string name="already_add_to_clipboard">Appended to the previously copied tag</string>
+    <string name="already_in_download_queue">Already in the download queue</string>
+    <string name="not_support_ffmpeg">Your device cannot create GIFs</string>
 
     <!-- Notification -->
     <string name="foreground_notify_title">Downloading Images</string>
-    <string name="foreground_notify_msg">Click to open download manager</string>
-    <string name="download_started">%s Start download</string>
-    <string name="download_finished">%s / Download completed</string>
-    <string name="download_failed">Download failed, click to try again</string>
+    <string name="foreground_notify_msg">Tap to open the download manager</string>
+    <string name="download_started">Starting download: %s</string>
+    <string name="download_finished">%s / Download complete</string>
+    <string name="download_failed">Download failed. Tap to try again.</string>
     <string name="download_title_sample">%1$s %2$s (Sample)</string>
     <string name="download_title_large">%1$s %2$s (Large)</string>
-    <string name="download_title_origin">%1$s %2$s (Origin)</string>
+    <string name="download_title_origin">%1$s %2$s (Original)</string>
 
     <!-- Drawer Layout -->
     <string name="base_konachan_s" translatable="false">Konachan(safe)</string>
@@ -67,84 +67,84 @@
     <string name="base_eporner" translatable="false">Eporner</string>
     <string name="base_nhentai" translatable="false">nhentai</string>
     <string name="base_hitomi" translatable="false">hitomi</string>
-    <string name="setting_gelbooru_api_key_title">Gelbooru API Key 设置</string>
-    <string name="setting_gelbooru_api_key_desc">内置 key 失效时可填入自己的 key（Gelbooru 账号页获取），留空则使用内置 key</string>
+    <string name="setting_gelbooru_api_key_title">Gelbooru API Key Settings</string>
+    <string name="setting_gelbooru_api_key_desc">If the built-in key stops working, enter your own key from your Gelbooru account page. Leave blank to use the built-in key.</string>
     <string name="setting_gelbooru_api_key_hint">api_key</string>
     <string name="setting_gelbooru_user_id_hint">user_id</string>
-    <string name="setting_gelbooru_api_key_saved">已保存，切换站点或刷新后生效</string>
+    <string name="setting_gelbooru_api_key_saved">Saved. Switch sites or refresh to apply.</string>
     <string name="navigation_drawer_open">Open drawer layout</string>
     <string name="navigation_drawer_close">Close drawer layout</string>
-    <string name="nav_post">Image</string>
-    <string name="nav_pool">Album</string>
+    <string name="nav_post">Images</string>
+    <string name="nav_pool">Albums</string>
     <string name="nav_favorite_tag">Tags</string>
     <string name="nav_collection">Favorites</string>
     <string name="nav_download_manager">Download Manager</string>
     <string name="nav_feedback">Feedback</string>
-    <string name="nav_setting">Setting &amp; Help</string>
-    <string name="nav_pixiv_gif">Pixiv Gif DL</string>
+    <string name="nav_setting">Settings &amp; Help</string>
+    <string name="nav_pixiv_gif">Pixiv GIF Downloader</string>
     <string name="nav_reverse_search">Reverse Search</string>
     <string name="nav_game">Puzzle Game</string>
-    <string name="nav_github">Github Page</string>
-    <string name="nav_donate">Donate Us</string>
-    <string name="feedback_title">E-mail via</string>
+    <string name="nav_github">GitHub Page</string>
+    <string name="nav_donate">Support the Developer</string>
+    <string name="feedback_title">Send Email With</string>
 
     <!-- Widget -->
     <string name="save">Save</string>
-    <string name="fab_home">Homepage</string>
+    <string name="fab_home">Home</string>
     <string name="fab_random">Random</string>
     <string name="fab_popular">Popular</string>
-    <string name="currently_loaded">Currently Loaded Page:&#160;</string>
-    <string name="goto_page">Go to</string>
-    <string name="load_failed">Failed to load, click to try again</string>
+    <string name="currently_loaded">Loaded pages: </string>
+    <string name="goto_page">Go to Page</string>
+    <string name="load_failed">Unable to load. Tap to try again.</string>
 
     <!-- Search Activity -->
     <string name="spinner_search_tags">Search Tags</string>
     <string name="spinner_search_id">Search ID</string>
-    <string name="spinner_search_chinese">Search Chinese</string>
+    <string name="spinner_search_chinese">Chinese Name Search</string>
     <string name="spinner_search_advanced">Advanced Search</string>
     <string name="cancel_search">Cancel</string>
     <string name="click_here">%sclick here.</string>
-    <string name="search_instruction">Instruction</string>
+    <string name="search_instruction">Instructions</string>
     <string name="search_history">History</string>
-    <string name="search_favorite_tag">Fav Tags</string>
+    <string name="search_favorite_tag">Favorite Tags</string>
     <string name="clear_all_history">Clear</string>
 
     <!-- Setting Activity -->
-    <string name="setting_allow_play_sound">Allow to play sound</string>
-    <string name="setting_screen_orientation_title">Screen rotation mode</string>
-    <string name="setting_screen_orientation_item_forced_portrait">Portrait lock</string>
-    <string name="setting_screen_orientation_item_forced_landscape">Landscape lock</string>
-    <string name="setting_screen_orientation_item_auto_rotate">Auto rotate</string>
-    <string name="setting_preload_image_only_wifi_title">Only preload original images in Wifi environment</string>
-    <string name="setting_preload_image_only_wifi_desc">If enabled, it is forbidden to use mobile network to original images of the details page</string>
-    <string name="setting_help_tag_type">See all tag types and meanings</string>
-    <string name="setting_help_advanced_search">See cheat sheet of advanced search</string>
+    <string name="setting_allow_play_sound">Play sounds</string>
+    <string name="setting_screen_orientation_title">Screen orientation</string>
+    <string name="setting_screen_orientation_item_forced_portrait">Lock to portrait</string>
+    <string name="setting_screen_orientation_item_forced_landscape">Lock to landscape</string>
+    <string name="setting_screen_orientation_item_auto_rotate">Auto-rotate</string>
+    <string name="setting_preload_image_only_wifi_title">Preload original images only on Wi-Fi</string>
+    <string name="setting_preload_image_only_wifi_desc">Prevents original images on the details screen from preloading over mobile data</string>
+    <string name="setting_help_tag_type">Tag types and meanings</string>
+    <string name="setting_help_advanced_search">Advanced search reference</string>
     <string name="setting_clear_cache_title">Clear cache</string>
-    <string name="setting_clear_cache_desc">Only delete thumbnails and network data cache, without affecting your favorite tags and images</string>
-    <string name="setting_check_update">Check update</string>
+    <string name="setting_clear_cache_desc">Deletes cached thumbnails and network data. Favorite tags and saved images are kept.</string>
+    <string name="setting_check_update">Check for updates</string>
     <string name="setting_current_version">Current version: %s</string>
 
     <!-- Popular Activity -->
     <string name="popular_title_daily">Daily</string>
     <string name="popular_title_weekly">Weekly</string>
     <string name="popular_title_monthly">Monthly</string>
-    <string name="popular_title_overall">Overall</string>
-    <string name="popular_not_support_tips_daily">This website currently does not support \n daily rankings.</string>
-    <string name="popular_not_support_tips_weekly">This website currently does not support \n weekly rankings.</string>
-    <string name="popular_not_support_tips_monthly">This website currently does not support \n monthly rankings.</string>
-    <string name="popular_not_support_tips_overall">This website currently does not support \n overall rankings.</string>
+    <string name="popular_title_overall">All Time</string>
+    <string name="popular_not_support_tips_daily">This site does not support daily rankings.</string>
+    <string name="popular_not_support_tips_weekly">This site does not support weekly rankings.</string>
+    <string name="popular_not_support_tips_monthly">This site does not support monthly rankings.</string>
+    <string name="popular_not_support_tips_overall">This site does not support all-time rankings.</string>
 
 
     <!-- Image Detail -->
     <string name="image_detail_image">Image</string>
-    <string name="image_detail_detail">Detail</string>
-    <string name="image_detail_comment">Comment</string>
+    <string name="image_detail_detail">Details</string>
+    <string name="image_detail_comment">Comments</string>
     <string name="image_id_symbol">#</string>
     <string name="detail_post_title">Image</string>
-    <string name="detail_post_id">Image id:</string>
-    <string name="detail_post_created_time">Created time:</string>
-    <string name="detail_post_creator_id">Creator id:</string>
-    <string name="detail_post_author">Creator name:</string>
+    <string name="detail_post_id">Image ID:</string>
+    <string name="detail_post_created_time">Uploaded:</string>
+    <string name="detail_post_creator_id">Uploader ID:</string>
+    <string name="detail_post_author">Uploader:</string>
     <string name="detail_post_size">Resolution:</string>
     <string name="detail_post_file_size">Size:</string>
     <string name="detail_post_source">Source:</string>
@@ -159,17 +159,17 @@
     <string name="detail_tag_more_item_copy_clipboard">Copy to clipboard</string>
     <string name="detail_tag_more_item_append_clipboard">Append to clipboard</string>
     <string name="detail_pool_title">Album</string>
-    <string name="detail_pool_id">Album id:</string>
+    <string name="detail_pool_id">Album ID:</string>
     <string name="detail_pool_name">Album title:</string>
-    <string name="detail_pool_created_time">Created time:</string>
-    <string name="detail_pool_updated_time">Updated time:</string>
+    <string name="detail_pool_created_time">Created:</string>
+    <string name="detail_pool_updated_time">Last updated:</string>
     <string name="detail_pool_description">Description:</string>
     <string name="detail_pool_no_description">None</string>
-    <string name="comment_no_comments">No comment</string>
-    <string name="guide_desc_tip_1">Fling left or right to switch between viewing images</string>
-    <string name="guide_desc_tip_2">Click the buttons to switch to view images</string>
-    <string name="guide_desc_tip_3">Drag the buttons up or down to change the position</string>
-    <string name="guide_button_i_see">I See</string>
+    <string name="comment_no_comments">No comments yet</string>
+    <string name="guide_desc_tip_1">Swipe left or right to view another image</string>
+    <string name="guide_desc_tip_2">Tap the buttons to switch images</string>
+    <string name="guide_desc_tip_3">Drag the buttons up or down to reposition them</string>
+    <string name="guide_button_i_see">Got It</string>
 
     <!-- Pool Detail -->
     <string name="pool_updated_time" translatable="false">Updated %s</string>
@@ -177,129 +177,126 @@
     <!-- Favorite Tag Activity -->
     <string name="sort">Sort</string>
     <string name="sort_by_first_letter">Tag Name</string>
-    <string name="sort_by_favorite_time">Favorite Time</string>
+    <string name="sort_by_favorite_time">Date Added</string>
     <string name="order">Order</string>
     <string name="sort_order_ascend">Ascending</string>
     <string name="sort_order_descend">Descending</string>
-    <string name="favorite_tag_annotation_empty">No annotations have been added yet</string>
-    <string name="favorite_tag_favorite_at_time">Favorite at: %s</string>
+    <string name="favorite_tag_annotation_empty">No notes yet</string>
+    <string name="favorite_tag_favorite_at_time">Added to favorites: %s</string>
 
     <!-- Collection Activity -->
-    <string name="choose_all">All</string>
+    <string name="choose_all">Select All</string>
     <string name="edit">Edit</string>
     <string name="share">Share</string>
-    <string name="share_title">Shared via</string>
+    <string name="share_title">Share With</string>
     <string name="delete">Delete</string>
 
     <!-- Fullscreen Activity -->
     <string name="action_wallpaper">Set as wallpaper</string>
     <string name="action_custom_wallpaper">Custom wallpaper</string>
-    <string name="action_share">Share to others</string>
+    <string name="action_share">Share with another app</string>
 
     <!-- Crop Wallpaper Activity-->
     <string name="crop_image">Crop Image</string>
-    <string name="crop_failed">Crop failed</string>
-    <string name="action_wallpaper_flag_desktop">Set as Home screen</string>
-    <string name="action_wallpaper_flag_lockscreen">Set as Lock screen</string>
-    <string name="action_wallpaper_flag_both">Set both</string>
-    <string name="set_successfully">Set successfully</string>
-    <string name="set_failed">Set failed</string>
+    <string name="crop_failed">Unable to crop image</string>
+    <string name="action_wallpaper_flag_desktop">Home screen</string>
+    <string name="action_wallpaper_flag_lockscreen">Lock screen</string>
+    <string name="action_wallpaper_flag_both">Home and lock screens</string>
+    <string name="set_successfully">Wallpaper applied</string>
+    <string name="set_failed">Unable to apply wallpaper</string>
 
     <!-- Download Image Manager -->
     <string name="download_waiting">Waiting...</string>
-    <string name="download_finish">Download completed and saved to Collection</string>
+    <string name="download_finish">Download complete. Saved to Favorites.</string>
 
     <!-- Pixiv Login -->
     <string name="pixiv_login_webview_title">Pixiv Login</string>
     <string name="pixiv_toast_login_success">Login successful</string>
     <string name="pixiv_toast_login_failed">Login failed</string>
-    <string name="piviv_login_state_not_logged">[Not logged]</string>
-    <string name="piviv_login_state_already_logged">[Logged]</string>
-    <string name="piviv_login_state_login_expired">[Login expired]</string>
+    <string name="piviv_login_state_not_logged">[Signed out]</string>
+    <string name="piviv_login_state_already_logged">[Signed in]</string>
+    <string name="piviv_login_state_login_expired">[Session expired]</string>
 
     <!-- Pixiv Gif DL -->
-    <string name="pixiv_edit_hint_enter_id">Please enter Pixiv artwork Id</string>
+    <string name="pixiv_edit_hint_enter_id">Enter a Pixiv artwork ID</string>
     <string name="pixiv_start_download">Download</string>
     <string name="pixiv_toast_task_exist">Task already exists in the queue</string>
-    <string name="pixiv_dl_state_connect">Connecting Pixiv...</string>
-    <string name="pixiv_dl_state_connect_error">Connect Pixiv failed</string>
-    <string name="pixiv_dl_state_download_zip">Downloading zip file...</string>
-    <string name="pixiv_dl_state_download_zip_progress">Downloading zip file: %s</string>
-    <string name="pixiv_dl_state_download_zip_error">Download zip file failed</string>
-    <string name="pixiv_dl_state_unzip">Unzipping...</string>
-    <string name="pixiv_dl_state_unzip_error">Unzip failed</string>
-    <string name="pixiv_dl_state_make_gif">Synthesizing GIF</string>
-    <string name="pixiv_dl_state_make_gif_error">Synthetic GIF failed</string>
-    <string name="pixiv_dl_state_finish">GIF synthesis completed and saved to Collection</string>
-    <string name="pixiv_dl_state_cancelled">Task cancelled</string>
+    <string name="pixiv_dl_state_connect">Connecting to Pixiv…</string>
+    <string name="pixiv_dl_state_connect_error">Unable to connect to Pixiv</string>
+    <string name="pixiv_dl_state_download_zip">Downloading ZIP file…</string>
+    <string name="pixiv_dl_state_download_zip_progress">Downloading ZIP file: %s</string>
+    <string name="pixiv_dl_state_download_zip_error">ZIP download failed</string>
+    <string name="pixiv_dl_state_unzip">Extracting ZIP file…</string>
+    <string name="pixiv_dl_state_unzip_error">Unable to extract ZIP file</string>
+    <string name="pixiv_dl_state_make_gif">Creating GIF…</string>
+    <string name="pixiv_dl_state_make_gif_error">Unable to create GIF</string>
+    <string name="pixiv_dl_state_finish">GIF created and saved to Favorites</string>
+    <string name="pixiv_dl_state_cancelled">Task canceled</string>
     <string name="pixiv_dl_state_not_gif">The artwork is not a GIF</string>
     <string name="pixiv_dl_state_no_artwork">The artwork does not exist or has been deleted</string>
-    <string name="pixiv_dl_state_need_login">The artwork needs to log in Pixiv before it can be accessed</string>
-    <string name="pixiv_dl_state_login_expired">Pixiv login information expired, please log in again</string>
+    <string name="pixiv_dl_state_need_login">Sign in to Pixiv to access this artwork</string>
+    <string name="pixiv_dl_state_login_expired">Your Pixiv session has expired. Please sign in again.</string>
 
     <!-- Web Activity -->
     <string name="spinner_copy_link">Copy Link</string>
     <string name="spinner_share_link">Share Link</string>
-    <string name="spinner_browse_link">Browse Link</string>
-    <string name="browse_title">Browse via</string>
+    <string name="spinner_browse_link">Open Link</string>
+    <string name="browse_title">Open With</string>
     <string name="save_image">Save Image</string>
 
     <!-- Surface View -->
     <string name="game_column_3" translatable="false">3 × 3</string>
     <string name="game_column_4" translatable="false">4 × 4</string>
     <string name="game_column_5" translatable="false">5 × 5</string>
-    <string name="game_current_step">Step: %d</string>
+    <string name="game_current_step">Moves: %d</string>
     <string name="game_best_step">Best:&#160;</string>
-    <string name="game_none_best_step">none</string>
+    <string name="game_none_best_step">None</string>
     <string name="game_completed">Congratulations!</string>
 
     <!-- Dialog -->
     <string name="dialog_delete_collection_msg">%d image(s) will be deleted.</string>
-    <string name="dialog_delete_favorite_tags_msg">Sure to unfavorite these tags?\nThe edited annotation will remain.</string>
+    <string name="dialog_delete_favorite_tags_msg">Remove these tags from Favorites?\nYour notes will be kept.</string>
     <string name="dialog_delete_cancel">Cancel</string>
     <string name="dialog_delete_sure">Delete</string>
     <string name="dialog_download_sample">Sample&#160;&#160;&#160;%3$s&#160;&#160;&#160;%4$s\n%1$d x %2$d</string>
     <string name="dialog_download_large">Large&#160;&#160;&#160;%3$s&#160;&#160;&#160;%4$s\n%1$d x %2$d</string>
-    <string name="dialog_download_origin">Origin&#160;&#160;&#160;%3$s&#160;&#160;&#160;%4$s\n%1$d x %2$d</string>
+    <string name="dialog_download_origin">Original   %3$s   %4$s\n%1$d x %2$d</string>
     <string name="dialog_download_already">%s&#160;&#160;&#160;(Downloaded)</string>
     <string name="dialog_download_sure">Download</string>
     <string name="dialog_download_cancel">Cancel</string>
-    <string name="dialog_reload_msg">Some of these images already exist in the album. Do you want
-        to download again?</string>
+    <string name="dialog_reload_msg">Some images already exist in the gallery. Download them again?</string>
     <string name="dialog_reload_yes">Download</string>
     <string name="dialog_reload_no">Cancel</string>
     <string name="dialog_doc_tag_type_title">Help: Tags</string>
     <string name="dialog_doc_advanced_search_title">Help: Cheat Sheet</string>
     <string name="dialog_doc_sure" translatable="false">OK</string>
-    <string name="dialog_doc_lost">Document might be lost.</string>
+    <string name="dialog_doc_lost">Documentation is unavailable.</string>
     <string name="dialog_permission_rationale_title">Permission request</string>
-    <string name="dialog_permission_rationale_msg">Application needs STORAGE permission to save, read and delete pictures.</string>
+    <string name="dialog_permission_rationale_msg">The app needs storage permission to save, read, and delete images.</string>
     <string name="dialog_permission_rationale_grant">Grant</string>
     <string name="dialog_permission_rationale_deny">Deny</string>
     <string name="dialog_permission_setting_title">Permission request failed</string>
-    <string name="dialog_change_base_url_title">Change website</string>
+    <string name="dialog_change_base_url_title">Switch Site</string>
     <string name="dialog_change_base_url_cancel">Cancel</string>
-    <string name="dialog_update_title">New version detected</string>
-    <string name="dialog_update_msg" formatted="false">Version: %1$s\nApk size: %2$s\n\nUpdate
-        content:\n%3$s</string>
+    <string name="dialog_update_title">Update Available</string>
+    <string name="dialog_update_msg" formatted="false">Version: %1$s\nAPK size: %2$s\n\nRelease notes:\n%3$s</string>
     <string name="dialog_update_ignore">Ignore</string>
     <string name="dialog_update_update">Update</string>
     <string name="dialog_feedback_title">Feedback</string>
-    <string name="dialog_feedback_msg">If you have any questions or have any good comments or
-        suggestions, you can contact us by email or leave a message to the github homepage.\nEmail: %s</string>
+    <string name="dialog_feedback_msg">Send questions, comments, or suggestions by email, or open an issue on GitHub.\nEmail: %s</string>
     <string name="dialog_feedback_sure">Send Email</string>
     <string name="dialog_feedback_cancel">Cancel</string>
-    <string name="dialog_feedback_neutral">Jump to Github</string>
-    <string name="dialog_cannot_wallpaper_lockscreen_msg">Your device may not be able to apply a custom wallpaper as a lock screen. If you have this, please use the "Set as wallpaper" function.</string>
-    <string name="dialog_cannot_wallpaper_lockscreen_sure">I see</string>
+    <string name="dialog_feedback_neutral">Open GitHub</string>
+    <string name="dialog_cannot_wallpaper_lockscreen_msg">Your device may not support custom lock-screen wallpaper. If it does not work, use Set as wallpaper instead.</string>
+    <string name="dialog_cannot_wallpaper_lockscreen_sure">Got It</string>
     <string name="dialog_cannot_wallpaper_lockscreen_neutral">Don\'t show again</string>
-    <string name="dialog_delete_downloading_item_msg">Downloading, confirm deletion?</string>
-    <string name="dialog_clear_all_download_finished_item_msg">Confirm to clear all download finished items in the list?</string>
-    <string name="dialog_clear_all_search_history_msg">Confirm to clear all search history?</string>
-    <string name="dialog_clear_all_sure">Sure</string>
+    <string name="dialog_delete_downloading_item_msg">This item is downloading. Delete it?</string>
+    <string name="dialog_clear_all_download_finished_item_msg">Remove all completed downloads from the list?</string>
+    <string name="dialog_clear_all_search_history_msg">Clear all search history?</string>
+    <string name="dialog_clear_all_sure">Confirm</string>
     <string name="dialog_clear_all_cancel">Cancel</string>
-    <string name="dialog_tag_annotation_title">Tag Annotation</string>
-    <string name="dialog_tag_annotation_edit_hint">Add annotation for tag</string>
+    <string name="dialog_tag_annotation_title">Tag Note</string>
+    <string name="dialog_tag_annotation_edit_hint">Add a note for this tag</string>
     <string name="dialog_tag_annotation_close">Close</string>
     <string name="dialog_tag_annotation_edit">Edit</string>
     <string name="dialog_tag_annotation_save">Save</string>
@@ -307,41 +304,49 @@
     <string name="dialog_favorite_tag_sort_title">Sort by</string>
     <string name="dialog_favorite_tag_sort_sure">Done</string>
     <string name="dialog_favorite_tag_sort_cancel">Cancel</string>
-    <string name="dialog_prompt_use_mobile_network_preload_image_title">Note</string>
-    <string name="dialog_prompt_use_mobile_network_preload_image_msg">You are using mobile network, loading images will cost lots of data, you can turn on [Only Wifi] in the settings to reduce data usage</string>
-    <string name="dialog_prompt_use_mobile_network_preload_image_positive">Go to</string>
+    <string name="dialog_prompt_use_mobile_network_preload_image_title">Mobile Data in Use</string>
+    <string name="dialog_prompt_use_mobile_network_preload_image_msg">Loading images can use a lot of mobile data. Enable Wi-Fi-only preloading in Settings to reduce data usage.</string>
+    <string name="dialog_prompt_use_mobile_network_preload_image_positive">Open Settings</string>
     <string name="dialog_prompt_use_mobile_network_preload_image_negative">Close</string>
     <string name="dialog_prompt_use_mobile_network_preload_image_neutral">Don\'t show again</string>
-    <string name="dialog_pixiv_login_state_desc_already_logged">Your current Pixiv account login status is normal</string>
-    <string name="dialog_pixiv_login_state_desc_login_expired">Your current Pixiv account login information has expired, please log in again</string>
+    <string name="dialog_pixiv_login_state_desc_already_logged">You are signed in to Pixiv</string>
+    <string name="dialog_pixiv_login_state_desc_login_expired">Your Pixiv session has expired. Please sign in again.</string>
     <string name="dialog_pixiv_login_state_btn_close">Close</string>
-    <string name="dialog_pixiv_login_state_btn_logout">Logout</string>
-    <string name="dialog_pixiv_login_state_btn_relogin">Re-login</string>
-    <string name="dialog_change_screen_orientation_mode_title">Change screen rotation mode</string>
+    <string name="dialog_pixiv_login_state_btn_logout">Sign Out</string>
+    <string name="dialog_pixiv_login_state_btn_relogin">Sign In Again</string>
+    <string name="dialog_change_screen_orientation_mode_title">Screen Orientation</string>
     <string name="dialog_change_screen_orientation_mode_cancel">Cancel</string>
 
     <!-- Global -->
     <string name="unknown">Unknown</string>
-    <string name="batch_download_title">批量下载本页（%1$d 张）</string>
-    <string name="batch_download_sample">样图（小，省流量）</string>
-    <string name="batch_download_large">大图（推荐）</string>
-    <string name="batch_download_original">原图（最大）</string>
-    <string name="batch_download_preparing">正在准备下载…</string>
-    <string name="batch_download_progress">正在加入队列 %1$d/%2$d…</string>
-    <string name="batch_download_done">已将 %1$d/%2$d 张加入下载队列</string>
-    <string name="setting_gelbooru_api_key_save">保存</string>
-    <string name="setting_auto_download_update_title">自动下载更新</string>
-    <string name="setting_auto_download_update_desc">检测到新版本时自动下载 APK，不弹窗询问</string>
-    <string name="setting_rule34_api_key_title">Rule34 API Key 设置</string>
-    <string name="setting_rule34_api_key_desc">Rule34 必须鉴权，在 rule34.xxx 注册后于账号设置页获取 key，填入后方可加载</string>
+    <string name="batch_download_title">Download This Page (%1$d Images)</string>
+    <string name="batch_download_sample">Sample (smaller, uses less data)</string>
+    <string name="batch_download_large">Large (recommended)</string>
+    <string name="batch_download_original">Original (largest)</string>
+    <string name="batch_download_preparing">Preparing downloads…</string>
+    <string name="batch_download_progress">Adding to queue: %1$d/%2$d…</string>
+    <string name="batch_download_done">Added %1$d/%2$d images to the download queue</string>
+    <string name="setting_gelbooru_api_key_save">Save</string>
+    <string name="setting_auto_download_update_title">Download Updates Automatically</string>
+    <string name="setting_auto_download_update_desc">Automatically download the APK when an update is available without asking for confirmation</string>
+    <string name="setting_rule34_api_key_title">Rule34 API Key Settings</string>
+    <string name="setting_rule34_api_key_desc">Rule34 requires authentication. Register at rule34.xxx, get a key from your account settings, and enter it here to load content.</string>
     <string name="setting_rule34_api_key_hint">api_key</string>
-    <string name="setting_rule34_user_id_hint">user_id（数字）</string>
-    <string name="setting_rule34_api_key_saved">已保存，切换站点或刷新后生效</string>
-    <string name="setting_danbooru_api_key_title">Danbooru API Key 设置</string>
-    <string name="setting_danbooru_api_key_desc">登录后配 key 可提高访问频率限制，在 danbooru.donmai.us 用户页获取</string>
-    <string name="setting_danbooru_login_hint">用户名（login）</string>
+    <string name="setting_rule34_user_id_hint">user_id (numeric)</string>
+    <string name="setting_rule34_api_key_saved">Saved. Switch sites or refresh to apply.</string>
+    <string name="setting_danbooru_api_key_title">Danbooru API Key Settings</string>
+    <string name="setting_danbooru_api_key_desc">Using a login and API key increases the request rate limit. Get your key from your user page at danbooru.donmai.us.</string>
+    <string name="setting_danbooru_login_hint">Username (login)</string>
     <string name="setting_danbooru_api_key_hint">api_key</string>
-    <string name="setting_danbooru_api_key_saved">已保存，切换站点或刷新后生效</string>
-    <string name="setting_batch_download_quality_title">批量下载默认清晰度</string>
-    <string name="setting_batch_download_quality_ask">每次询问</string>
+    <string name="setting_danbooru_api_key_saved">Saved. Switch sites or refresh to apply.</string>
+    <string name="setting_batch_download_quality_title">Default Batch Download Quality</string>
+    <string name="setting_batch_download_quality_ask">Ask Every Time</string>
+    <string name="donate_title">Support the Developer</string>
+    <string name="donate_thanks">Thank You for Your Support!</string>
+    <string name="donate_alipay">Alipay</string>
+    <string name="donate_wechat">Donate with WeChat</string>
+    <string name="donate_close">Close donation dialog</string>
+    <string name="empty_downloads">No downloads yet</string>
+    <string name="empty_favorite_tags">No favorite tags yet</string>
+    <string name="empty_search_history">No search history yet</string>
 </resources>

@@ -24,12 +24,12 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 import static org.junit.Assume.assumeTrue;
 
-/** 必须提供真实已发布JSON；基线使用相同项目签名且低一个versionCode。默认不运行。 */
+/** Requires a real published JSON fixture; the baseline must use the same project signature and a versionCode one lower. Disabled by default. */
 @RunWith(AndroidJUnit4.class)
 public class PublishedUpdateIntegrationTest {
     @Test(timeout = 240000) public void publishedUpdateDownloadsInBackgroundAndOnlyNotifies() throws Exception {
         String encoded = InstrumentationRegistry.getArguments().getString("publishedUpdate");
-        assumeTrue("未提供发布fixture，不执行真实更新下载", encoded != null);
+        assumeTrue("No published fixture provided; skipping the real update download", encoded != null);
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         Context context = instrumentation.getTargetContext();
         String expectedJson = new String(Base64.decode(encoded, Base64.DEFAULT), StandardCharsets.UTF_8);
@@ -43,7 +43,7 @@ public class PublishedUpdateIntegrationTest {
             CountDownLatch checked = new CountDownLatch(1);
             AtomicReference<UpdateCheckController.Result> result = new AtomicReference<>();
             FireBase.getInstance().checkUpdate(value -> { result.set(value); checked.countDown(); });
-            assertTrue("实际仓库更新检查应有界结束", checked.await(30, TimeUnit.SECONDS));
+            assertTrue("The live repository update check must finish within the time limit", checked.await(30, TimeUnit.SECONDS));
             assertEquals(UpdateCheckController.Status.AVAILABLE, result.get().status);
             ApkBean candidate = result.get().apk;
             assertEquals(expected.versionCode, candidate.versionCode);
@@ -55,24 +55,24 @@ public class PublishedUpdateIntegrationTest {
                 duplicate.set(UpdateDownloadManager.start(context, candidate, true));
                 foreground.moveTaskToBack(true);
             });
-            assertTrue("前台发现新版应启动自动下载", started.get());
-            assertFalse("重复请求不创建第二任务", duplicate.get());
+            assertTrue("Finding an update in the foreground must start automatic downloading", started.get());
+            assertFalse("Repeated requests must not create a second task", duplicate.get());
             long deadline = SystemClock.elapsedRealtime() + 180000;
             String status;
             do {
                 status = context.getSharedPreferences("update-download-state", Context.MODE_PRIVATE).getString("status", "");
-                assertNotEquals("实际下载不得失败", "FAILED", status);
+                assertNotEquals("The live download must not fail", "FAILED", status);
                 if ("READY".equals(status) && !OkHttp.isUrlInDownloadQueue(candidate.apkUrl)) break;
                 SystemClock.sleep(100);
             } while (SystemClock.elapsedRealtime() < deadline);
-            assertEquals("自动下载及验包必须完成", "READY", status);
+            assertEquals("Automatic download and APK verification must complete", "READY", status);
             assertFalse(OkHttp.isUrlInDownloadQueue(candidate.apkUrl));
             File downloaded = new File(candidate.localFilePath);
             assertEquals(candidate.apkSize, downloaded.length());
             ApkVerifier.Result verified = ApkVerifier.verify(context, downloaded, candidate);
             assertTrue(verified.message, verified.valid);
-            assertEquals("自动模式不得启动安装页面", 0, installs.getHits());
-            // 下载文件故意保留，主代理在测试结束后做真实覆盖升级，避免杀死本测试进程。
+            assertEquals("Automatic mode must not open the installation screen", 0, installs.getHits());
+            // Keep the download so the parent agent can perform a real in-place upgrade after the test without killing this test process.
         } finally {
             instrumentation.removeMonitor(installs);
             instrumentation.runOnMainSync(foreground::finish);

@@ -65,7 +65,7 @@ public abstract class PopularBaseFragment extends BaseFragment implements
 
     private boolean mHasInit;
     private boolean mHasLoadedData;
-    private int mCurrentPage;  // 当前页码
+    private int mCurrentPage;  // Current page number
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -137,7 +137,7 @@ public abstract class PopularBaseFragment extends BaseFragment implements
         mSwipeRefresh = mRootView.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefresh.setEnabled(supportWebsitePopular());
         mSwipeRefresh.setRefreshing(false);
-        //下拉刷新
+        //Pull to refresh
         mSwipeRefresh.setOnRefreshListener(() -> {
             if (mPostAdapter.getData().isEmpty()) {
                 mPostAdapter.setEmptyView(R.layout.layout_loading_cirno, mRvPosts);
@@ -187,14 +187,14 @@ public abstract class PopularBaseFragment extends BaseFragment implements
         mRvPosts.smoothScrollToPosition(0);
     }
 
-    // 滑动加载更多
+    // Scroll to load more
     @Override
     public void onLoadMoreRequested() {
         fetchThumbList(mViewModel.getRealYear(), mViewModel.getRealMonth(),
                 mViewModel.getRealDay(), ++mCurrentPage, this::addMoreThumbList);
     }
 
-    //加载更多完成后刷新界面
+    //Refresh the screen after loading more results
     private void addMoreThumbList(final List<ThumbBean> newList) {
         if (!mPostAdapter.isLoading()) {
             return;
@@ -213,7 +213,7 @@ public abstract class PopularBaseFragment extends BaseFragment implements
                 mViewModel.getRealDay(), page, this::refreshThumbList);
     }
 
-    //搜索新内容或下拉刷新完成后刷新界面
+    //Refresh the screen after a new search or pull-to-refresh finishes
     private void refreshThumbList(final List<ThumbBean> newList) {
         if (!mSwipeRefresh.isRefreshing()) {
             return;
@@ -236,7 +236,7 @@ public abstract class PopularBaseFragment extends BaseFragment implements
                 @Override
                 public void onFailure(int errorCode, String errorMessage) {
                     if (errorCode == 404) {
-                        // 404按成功处理，UI显示无搜索结果而不是访问失败
+                        // Treat 404 as success so the UI shows no results rather than an access error
                         onSuccessful(errorMessage);
                     } else {
                         checkNetwork();
@@ -262,7 +262,7 @@ public abstract class PopularBaseFragment extends BaseFragment implements
         }
     }
 
-    // 初始化所有数据，清空adapter，以便加载新内容
+    // Reset data and clear the adapter before loading new content
     private void resetAll() {
         OkHttp.cancel(TAG);
         mPostAdapter.setEmptyView(R.layout.layout_loading_cirno, mRvPosts);
@@ -289,7 +289,7 @@ public abstract class PopularBaseFragment extends BaseFragment implements
         getNewPosts(mCurrentPage);
     }
 
-    //获取到图片详细信息后收到的通知，obj 为 Json (String)
+    //Notification after receiving image details; obj is JSON (String)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void setImageBean(MsgBean msgBean) {
         if (msgBean.msg.equals(Constants.GET_IMAGE_DETAIL)) {
@@ -313,7 +313,7 @@ public abstract class PopularBaseFragment extends BaseFragment implements
         }
     }
 
-    //搜所无结果
+    //No search results
     private void loadNothing() {
         if (supportWebsitePopular()) {
             mPostAdapter.setEmptyView(R.layout.layout_load_nothing, mRvPosts);
@@ -324,7 +324,7 @@ public abstract class PopularBaseFragment extends BaseFragment implements
         mSwipeRefresh.setRefreshing(false);
     }
 
-    //访问网络失败
+    //Network access failed
     private void checkNetwork() {
         mSwipeRefresh.setRefreshing(false);
         if (mPostAdapter.getData().isEmpty()) {
@@ -335,7 +335,7 @@ public abstract class PopularBaseFragment extends BaseFragment implements
         }
     }
 
-    // todo 目前各站是否支持排行榜与日期参数无关，暂随便给值
+    // TODO Ranking support currently does not depend on the date parameters; use placeholder values
     public boolean supportWebsitePopular() {
         return !TextUtils.isEmpty(getWebsitePopularUrl(1, 1, 1, 1));
     }

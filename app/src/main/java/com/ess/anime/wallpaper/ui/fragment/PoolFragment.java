@@ -67,8 +67,8 @@ public class PoolFragment extends BaseFragment implements
     private TextView mTvFrom;
     private TextView mTvTo;
     private EditText mEtGoto;
-    private int mCurrentPage;   // 当前页码
-    private int mGoToPage;   // 跳转到的起始页码
+    private int mCurrentPage;   // Current page number
+    private int mGoToPage;   // Starting page to jump to
     private String mCurrentSearchName;
 
     @Override
@@ -160,7 +160,7 @@ public class PoolFragment extends BaseFragment implements
         toggle.syncState();
         mToolbar.setNavigationIcon(WebsiteManager.getInstance().getWebsiteConfig().getWebsiteLogoRes());
 
-        //双击返回顶部
+        //Double tap to scroll to the top
         DoubleTapEffector.addDoubleTapEffect(mToolbar, () -> {
             if (isPoolPostFragmentVisible()) {
                 mPoolPostFragment.scrollToTop();
@@ -169,7 +169,7 @@ public class PoolFragment extends BaseFragment implements
             }
         });
 
-        // 长按图标弹出网站源选择弹窗
+        // Long press the icon to select a site
         try {
             Field mNavButtonViewField = mToolbar.getClass().getDeclaredField("mNavButtonView");
             mNavButtonViewField.setAccessible(true);
@@ -183,14 +183,14 @@ public class PoolFragment extends BaseFragment implements
         }
     }
 
-    // 弹出跳转页弹窗
+    // Show the page navigation dialog
     private void gotoPage(View view) {
         mPopupPage.showAsDropDown(view);
         mEtGoto.selectAll();
         mEtGoto.post(() -> UIUtils.showSoftInput(mActivity, mEtGoto));
     }
 
-    //搜索
+    //Search
     private void openSearch() {
 //        Intent searchIntent = new Intent(mActivity, SearchActivity.class);
 //        startActivityForResult(searchIntent, Constants.SEARCH_CODE);
@@ -204,11 +204,11 @@ public class PoolFragment extends BaseFragment implements
                 .setDimValue(0.4f)
                 .apply();
 
-        // 当前显示的起始页与终止页
+        // First and last pages currently displayed
         mTvFrom = mPopupPage.findViewById(R.id.tv_from);
         mTvTo = mPopupPage.findViewById(R.id.tv_to);
 
-        // 页码跳转
+        // Page navigation
         mEtGoto = mPopupPage.findViewById(R.id.et_goto);
         mEtGoto.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_GO) {
@@ -236,7 +236,7 @@ public class PoolFragment extends BaseFragment implements
 
     private void initSwipeRefreshLayout() {
         mSwipeRefresh.setRefreshing(true);
-        //下拉刷新
+        //Pull to refresh
         mSwipeRefresh.setOnRefreshListener(() -> {
             if (mPoolAdapter.getData().isEmpty()) {
                 mPoolAdapter.setEmptyView(R.layout.layout_loading_sakuya, mRvPools);
@@ -279,7 +279,7 @@ public class PoolFragment extends BaseFragment implements
         }
     }
 
-    // 滑动加载更多
+    // Scroll to load more
     @Override
     public void onLoadMoreRequested() {
         String url = WebsiteManager.getInstance().getWebsiteConfig().getPoolUrl(++mCurrentPage, mCurrentSearchName);
@@ -288,7 +288,7 @@ public class PoolFragment extends BaseFragment implements
             @Override
             public void onFailure(int errorCode, String errorMessage) {
                 if (errorCode == 404) {
-                    // 404按成功处理，UI显示无搜索结果而不是访问失败
+                    // Treat 404 as success so the UI shows no results rather than an access error
                     onSuccessful(errorMessage);
                 } else {
                     checkNetwork();
@@ -312,7 +312,7 @@ public class PoolFragment extends BaseFragment implements
         }, Request.Priority.IMMEDIATE);
     }
 
-    //加载更多完成后刷新界面
+    //Refresh the screen after loading more results
     private void addMorePoolList(final List<PoolListBean> newList) {
         if (!mPoolAdapter.isLoading()) {
             return;
@@ -406,9 +406,9 @@ public class PoolFragment extends BaseFragment implements
 //
 
     /**
-     * 初始化所有数据，清空adapter，以便加载新内容
+     * Reset data and clear the adapter before loading new content
      *
-     * @param startPage 加载的起始页
+     * @param startPage Starting page to load
      */
     private void resetAll(int startPage) {
         OkHttp.cancel(TAG);
@@ -427,7 +427,7 @@ public class PoolFragment extends BaseFragment implements
                 @Override
                 public void onFailure(int errorCode, String errorMessage) {
                     if (errorCode == 404) {
-                        // 404按成功处理，UI显示无搜索结果而不是访问失败
+                        // Treat 404 as success so the UI shows no results rather than an access error
                         onSuccessful(errorMessage);
                     } else {
                         checkNetwork();
@@ -454,7 +454,7 @@ public class PoolFragment extends BaseFragment implements
         }
     }
 
-    //搜索新内容或下拉刷新完成后刷新界面
+    //Refresh the screen after a new search or pull-to-refresh finishes
     private void refreshPoolList(List<PoolListBean> newList) {
         if (!mSwipeRefresh.isRefreshing()) {
             return;
@@ -469,14 +469,14 @@ public class PoolFragment extends BaseFragment implements
         mSwipeRefresh.setRefreshing(false);
     }
 
-    //搜所无结果
+    //No search results
     private void getNoData() {
         mPoolAdapter.setNewData(null);
         mSwipeRefresh.setRefreshing(false);
         SoundHelper.getInstance().playLoadNothingSound(getActivity());
     }
 
-    //访问网络失败
+    //Network access failed
     private void checkNetwork() {
         mSwipeRefresh.setRefreshing(false);
         if (mPoolAdapter.getData().isEmpty()) {

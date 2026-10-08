@@ -36,11 +36,11 @@ import okhttp3.Call;
 
 /**
  * ================================================
- * 作    者：jeasonlzy（廖子尧）Github地址：https://github.com/jeasonlzy
- * 版    本：1.0
- * 创建日期：2016/1/26
- * 描    述：上传任务类
- * 修订历史：
+ * Author: jeasonlzy (廖子尧). GitHub: https://github.com/jeasonlzy
+ * Version: 1.0
+ * Created: 2016/1/26
+ * Description: Upload task
+ * Revision history:
  * ================================================
  */
 public class UploadTask<T> implements Runnable {
@@ -137,7 +137,7 @@ public class UploadTask<T> implements Runnable {
         start();
     }
 
-    /** 暂停的方法 */
+    /** Pause method */
     public void pause() {
         executor.remove(priorityRunnable);
         if (progress.status == Progress.WAITING) {
@@ -150,7 +150,7 @@ public class UploadTask<T> implements Runnable {
         }
     }
 
-    /** 删除一个任务,会删除下载文件 */
+    /** Remove a task and its downloaded file */
     public UploadTask<T> remove() {
         pause();
         UploadManager.getInstance().delete(progress.tag);

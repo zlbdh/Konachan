@@ -36,7 +36,7 @@ public class PixivLoginActivity extends BaseWebActivity {
             @SuppressLint("WebViewClientOnReceivedSslError")
             @Override
             public void onReceivedSslError(WebView webView, SslErrorHandler sslErrorHandler, SslError sslError) {
-                // 接受所有网站的证书，忽略SSL错误，执行访问网页
+                // Accept all site certificates and continue loading despite SSL errors
                 sslErrorHandler.proceed();
             }
 

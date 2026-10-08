@@ -57,7 +57,7 @@ public class ApkMetadataTest {
                 "apkSha256", "signingCertificateSha256"}) {
             JsonObject root = metadata();
             root.remove(field);
-            assertNull("缺字段: " + field, ApkBean.parse(context, root.toString()));
+            assertNull("Missing field: " + field, ApkBean.parse(context, root.toString()));
         }
     }
 

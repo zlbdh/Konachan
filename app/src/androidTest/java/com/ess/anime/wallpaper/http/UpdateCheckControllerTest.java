@@ -20,7 +20,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import static org.junit.Assert.*;
 
-/** 注入合成网络响应；从不访问图站、生产更新 URL 或私人 key。 */
+/** Inject synthetic network responses; never contact image sites, production update URLs, or private keys. */
 @RunWith(AndroidJUnit4.class)
 public class UpdateCheckControllerTest {
     private final Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
@@ -29,7 +29,7 @@ public class UpdateCheckControllerTest {
     @After public void cleanOwnCache() {
         for (String suffix : new String[]{"", ".bak", ".new"}) {
             File file = new File(cache.getPath() + suffix);
-            if (file.exists()) assertTrue("只清理本次 UUID 缓存", file.delete());
+            if (file.exists()) assertTrue("Clean up only this test UUID cache", file.delete());
         }
     }
 
@@ -42,7 +42,7 @@ public class UpdateCheckControllerTest {
         assertNotNull(result.apk);
         assertEquals(35, result.apk.versionCode);
         assertEquals(json, read());
-        assertEquals("每次检查只发起一次请求", 1, network.requests);
+        assertEquals("Each check must make exactly one request", 1, network.requests);
     }
 
     @Test public void equalAndOlderValidMetadataReturnLatest() throws Exception {
@@ -62,7 +62,7 @@ public class UpdateCheckControllerTest {
             UpdateCheckController.Result result = check(new FakeNetwork(), json, false);
             assertEquals(UpdateCheckController.Status.FAILED, result.status);
             assertNull(result.apk);
-            assertEquals("坏 schema 不能覆盖最后有效缓存", previous, read());
+            assertEquals("An invalid schema must not overwrite the last valid cache", previous, read());
         }
     }
 
@@ -115,8 +115,8 @@ public class UpdateCheckControllerTest {
         AtomicReference<UpdateCheckController.Result> result = new AtomicReference<>();
         UpdateCheckController controller = new UpdateCheckController(context, cache, 34, network);
         controller.check(value -> { result.set(value); complete.countDown(); });
-        if (failure) network.callback.onFailure("测试网络失败"); else network.callback.onSuccess(body);
-        assertTrue("回调必须有界完成", complete.await(3, TimeUnit.SECONDS));
+        if (failure) network.callback.onFailure("Test network failure"); else network.callback.onSuccess(body);
+        assertTrue("The callback must complete within the time limit", complete.await(3, TimeUnit.SECONDS));
         return result.get();
     }
 
@@ -126,7 +126,7 @@ public class UpdateCheckControllerTest {
                 + "\"apkUrl\":\"https://github.com/zlbdh/Konachan/releases/download/v1.9.6-3/kanimeG1.9.6-debug.apk\","
                 + "\"apkSize\":100,\"apkSha256\":\"" + repeat('a') + "\","
                 + "\"signingCertificateSha256\":\"" + repeat('b') + "\","
-                + "\"updatedContentZh\":\"测试\",\"updatedContentEn\":\"test\"}";
+                + "\"updatedContentZh\":\"test\",\"updatedContentEn\":\"test\"}";
     }
 
     private static String repeat(char value) {

@@ -49,7 +49,7 @@ public class RecyclerCollectionAdapter extends BaseRecyclerEditAdapter<Collectio
     @Override
     protected void convert(final BaseViewHolder holder, final CollectionBean collectionBean) {
 
-        // 编辑模式选择框
+        // Selection checkbox in edit mode
         holder.setGone(R.id.cb_choose, isEditMode());
         holder.setChecked(R.id.cb_choose, isSelected(collectionBean));
         holder.getView(R.id.cb_choose).setOnClickListener(v -> {
@@ -61,7 +61,7 @@ public class RecyclerCollectionAdapter extends BaseRecyclerEditAdapter<Collectio
             }
         });
 
-        // 编辑模式放大查看
+        // Enlarged preview in edit mode
         holder.setGone(R.id.iv_enlarge, isEditMode());
         holder.addOnClickListener(R.id.iv_enlarge);
         holder.getView(R.id.iv_enlarge).setOnClickListener(v -> {
@@ -75,7 +75,7 @@ public class RecyclerCollectionAdapter extends BaseRecyclerEditAdapter<Collectio
             mContext.startActivity(intent);
         });
 
-        // 图片格式标记
+        // Image format indicator
         int tagResId = 0;
         String imageUrl = collectionBean.url;
         if (FileUtils.isImageType(imageUrl) && imageUrl.toLowerCase().endsWith("gif")) {
@@ -85,8 +85,8 @@ public class RecyclerCollectionAdapter extends BaseRecyclerEditAdapter<Collectio
         }
         holder.setImageResource(R.id.iv_tag, tagResId);
 
-        // 图片
-        // 固定ImageView尺寸防止notify时图片闪烁
+        // Image
+        // Fix the ImageView dimensions to prevent flickering during notifications
         ImageView ivCollection = holder.getView(R.id.iv_collection);
         ivCollection.getLayoutParams().width = getImageSlideLength();
         ivCollection.getLayoutParams().height = getImageSlideLength();
@@ -96,11 +96,11 @@ public class RecyclerCollectionAdapter extends BaseRecyclerEditAdapter<Collectio
                 .priority(Priority.IMMEDIATE)
                 .into(ivCollection);
 
-        // 点击、全屏查看监听器
+        // Click and full-screen preview listeners
         ivCollection.setOnTouchListener(OnTouchScaleListener.DEFAULT);
         ivCollection.setOnClickListener(v -> {
             if (isEditMode()) {
-                // 编辑模式下切换选中/非选中
+                // Toggle selection in edit mode
                 boolean newChecked = !isSelected(collectionBean);
                 holder.setChecked(R.id.cb_choose, newChecked);
                 if (newChecked) {
@@ -109,11 +109,11 @@ public class RecyclerCollectionAdapter extends BaseRecyclerEditAdapter<Collectio
                     deselect(collectionBean);
                 }
             } else {
-                // 非编辑模式下全屏查看
+                // Open full-screen preview outside edit mode
                 ImageDataHolder.setCollectionList(getData());
                 ImageDataHolder.setCollectionCurrentItem(holder.getLayoutPosition());
 
-                // TODO 点击全屏查看图片缩放动画
+                // TODO Zoom animation when opening an image full screen
                 Activity activity = (Activity) mContext;
                 Bundle options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                         activity, ivCollection, "s").toBundle();
@@ -123,7 +123,7 @@ public class RecyclerCollectionAdapter extends BaseRecyclerEditAdapter<Collectio
             }
         });
 
-        // 长按进入编辑模式监听器
+        // Long-press listener for entering edit mode
         holder.addOnLongClickListener(R.id.iv_collection);
     }
 

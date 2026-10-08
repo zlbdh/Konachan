@@ -15,19 +15,19 @@ import java.util.Locale;
 
 public class ImageBean implements Parcelable {
 
-    public PostBean[] posts;  //图片信息
+    public PostBean[] posts;  //Image information
 
-    public PoolBean[] pools;  //所属图集信息
+    public PoolBean[] pools;  //Parent album information
 
     @SerializedName(value = "poolPosts", alternate = "pool_posts")
-    public PoolPostBean[] poolPosts;  //在图集中该图片的信息
+    public PoolPostBean[] poolPosts;  //Information about this image within its album
 
     @SerializedName(value = "tagArray", alternate = "tags")
-    private JsonObject tagArray;  //此处json格式过于不规范，接收后转换为TagBean
+    private JsonObject tagArray;  //The JSON is irregular; convert it to TagBean after receipt
 
-    public transient TagBean tags;  //标签详情（不序列化）
+    public transient TagBean tags;  //Tag details (not serialized)
 
-    public VoteBean votes;  //（未知用处，bean暂时未设定）
+    public VoteBean votes;  //(Purpose unknown; no bean defined yet)
 
     public ImageBean() {
     }

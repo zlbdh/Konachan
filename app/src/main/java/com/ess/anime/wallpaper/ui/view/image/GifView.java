@@ -18,33 +18,33 @@ public class GifView extends View {
     private Resources resources;
 
     /**
-     * 播放gif的影视工具类
+     * GIF playback view utility
      */
     private Movie mMovie;
 
     /**
-     * 0-播放状态 1-暂停状态
+     * 0 = playing, 1 = paused
      */
     private int playStatus;
     /**
-     * gif动画开始时间
+     * GIF animation start time
      */
     private long mMovieStart;
     /**
-     * gif当前播放进度时间
+     * Current GIF playback position
      */
     private int relTime;
     /**
-     * 暂停/帧动画重新播放的补偿时间
+     * Time offset for resuming paused or frame-based playback
      */
     private int offsetTime;
 
     /**
-     * 宽度的缩放比例(控件宽度:gif图片宽度)
+     * Width scale factor (view width / GIF width)
      */
     private float ratioWidth;
     /**
-     * 高度的缩放比例(控件高度:gif图片高度)
+     * Height scale factor (view height / GIF height)
      */
     private float ratioHeight;
 
@@ -64,7 +64,7 @@ public class GifView extends View {
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
         setFocusable(true);
 
-        // 3.0以上系统会自动打开硬件加速,需要手动关闭才可以正常播放gif
+        // Android 3.0+ enables hardware acceleration automatically; disable it for correct GIF playback
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
@@ -79,9 +79,9 @@ public class GifView extends View {
     }
 
     /**
-     * 设置gif资源(适用于本地drawable图片)
+     * Set a GIF resource for local drawable images
      *
-     * @param resourceId gif图片的id
+     * @param resourceId GIF image resource ID
      */
     public void setGifResource(int resourceId) {
         if (resourceId == -1) {
@@ -93,9 +93,9 @@ public class GifView extends View {
     }
 
     /**
-     * 设置gif输入流(适用于网络图片)
+     * Set a GIF input stream for network images
      *
-     * @param is gif图片的输入流
+     * @param is GIF image input stream
      */
     public void setGifInputStream(InputStream is) {
         mMovie = Movie.decodeStream(is);
@@ -103,20 +103,20 @@ public class GifView extends View {
     }
 
     /**
-     * 暂停播放
+     * Pause playback
      */
     public void pause() {
         playStatus = 1;
-        // 开始时间置为0,onDrawa时会重新获取
+        // Set the start time to zero so onDraw refreshes it
         mMovieStart = 0;
-        // 记录暂停时已经播放的进度,再重新播放时进行补偿修正
+        // Record the playback position at pause time to compensate when resuming
         offsetTime = relTime;
 
         invalidate();
     }
 
     /**
-     * 恢复播放
+     * Resume playback
      */
     public void resume() {
         playStatus = 0;
@@ -125,30 +125,30 @@ public class GifView extends View {
     }
 
     /**
-     * 重头开始播放
+     * Restart playback from the beginning
      */
     public void restart() {
         playStatus = 0;
-        // 开始时间置为0,onDrawa时会重新获取
+        // Set the start time to zero so onDraw refreshes it
         mMovieStart = 0;
 
         invalidate();
     }
 
     /**
-     * 是否为暂停状态
+     * Whether playback is paused
      *
-     * @return true-暂停  false-播放中
+     * @return true when paused, false when playing
      */
     public boolean isPaused() {
-        // 暂停和帧播放都算是pause
+        // Both paused and single-frame playback count as paused
         return playStatus != 0;
     }
 
     /**
-     * 移动到指定进度
+     * Seek to a specific playback position
      *
-     * @param progress 停留进度,小于0或大于gif动画总长度时无效
+     * @param progress Target position; values below zero or beyond the GIF duration are ignored
      */
     public void seekTo(int progress) {
         if (mMovie == null) {
@@ -156,18 +156,18 @@ public class GifView extends View {
         }
 
         if (progress >= 0 && progress < mMovie.duration()) {
-            // 开始时间设为0,onDraw时会重置开始时间
+            // Set the start time to zero; onDraw will reset it
             mMovieStart = 0;
-            // 记录当前设置的进度,再重新播放时进行补偿修正
+            // Record the selected position to compensate when playback resumes
             offsetTime = progress;
             invalidate();
         }
     }
 
     /**
-     * 获取gif动画当前进度
+     * Get the current GIF playback position
      *
-     * @return 进度值, 动画为空时, 返回-1
+     * @return Playback position, or -1 if no animation is loaded
      */
     public int getProgress() {
         if (mMovie == null) {
@@ -177,9 +177,9 @@ public class GifView extends View {
     }
 
     /**
-     * 获取gif动画总时长
+     * Get the total GIF duration
      *
-     * @return 总时长, 动画为空时, 返回-1
+     * @return Total duration, or -1 if no animation is loaded
      */
     public int getDuration() {
         if (mMovie == null) {
@@ -190,12 +190,12 @@ public class GifView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        // gif动画非空时进行大小计算,计算方法仿造ImageView中的onMeasure
+        // Calculate dimensions when a GIF is loaded, following ImageView.onMeasure
         if (mMovie != null) {
             int w;
             int h;
 
-            // 获取gif宽高
+            // Get GIF width and height
             w = mMovie.width();
             h = mMovie.height();
             if (w <= 0) w = 1;
@@ -219,15 +219,15 @@ public class GifView extends View {
             w = Math.max(w, getSuggestedMinimumWidth());
             h = Math.max(h, getSuggestedMinimumHeight());
 
-            // 根据宽高的MeasureSpec计算期望值,算出当前控件需要的大小
+            // Calculate the desired view size from the width and height MeasureSpecs
             widthSize = resolveSizeAndState(w, widthMeasureSpec, 0);
             heightSize = resolveSizeAndState(h, heightMeasureSpec, 0);
 
-            // 计算控件宽高和gif图宽高的比例,用于onDraw绘制时让gif图片进行合理缩放,使其适应控件大小
+            // Calculate view-to-GIF scale factors so onDraw fits the image to the view
             ratioWidth = (float) widthSize / w;
             ratioHeight = (float) heightSize / h;
 
-            // 设置控件宽高
+            // Set the view width and height
             setMeasuredDimension(widthSize, heightSize);
         } else {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -239,44 +239,44 @@ public class GifView extends View {
         long now = SystemClock.uptimeMillis();
 
         if (mMovie != null) {
-            // 获取gif动画持续时间
+            // Get the GIF animation duration
             int dur = mMovie.duration();
             if (dur == 0) {
                 dur = 1000;
             }
 
             switch (playStatus) {
-                case 0: // 播放
-                    // 重新开始播放时,再次获取起始时间
+                case 0: // Play
+                    // Get a new start time when playback restarts
                     if (mMovieStart == 0) {
                         mMovieStart = now;
                     }
 
-                    // 动画运行时间  % 动画持续时间,算出当前动画播放的进度时间
-                    // 注意移除掉暂停/帧播放造成的动画时间偏差值offsetTime
+                    // Compute playback position as elapsed time modulo animation duration
+                    // Subtract offsetTime to account for pauses and single-frame playback
                     relTime = (int) ((now - mMovieStart + offsetTime) % dur);
 
-                    // 设置播放进度监听
+                    // Set the playback progress listener
                     if (onGifPlayingListener != null) {
                         onGifPlayingListener.onProgress(relTime);
                     }
                     break;
-                case 1: // 暂停
-                    // 不更新进度时间relTime,一直停留在暂停时的图片
+                case 1: // Pause
+                    // Keep relTime unchanged to display the paused frame
                     relTime = (int) offsetTime;
                     break;
                 default:
                     break;
             }
 
-            // 置顶播放某个进度时间的动画
+            // Display the animation at a specified playback position
             mMovie.setTime(relTime);
 
-            // 设置缩放比例
+            // Set scale factors
             canvas.scale(Math.min(ratioWidth, ratioHeight),
                     Math.min(ratioWidth, ratioHeight));
 
-            // 绘制
+            // Draw
             mMovie.draw(canvas, 0, 0);
 
             invalidate();

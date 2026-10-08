@@ -6,7 +6,7 @@ import android.os.Environment;
 
 import java.io.File;
 
-/** 自有文件路径：Android 10 起使用系统提供的应用目录，旧公共文件保持原位。 */
+/** App-owned paths: use system-provided app directories on Android 10+; leave legacy public files in place. */
 public final class StoragePaths {
 
     private StoragePaths() {

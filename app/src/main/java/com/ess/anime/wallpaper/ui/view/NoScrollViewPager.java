@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 import androidx.viewpager.widget.ViewPager;
 
 /**
- * 不可以滑动，但是可以setCurrentItem的ViewPager。
+ * A ViewPager that disables swiping but supports setCurrentItem.
  */
 public class NoScrollViewPager extends ViewPager {
 

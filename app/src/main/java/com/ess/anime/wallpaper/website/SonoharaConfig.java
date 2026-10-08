@@ -3,7 +3,7 @@ package com.ess.anime.wallpaper.website;
 import com.ess.anime.wallpaper.R;
 
 /**
- * Sonohara (sonohara.donmai.us) - Danbooru 官方姐妹站
+ * Sonohara (sonohara.donmai.us): official Danbooru sister site
  */
 public class SonoharaConfig extends DanbooruConfig {
 

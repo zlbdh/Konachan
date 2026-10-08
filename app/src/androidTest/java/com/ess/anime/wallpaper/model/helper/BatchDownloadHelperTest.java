@@ -76,8 +76,8 @@ public class BatchDownloadHelperTest {
         thumb.tempPost.fileUrl = "https://example.com/full.jpg";
         thumb.tempPost.sampleUrl = thumb.tempPost.fileUrl;
         ImageBean image = BatchDownloadHelper.resolveImage(thumb, new KonachanSConfig(), null);
-        DownloadBean bean = ImageDataHelper.makeDownloadChosenList(context, thumb, image, "冻结图源-").get(0);
-        assertTrue(bean.savePath.endsWith("冻结图源-7-Large.jpg"));
+        DownloadBean bean = ImageDataHelper.makeDownloadChosenList(context, thumb, image, "Frozen source-").get(0);
+        assertTrue(bean.savePath.endsWith("Frozen source-7-Large.jpg"));
     }
 
     @Test public void cancellationDuringDetailPreparationStartsNoDownload() throws Exception {
@@ -170,7 +170,7 @@ public class BatchDownloadHelperTest {
         AtomicReference<BatchDownloadHelper.Result> result = new AtomicReference<>();
         AtomicInteger started = new AtomicInteger();
         BatchDownloadHelper.start(context, Collections.singletonList(thumb), 1, new KonachanSConfig(),
-                (item, task) -> { throw new AssertionError("已有媒体无需请求详情"); },
+                (item, task) -> { throw new AssertionError("Existing media must not require a details request"); },
                 bean -> { started.incrementAndGet(); return true; }, callback(result, complete));
         assertTrue(complete.await(5, TimeUnit.SECONDS));
         assertEquals(0, started.get());
@@ -189,30 +189,30 @@ public class BatchDownloadHelperTest {
         DownloadBean bean = ImageDataHelper.makeDownloadChosenList(context, thumb, image,
                 new KonachanSConfig().getSavedImageHead()).get(0);
         File file = new File(bean.savePath);
-        assertNull("不能覆盖已有断点记录", DownloadManager.getInstance().get(bean.downloadUrl));
-        assertNull("不能清理已有任务", OkDownload.getInstance().getTask(bean.downloadUrl));
+        assertNull("Do not overwrite existing resume records", DownloadManager.getInstance().get(bean.downloadUrl));
+        assertNull("Do not remove existing tasks", OkDownload.getInstance().getTask(bean.downloadUrl));
         assertFalse(file.exists());
         assertTrue(file.getParentFile().isDirectory() || file.getParentFile().mkdirs());
         assertTrue(file.createNewFile());
         try {
             try (FileOutputStream out = new FileOutputStream(file)) { out.write(1); }
-            DownloadTaskState.record(bean, false, "测试相册发布失败");
+            DownloadTaskState.record(bean, false, "Test gallery publication failure");
             assertEquals(Progress.ERROR, DownloadManager.getInstance().get(bean.downloadUrl).status);
-            assertFalse("已有文件不能掩盖持久化错误", DownloadTaskState.isFinishedFile(bean));
+            assertFalse("An existing file must not hide a persistence error", DownloadTaskState.isFinishedFile(bean));
             AtomicInteger started = new AtomicInteger();
             CountDownLatch complete = new CountDownLatch(1);
             AtomicReference<BatchDownloadHelper.Result> result = new AtomicReference<>();
             BatchDownloadHelper.start(context, Collections.singletonList(thumb), 1, new KonachanSConfig(),
-                    (item, task) -> { throw new AssertionError("已有媒体无需请求详情"); },
+                    (item, task) -> { throw new AssertionError("Existing media must not require a details request"); },
                     item -> { started.incrementAndGet(); return true; }, callback(result, complete));
             assertTrue(complete.await(5, TimeUnit.SECONDS));
             assertEquals(1, started.get());
             assertEquals(1, result.get().queued);
             assertEquals(0, result.get().skipped);
             assertEquals(0, result.get().failed);
-            assertEquals("入队不能伪造最终成功状态", Progress.ERROR,
+            assertEquals("Queueing must not falsely report final success", Progress.ERROR,
                     DownloadManager.getInstance().get(bean.downloadUrl).status);
-            assertEquals("重试入队不应改写已落盘内容", 1, file.length());
+            assertEquals("Retrying queue insertion must not rewrite saved content", 1, file.length());
         } finally {
             DownloadTask ownTask = OkDownload.getInstance().getTask(bean.downloadUrl);
             if (ownTask != null) ownTask.remove(false);

@@ -12,17 +12,17 @@ import java.util.Map.Entry;
 
 public class TagBean implements Parcelable {
 
-    public List<String> copyright = new ArrayList<>();  //版权方，#DD00DD
+    public List<String> copyright = new ArrayList<>();  //Copyright, #DD00DD
 
-    public List<String> character = new ArrayList<>();  //角色名，#00AA00
+    public List<String> character = new ArrayList<>();  //Character name, #00AA00
 
-    public List<String> artist = new ArrayList<>();     //此作品的作者（非官方原作者），#CCCC00
+    public List<String> artist = new ArrayList<>();     //Artist of this work, not the original official artist, #CCCC00
 
-    public List<String> circle = new ArrayList<>();     //元版权方（非正规版权），#00BBBB
+    public List<String> circle = new ArrayList<>();     //Circle or collective copyright, #00BBBB
 
-    public List<String> style = new ArrayList<>();      //独特风格类型（如_vocaloid），#FF2020
+    public List<String> style = new ArrayList<>();      //Distinctive style such as _vocaloid, #FF2020
 
-    public List<String> general = new ArrayList<>();    //普通描述，#FFFFFF (#EE8887)
+    public List<String> general = new ArrayList<>();    //General description, #FFFFFF (#EE8887)
 
     public TagBean() {
     }

@@ -37,10 +37,10 @@ public class Utils {
     }
 
     /**
-     * 获取屏幕实际尺寸
+     * Get physical screen dimensions
      *
      * @param activity activity
-     * @return 屏幕实际尺寸 Point （宽：point.x, 高：point.y）
+     * @return Physical screen dimensions as Point (width: point.x, height: point.y)
      */
     public static Point getRealScreenSize(Activity activity) {
         WindowManager windowManager = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);

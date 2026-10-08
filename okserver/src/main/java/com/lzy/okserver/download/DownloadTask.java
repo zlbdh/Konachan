@@ -47,11 +47,11 @@ import okhttp3.ResponseBody;
 
 /**
  * ================================================
- * 作    者：jeasonlzy（廖子尧）Github地址：https://github.com/jeasonlzy
- * 版    本：1.0
- * 创建日期：2016/1/19
- * 描    述：文件的下载任务类
- * 修订历史：
+ * Author: jeasonlzy (廖子尧). GitHub: https://github.com/jeasonlzy
+ * Version: 1.0
+ * Created: 2016/1/19
+ * Description: File download task
+ * Revision history:
  * ================================================
  */
 public class DownloadTask implements Runnable {
@@ -184,7 +184,7 @@ public class DownloadTask implements Runnable {
     }
 
     /**
-     * 暂停的方法
+     * Pause method
      */
     public void pause() {
         executor.remove(priorityRunnable);
@@ -199,14 +199,14 @@ public class DownloadTask implements Runnable {
     }
 
     /**
-     * 删除一个任务,会删除下载文件
+     * Remove a task and its downloaded file
      */
     public void remove() {
         remove(false);
     }
 
     /**
-     * 删除一个任务,会删除下载文件
+     * Remove a task and its downloaded file
      */
     public DownloadTask remove(boolean isDeleteFile) {
         pause();
@@ -221,7 +221,7 @@ public class DownloadTask implements Runnable {
     public void run() {
         //check breakpoint
         long startPosition = progress.currentSize;
-        // 可能有旧的断点下载异常导致此情况，将进度重置重新全量下载
+        // A previous resume error may leave this state; reset progress and download the complete file again
         if (startPosition > progress.totalSize) {
             startPosition = 0;
             progress.totalSize = -1;
@@ -269,7 +269,7 @@ public class DownloadTask implements Runnable {
         byte[] bodyBytes = null;
         try {
             if (progress.totalSize == -1) {
-                // 不支持断点下载，先读好全部bytes，牺牲进度展示，保全成功下载
+                // When resume is unsupported, read all bytes first, sacrificing progress display to preserve successful downloads
                 bodyBytes = body.bytes();
                 progress.totalSize = bodyBytes.length;
             }
@@ -354,7 +354,7 @@ public class DownloadTask implements Runnable {
     }
 
     /**
-     * 执行文件下载
+     * Run the file download
      */
     private void download(InputStream input, RandomAccessFile out, Progress progress) throws IOException {
         if (input == null || out == null) return;

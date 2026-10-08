@@ -82,9 +82,9 @@ public class PostFragment extends BaseFragment implements
     private TextView mTvFrom;
     private TextView mTvTo;
     private EditText mEtGoto;
-    private int mCurrentPage;  // 当前页码
-    private int mGoToPage;  // 跳转到的起始页码
-    private String mCurrentTag;   // 当前正在搜索的tag
+    private int mCurrentPage;  // Current page number
+    private int mGoToPage;  // Starting page to jump to
+    private String mCurrentTag;   // Tag currently being searched
     private List<String> mCurrentTagList;
 
     @Override
@@ -176,13 +176,13 @@ public class PostFragment extends BaseFragment implements
         toggle.syncState();
         mToolbar.setNavigationIcon(WebsiteManager.getInstance().getWebsiteConfig().getWebsiteLogoRes());
 
-        //双击返回顶部
+        //Double tap to scroll to the top
         DoubleTapEffector.addDoubleTapEffect(mToolbar, () -> {
             scrollToTop();
             mFloatingMenu.close(true);
         });
 
-        // 长按图标弹出网站源选择弹窗
+        // Long press the icon to select a site
         try {
             Field mNavButtonViewField = mToolbar.getClass().getDeclaredField("mNavButtonView");
             mNavButtonViewField.setAccessible(true);
@@ -196,7 +196,7 @@ public class PostFragment extends BaseFragment implements
         }
     }
 
-    // 切换图片显示方式（方格/瀑布流）
+    // Switch image display mode (grid or waterfall)
     private void toggleImageShownFormat() {
         boolean newFormat = !isPostImageShownRectangular();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -211,14 +211,14 @@ public class PostFragment extends BaseFragment implements
         return preferences.getBoolean(Constants.IS_POST_IMAGE_SHOWN_RECTANGULAR, true);
     }
 
-    // 弹出跳转页弹窗
+    // Show the page navigation dialog
     private void gotoPage(View view) {
         mPopupPage.showAsDropDown(view);
         mEtGoto.selectAll();
         mEtGoto.post(() -> UIUtils.showSoftInput(mActivity, mEtGoto));
     }
 
-    //搜索
+    //Search
     private void openSearch() {
         mFloatingMenu.close(true);
         Intent searchIntent = new Intent(mActivity, SearchActivity.class);
@@ -239,11 +239,11 @@ public class PostFragment extends BaseFragment implements
                 .setDimValue(0.4f)
                 .apply();
 
-        // 当前显示的起始页与终止页
+        // First and last pages currently displayed
         mTvFrom = mPopupPage.findViewById(R.id.tv_from);
         mTvTo = mPopupPage.findViewById(R.id.tv_to);
 
-        // 页码跳转
+        // Page navigation
         mEtGoto = mPopupPage.findViewById(R.id.et_goto);
         mEtGoto.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_GO) {
@@ -271,7 +271,7 @@ public class PostFragment extends BaseFragment implements
 
     private void initSwipeRefreshLayout() {
         mSwipeRefresh.setRefreshing(true);
-        //下拉刷新
+        //Pull to refresh
         mSwipeRefresh.setOnRefreshListener(() -> {
             getNewPosts(mGoToPage);
             if (mPostAdapter.getData().isEmpty()) {
@@ -292,7 +292,7 @@ public class PostFragment extends BaseFragment implements
         mPostAdapter.setEmptyView(R.layout.layout_loading_cirno, mRvPosts);
         mPostAdapter.changeImageShownFormat(isPostImageShownRectangular());
 
-        // 滑动时隐藏fab
+        // Hide the FAB while scrolling
         mRvPosts.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -331,7 +331,7 @@ public class PostFragment extends BaseFragment implements
         }
     }
 
-    // 滑动加载更多
+    // Scroll to load more
     @Override
     public void onLoadMoreRequested() {
         String url = WebsiteManager.getInstance().getWebsiteConfig().getPostUrl(++mCurrentPage, mCurrentTagList);
@@ -340,7 +340,7 @@ public class PostFragment extends BaseFragment implements
             @Override
             public void onFailure(int errorCode, String errorMessage) {
                 if (errorCode == 404) {
-                    // 404按成功处理，UI显示无搜索结果而不是访问失败
+                    // Treat 404 as success so the UI shows no results rather than an access error
                     onSuccessful(errorMessage);
                 } else {
                     checkNetwork(errorCode, errorMessage);
@@ -365,7 +365,7 @@ public class PostFragment extends BaseFragment implements
         }, Request.Priority.IMMEDIATE);
     }
 
-    //加载更多完成后刷新界面
+    //Refresh the screen after loading more results
     private void addMoreThumbList(final List<ThumbBean> newList) {
         if (!mPostAdapter.isLoading()) {
             return;
@@ -475,9 +475,9 @@ public class PostFragment extends BaseFragment implements
 
 
     /**
-     * 初始化所有数据，清空adapter，以便加载新内容
+     * Reset data and clear the adapter before loading new content
      *
-     * @param startPage 加载的起始页
+     * @param startPage Starting page to load
      */
     private void resetAll(int startPage) {
         OkHttp.cancel(TAG);
@@ -495,7 +495,7 @@ public class PostFragment extends BaseFragment implements
             @Override
             public void onFailure(int errorCode, String errorMessage) {
                 if (errorCode == 404) {
-                    // 404按成功处理，UI显示无搜索结果而不是访问失败
+                    // Treat 404 as success so the UI shows no results rather than an access error
                     onSuccessful(errorMessage);
                 } else {
                     checkNetwork(errorCode, errorMessage);
@@ -519,7 +519,7 @@ public class PostFragment extends BaseFragment implements
         }, Request.Priority.IMMEDIATE);
     }
 
-    //搜索新内容或下拉刷新完成后刷新界面
+    //Refresh the screen after a new search or pull-to-refresh finishes
     private void refreshThumbList(final List<ThumbBean> newList) {
         if (!mSwipeRefresh.isRefreshing()) {
             return;
@@ -534,7 +534,7 @@ public class PostFragment extends BaseFragment implements
         mSwipeRefresh.setRefreshing(false);
     }
 
-    // 根据汉语从百度百科搜索对应罗马音
+    // Look up the romanized name on Baidu Baike using the Chinese name
     private void getNameFromBaidu(String searchTag) {
         String url = WebsiteConfig.BASE_URL_BAIDU + searchTag;
         connectBaidu(url);
@@ -545,7 +545,7 @@ public class PostFragment extends BaseFragment implements
             @Override
             public void onFailure(int errorCode, String errorMessage) {
                 if (errorCode == 404) {
-                    // 404按成功处理，UI显示无搜索结果而不是访问失败
+                    // Treat 404 as success so the UI shows no results rather than an access error
                     onSuccessful(errorMessage);
                 } else {
                     checkNetwork(errorCode, errorMessage);
@@ -595,7 +595,7 @@ public class PostFragment extends BaseFragment implements
         changeToPage(mCurrentPage);
     }
 
-    //获取到图片详细信息后收到的通知，obj 为 Json (String)
+    //Notification after receiving image details; obj is JSON (String)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void setImageBean(MsgBean msgBean) {
         if (msgBean.msg.equals(Constants.GET_IMAGE_DETAIL)) {
@@ -619,7 +619,7 @@ public class PostFragment extends BaseFragment implements
         }
     }
 
-    //百度或K站搜所无结果
+    //No results from Baidu or Konachan
     private void loadNothing() {
         mPostAdapter.setEmptyView(R.layout.layout_load_nothing, mRvPosts);
         mPostAdapter.setNewData(null);
@@ -627,7 +627,7 @@ public class PostFragment extends BaseFragment implements
         SoundHelper.getInstance().playLoadNothingSound(getActivity());
     }
 
-    //访问网络失败
+    //Network access failed
     private void checkNetwork() {
         checkNetwork(-1, null);
     }
@@ -636,18 +636,18 @@ public class PostFragment extends BaseFragment implements
         mSwipeRefresh.setRefreshing(false);
         if (mPostAdapter.getData().isEmpty()) {
             mPostAdapter.setEmptyView(R.layout.layout_load_no_network, mRvPosts);
-            // 根据错误码给出更具体的提示
+            // Provide a more specific message for the error code
             try {
                 android.view.View emptyView = mPostAdapter.getEmptyView();
                 if (emptyView != null) {
                     android.widget.TextView tv = emptyView.findViewById(R.id.tv_load_no_network_tip);
                     if (tv != null) {
                         if (errorCode == 403) {
-                            tv.setText("被服务器拒绝（403），试试切换网络或 VPN 节点");
+                            tv.setText("The server denied access (403). Try another network or VPN endpoint.");
                         } else if (errorCode == 503) {
-                            tv.setText("服务器暂时不可用（503），稍后下拉重试");
+                            tv.setText("The server is temporarily unavailable (503). Pull to refresh later.");
                         } else if (errorCode == -1) {
-                            tv.setText("连接超时，请检查网络后下拉刷新重试");
+                            tv.setText("Connection timed out. Check your network and pull to refresh.");
                         }
                     }
                 }

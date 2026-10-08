@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:gravity="center"
-            android:text="该网站暂不支持榜单"
+            android:text="This site does not support rankings yet"
             android:textColor="@color/color_text_unselected"
             android:textSize="16sp" />
     </LinearLayout>

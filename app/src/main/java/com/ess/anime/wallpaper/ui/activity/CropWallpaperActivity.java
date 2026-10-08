@@ -108,13 +108,13 @@ public class CropWallpaperActivity extends BaseActivity implements UCropFragment
         int screenHeight = screenSize[1];
 
         Bundle bundle = new Bundle();
-        bundle.putParcelable(UCrop.EXTRA_INPUT_URI, sourceUri);         // 图片uri
+        bundle.putParcelable(UCrop.EXTRA_INPUT_URI, sourceUri);         // Image URI
         bundle.putParcelable(UCrop.EXTRA_OUTPUT_URI, destinationUri);
-        bundle.putFloat(UCrop.EXTRA_ASPECT_RATIO_X, screenWidth);       // 裁剪比例
+        bundle.putFloat(UCrop.EXTRA_ASPECT_RATIO_X, screenWidth);       // Crop aspect ratio
         bundle.putFloat(UCrop.EXTRA_ASPECT_RATIO_Y, screenHeight);
-        bundle.putInt(UCrop.EXTRA_MAX_SIZE_X, screenWidth);             // 裁剪最大尺寸
+        bundle.putInt(UCrop.EXTRA_MAX_SIZE_X, screenWidth);             // Maximum crop dimensions
         bundle.putInt(UCrop.EXTRA_MAX_SIZE_Y, screenHeight);
-        bundle.putInt(UCrop.Options.EXTRA_UCROP_COLOR_WIDGET_ACTIVE, android.R.color.white); // 底部操作栏背景色
+        bundle.putInt(UCrop.Options.EXTRA_UCROP_COLOR_WIDGET_ACTIVE, android.R.color.white); // Bottom action bar background color
         mUCropFragment = UCropFragment.newInstance(bundle);
     }
 

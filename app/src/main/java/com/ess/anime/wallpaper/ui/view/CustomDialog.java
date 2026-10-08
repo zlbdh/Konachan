@@ -57,10 +57,10 @@ public class CustomDialog extends MaterialDialog.Builder {
     }
 
     /**
-     * 提示图片已存在，询问是否重新下载
+     * The image already exists; ask whether to download it again
      *
-     * @param context  上下文
-     * @param listener 事件监听器
+     * @param context  Context
+     * @param listener Event listener
      */
     public static void showPromptToReloadImage(Context context, OnDialogActionListener listener) {
         MaterialDialog dialog = new CustomDialog(context)
@@ -72,11 +72,11 @@ public class CustomDialog extends MaterialDialog.Builder {
     }
 
     /**
-     * 删除收藏图片
+     * Delete favorite images
      *
-     * @param context     上下文
-     * @param deleteCount 要删除的图片数量
-     * @param listener    事件监听器
+     * @param context     Context
+     * @param deleteCount Number of images to delete
+     * @param listener    Event listener
      */
     public static void showDeleteCollectionDialog(Context context, int deleteCount, OnDialogActionListener listener) {
         MaterialDialog dialog = new CustomDialog(context)
@@ -88,10 +88,10 @@ public class CustomDialog extends MaterialDialog.Builder {
     }
 
     /**
-     * 删除下载列表项
+     * Delete a download list item
      *
-     * @param context  上下文
-     * @param listener 事件监听器
+     * @param context  Context
+     * @param listener Event listener
      */
     public static void showDeleteWhenDownloadingItemDialog(Context context, OnDialogActionListener listener) {
         MaterialDialog dialog = new CustomDialog(context)
@@ -103,10 +103,10 @@ public class CustomDialog extends MaterialDialog.Builder {
     }
 
     /**
-     * 清空全部已完成下载项
+     * Clear all completed downloads
      *
-     * @param context  上下文
-     * @param listener 事件监听器
+     * @param context  Context
+     * @param listener Event listener
      */
     public static void showClearAllDownloadFinishedDialog(Context context, OnDialogActionListener listener) {
         MaterialDialog dialog = new CustomDialog(context)
@@ -118,10 +118,10 @@ public class CustomDialog extends MaterialDialog.Builder {
     }
 
     /**
-     * 清空全部搜索历史记录
+     * Clear all search history
      *
-     * @param context  上下文
-     * @param listener 事件监听器
+     * @param context  Context
+     * @param listener Event listener
      */
     public static void showClearAllSearchHistoryDialog(Context context, OnDialogActionListener listener) {
         MaterialDialog dialog = new CustomDialog(context)
@@ -133,11 +133,11 @@ public class CustomDialog extends MaterialDialog.Builder {
     }
 
     /**
-     * 显示/编辑标签备注
+     * Show or edit a tag note
      *
-     * @param context  上下文
-     * @param tag      标签
-     * @param listener 事件监听器
+     * @param context  Context
+     * @param tag      Tag
+     * @param listener Event listener
      */
     public static void showEditTagAnnotationDialog(Context context, String tag, boolean edit, OnDialogActionListener listener) {
         TagAnnotationEditLayout editLayout = (TagAnnotationEditLayout) View.inflate(context, R.layout.layout_dialog_tag_annotation, null);
@@ -190,15 +190,15 @@ public class CustomDialog extends MaterialDialog.Builder {
     }
 
     /**
-     * 收藏标签排序
+     * Sort favorite tags
      *
-     * @param context  上下文
-     * @param listener 事件监听器
+     * @param context  Context
+     * @param listener Event listener
      */
     public static void showSortFavoriteTagsDialog(Context context, OnDialogActionListener listener) {
         View view = View.inflate(context, R.layout.layout_dialog_favorite_tag_sort, null);
 
-        // 排序方式
+        // Sort By
         TagOperationHelper.FavoriteTagSortBy tagSortBy = TagOperationHelper.getFavoriteTagSortBy();
         RecyclerView rvSortBy = view.findViewById(R.id.rv_sort_by);
         rvSortBy.setLayoutManager(new LinearLayoutManager(context));
@@ -207,7 +207,7 @@ public class CustomDialog extends MaterialDialog.Builder {
         adapterSortBy.setSelectPos(tagSortBy.ordinal(), false);
         adapterSortBy.bindToRecyclerView(rvSortBy);
 
-        // 顺序
+        // Order
         TagOperationHelper.FavoriteTagSortOrder tagSortOrder = TagOperationHelper.getFavoriteTagSortOrder();
         RecyclerView rvSortOrder = view.findViewById(R.id.rv_sort_order);
         rvSortOrder.setLayoutManager(new LinearLayoutManager(context));
@@ -232,10 +232,10 @@ public class CustomDialog extends MaterialDialog.Builder {
     }
 
     /**
-     * 删除收藏标签
+     * Delete favorite tags
      *
-     * @param context  上下文
-     * @param listener 事件监听器
+     * @param context  Context
+     * @param listener Event listener
      */
     public static void showDeleteFavoriteTagsDialog(Context context, OnDialogActionListener listener) {
         MaterialDialog dialog = new CustomDialog(context)
@@ -247,9 +247,9 @@ public class CustomDialog extends MaterialDialog.Builder {
     }
 
     /**
-     * 显示标签类型说明文档
+     * Show tag type documentation
      *
-     * @param context 上下文
+     * @param context Context
      */
     public static void showTagTypeHelpDialog(Context context) {
         View view = View.inflate(context, R.layout.layout_dialog_scroll_text, null);
@@ -264,9 +264,9 @@ public class CustomDialog extends MaterialDialog.Builder {
     }
 
     /**
-     * 显示高级搜索说明文档
+     * Show advanced search documentation
      *
-     * @param context 上下文
+     * @param context Context
      */
     public static void showAdvancedSearchHelpDialog(Context context) {
         View view = View.inflate(context, R.layout.layout_dialog_scroll_text, null);
@@ -281,10 +281,10 @@ public class CustomDialog extends MaterialDialog.Builder {
     }
 
     /**
-     * 请求权限
+     * Request permission
      *
-     * @param context  上下文
-     * @param listener 事件监听器
+     * @param context  Context
+     * @param listener Event listener
      */
     public static void showRequestPermissionDialog(Context context, String title, String msg, OnDialogActionListener listener) {
         MaterialDialog dialog = new CustomDialog(context)
@@ -311,10 +311,10 @@ public class CustomDialog extends MaterialDialog.Builder {
     }
 
     /**
-     * 切换网站
+     * Switch sites
      *
-     * @param context  上下文
-     * @param listener 事件监听器
+     * @param context  Context
+     * @param listener Event listener
      */
     public static void showChangeBaseUrlDialog(Context context, OnDialogActionListener listener) {
         String baseUrl = WebsiteManager.getInstance().getWebsiteConfig().getBaseUrl();
@@ -339,11 +339,11 @@ public class CustomDialog extends MaterialDialog.Builder {
     }
 
     /**
-     * 选择尺寸下载图片
+     * Choose an image size to download
      *
-     * @param context  上下文
-     * @param itemList 三种尺寸详细数据
-     * @param listener 事件监听器
+     * @param context  Context
+     * @param itemList Details for three image sizes
+     * @param listener Event listener
      */
     public static void showChooseToDownloadDialog(Context context, List<DownloadBean> itemList, OnDialogActionListener listener) {
         MaterialDialog dialog = new CustomDialog(context)
@@ -362,13 +362,13 @@ public class CustomDialog extends MaterialDialog.Builder {
     }
 
     /**
-     * 版本更新提示
+     * Update prompt
      *
-     * @param context 上下文
-     * @param apkBean 新版本信息
+     * @param context Context
+     * @param apkBean New version information
      */
     public static void showUpdateDialog(Context context, ApkBean apkBean) {
-        String updateContent = DocDataHelper.isChinese() ? apkBean.updatedContentZh : apkBean.updatedContentEn;
+        String updateContent = apkBean.updatedContentEn;
         MaterialDialog dialog = new CustomDialog(context)
                 .title(context.getString(R.string.dialog_update_title))
                 .titleGravity(GravityEnum.CENTER)
@@ -379,16 +379,16 @@ public class CustomDialog extends MaterialDialog.Builder {
                 .positiveText(R.string.dialog_update_update)
                 .onPositive((dialog1, which) -> {
                     if (!com.ess.anime.wallpaper.download.apk.UpdateDownloadManager.start(context, apkBean, false)) {
-                        android.widget.Toast.makeText(context, "更新正在下载或暂时不能启动，请稍后重试",
+                        android.widget.Toast.makeText(context, "An update is downloading or cannot start right now. Please try again later.",
                                 android.widget.Toast.LENGTH_LONG).show();
                     }
                 }).show();
     }
 
     /**
-     * Feedback说明
+     * Feedback instructions
      *
-     * @param context 上下文
+     * @param context Context
      */
     public static void showFeedbackDialog(Context context) {
         String email = "zlbdha@gmail.com";
@@ -413,9 +413,9 @@ public class CustomDialog extends MaterialDialog.Builder {
     }
 
     /**
-     * 网站功能说明
+     * Site feature documentation
      *
-     * @param context 上下文
+     * @param context Context
      * @param title   title
      * @param msgRes  msg
      */
@@ -428,9 +428,9 @@ public class CustomDialog extends MaterialDialog.Builder {
     }
 
     /**
-     * P站帐号登录提示
+     * Pixiv account login prompt
      *
-     * @param context 上下文
+     * @param context Context
      */
     public static void showPixivLoginStateDialog(Context context) {
         MaterialDialog dialog = new CustomDialog(context)
@@ -448,9 +448,9 @@ public class CustomDialog extends MaterialDialog.Builder {
     private final static String NOT_SHOW_WALLPAPER_PROMPT_AGAIN = "NOT_SHOW_WALLPAPER_PROMPT_AGAIN";
 
     /**
-     * 部分设备提示无法将自定义壁纸设置为锁屏
+     * Warn that some devices cannot apply a custom lock-screen wallpaper
      *
-     * @param context 上下文
+     * @param context Context
      */
     public static void checkToShowCannotCustomLockscreenWallpaperDialog(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -471,9 +471,9 @@ public class CustomDialog extends MaterialDialog.Builder {
     private final static String NOT_SHOW_MOBILE_PRELOAD_PROMPT_AGAIN = "NOT_SHOW_MOBILE_PRELOAD_PROMPT_AGAIN";
 
     /**
-     * 提示用户正在使用移动数据预加载图片，可去设置页切换仅Wifi模式
+     * Warn about mobile-data image preloading and offer the Wi-Fi-only setting
      *
-     * @param context 上下文
+     * @param context Context
      */
     public static void checkToShowPromptUseMobileNetworkPreloadImage(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -502,10 +502,10 @@ public class CustomDialog extends MaterialDialog.Builder {
     }
 
     /**
-     * 切换屏幕旋转模式
+     * Switch screen orientation mode
      *
-     * @param context  上下文
-     * @param listener 事件监听器
+     * @param context  Context
+     * @param listener Event listener
      */
     public static void showChangeScreenOrientationDialog(Context context, OnDialogActionListener listener) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);

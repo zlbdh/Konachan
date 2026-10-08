@@ -165,12 +165,12 @@
             android:name="android.max_aspect"
             android:value="2.34" />
 
-        <!-- 华为 -->
+        <!-- Huawei -->
         <meta-data
             android:name="android.notch_support"
             android:value="true" />
 
-        <!-- 小米 -->
+        <!-- Xiaomi -->
         <meta-data
             android:name="notch.config"
             android:value="portrait|landscape" />

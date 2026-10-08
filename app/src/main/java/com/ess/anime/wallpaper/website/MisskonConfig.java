@@ -3,7 +3,7 @@ package com.ess.anime.wallpaper.website;
 import com.ess.anime.wallpaper.R;
 
 /**
- * MissKon (misskon.com) - WordPress 成人 Cosplay 站
+ * MissKon (misskon.com): WordPress adult cosplay site
  */
 public class MisskonConfig extends WordPressConfig {
 

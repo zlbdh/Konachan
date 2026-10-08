@@ -3,7 +3,7 @@ package com.ess.anime.wallpaper.website;
 import com.ess.anime.wallpaper.R;
 
 /**
- * AsianPink (asianpink.net) - WordPress 成人 Cosplay 站
+ * AsianPink (asianpink.net): WordPress adult cosplay site
  */
 public class AsianPinkConfig extends WordPressConfig {
 

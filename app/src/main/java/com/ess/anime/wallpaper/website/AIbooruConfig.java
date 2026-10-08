@@ -3,7 +3,7 @@ package com.ess.anime.wallpaper.website;
 import com.ess.anime.wallpaper.R;
 
 /**
- * AIBooru (aibooru.online) - Danbooru 兼容站，AI 生成图
+ * AIBooru (aibooru.online): Danbooru-compatible site for AI-generated images
  */
 public class AIbooruConfig extends DanbooruConfig {
 

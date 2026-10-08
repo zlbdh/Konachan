@@ -42,14 +42,14 @@ public class MyGlideModule extends AppGlideModule {
     @Override
     public void registerComponents(@NonNull Context context, @NonNull Glide glide, @NonNull Registry registry) {
         super.registerComponents(context, glide, registry);
-        // 自定义加载PoolListBean
+        // Custom PoolListBean loader
         registry.prepend(PoolListBean.class, Bitmap.class, new PoolListModelLoaderFactory(context));
 
-        // 普通Url进度监听
+        // Standard URL progress listener
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(new ProgressInterceptor())
                 .build();
-        // todo 自定义OkHttpClient会影响glide内置加载顺序
+        // TODO A custom OkHttpClient affects Glide's built-in loading order
 //        registry.replace(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(okHttpClient));
     }
 
@@ -80,7 +80,7 @@ public class MyGlideModule extends AppGlideModule {
         return new GlideUrl(imgUrl, headers);
     }
 
-    // P站等下载高清大图需要给服务器发送一个“Referer”参数，用来告诉服务器你是从哪个网址进入图片链接的
+    // Sites such as Pixiv require a Referer header for high-resolution downloads to identify the page linking to the image
     public static GlideUrl makeGlideUrlWithReferer(String imgUrl, String webUrl) {
         return makeGlideUrlWithReferer(imgUrl, webUrl, null);
     }

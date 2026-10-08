@@ -35,18 +35,18 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * ================================================
- * 作    者：jeasonlzy（廖子尧）Github地址：https://github.com/jeasonlzy
- * 版    本：1.0
- * 创建日期：2016/1/19
- * 描    述：全局的下载管理类
- * 修订历史：
+ * Author: jeasonlzy (廖子尧). GitHub: https://github.com/jeasonlzy
+ * Version: 1.0
+ * Created: 2016/1/19
+ * Description: Global download manager
+ * Revision history:
  * ================================================
  */
 public class OkDownload {
 
-    private String folder;                                      //下载的默认文件夹
-    private DownloadThreadPool threadPool;                      //下载的线程池
-    private ConcurrentHashMap<String, DownloadTask> taskMap;    //所有任务
+    private String folder;                                      //Default download directory
+    private DownloadThreadPool threadPool;                      //Download thread pool
+    private ConcurrentHashMap<String, DownloadTask> taskMap;    //All tasks
 
     public static OkDownload getInstance() {
         return OkDownloadHolder.instance;
@@ -62,7 +62,7 @@ public class OkDownload {
         threadPool = new DownloadThreadPool();
         taskMap = new ConcurrentHashMap<>();
 
-        //校验数据的有效性，防止下载过程中退出，第二次进入的时候，由于状态没有更新导致的状态错误
+        //Validate records to prevent stale states when the app exits during a download and starts again
         List<Progress> taskList = DownloadManager.getInstance().getDownloading();
         for (Progress info : taskList) {
             if (info.status == Progress.WAITING || info.status == Progress.LOADING || info.status == Progress.PAUSE) {
@@ -82,7 +82,7 @@ public class OkDownload {
         return task;
     }
 
-    /** 从数据库中恢复任务 */
+    /** Restore tasks from the database */
     public static DownloadTask restore(Progress progress) {
         Map<String, DownloadTask> taskMap = OkDownload.getInstance().getTaskMap();
         DownloadTask task = taskMap.get(progress.tag);
@@ -93,7 +93,7 @@ public class OkDownload {
         return task;
     }
 
-    /** 从数据库中恢复任务 */
+    /** Restore tasks from the database */
     public static List<DownloadTask> restore(List<Progress> progressList) {
         Map<String, DownloadTask> taskMap = OkDownload.getInstance().getTaskMap();
         List<DownloadTask> tasks = new ArrayList<>();
@@ -108,7 +108,7 @@ public class OkDownload {
         return tasks;
     }
 
-    /** 开始所有任务 */
+    /** Start all tasks */
     public void startAll() {
         for (Map.Entry<String, DownloadTask> entry : taskMap.entrySet()) {
             DownloadTask task = entry.getValue();
@@ -120,9 +120,9 @@ public class OkDownload {
         }
     }
 
-    /** 暂停全部任务 */
+    /** Pause all tasks */
     public void pauseAll() {
-        //先停止未开始的任务
+        //Stop tasks that have not started first
         for (Map.Entry<String, DownloadTask> entry : taskMap.entrySet()) {
             DownloadTask task = entry.getValue();
             if (task == null) {
@@ -133,7 +133,7 @@ public class OkDownload {
                 task.pause();
             }
         }
-        //再停止进行中的任务
+        //Then stop tasks in progress
         for (Map.Entry<String, DownloadTask> entry : taskMap.entrySet()) {
             DownloadTask task = entry.getValue();
             if (task == null) {
@@ -146,19 +146,19 @@ public class OkDownload {
         }
     }
 
-    /** 删除所有任务 */
+    /** Remove all tasks */
     public void removeAll() {
         removeAll(false);
     }
 
     /**
-     * 删除所有任务
+     * Remove all tasks
      *
-     * @param isDeleteFile 删除任务是否删除文件
+     * @param isDeleteFile Whether removing the task also deletes its file
      */
     public void removeAll(boolean isDeleteFile) {
         Map<String, DownloadTask> map = new HashMap<>(taskMap);
-        //先删除未开始的任务
+        //Remove tasks that have not started first
         for (Map.Entry<String, DownloadTask> entry : map.entrySet()) {
             DownloadTask task = entry.getValue();
             if (task == null) {
@@ -169,7 +169,7 @@ public class OkDownload {
                 task.remove(isDeleteFile);
             }
         }
-        //再删除进行中的任务
+        //Then remove tasks in progress
         for (Map.Entry<String, DownloadTask> entry : map.entrySet()) {
             DownloadTask task = entry.getValue();
             if (task == null) {
@@ -182,7 +182,7 @@ public class OkDownload {
         }
     }
 
-    /** 设置下载目录 */
+    /** Set the download directory */
     public String getFolder() {
         return folder;
     }

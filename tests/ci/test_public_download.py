@@ -1,4 +1,4 @@
-"""匿名下载、重定向允许列表与流式校验的离线测试。"""
+"""Offline tests for anonymous downloads, redirect allowlists, and streaming verification."""
 
 import hashlib
 import io
@@ -66,7 +66,7 @@ class PublicDownloadTest(unittest.TestCase):
         client = GhClient("test-owner/Konachan", downloader=failed)
         with self.assertRaises(ReleaseError) as raised:
             client.verify_download(self.artifact, self.url)
-        self.assertEqual(str(raised.exception), "公开 APK 下载验证失败；保留原版本文件")
+        self.assertEqual(str(raised.exception), "Public APK download verification failed; preserving the original version file")
         self.assertNotIn("diagnostic-marker", str(raised.exception))
         self.assertIsNone(raised.exception.__cause__)
 

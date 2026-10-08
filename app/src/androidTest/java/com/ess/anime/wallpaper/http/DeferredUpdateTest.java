@@ -43,11 +43,11 @@ public class DeferredUpdateTest {
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> FireBase.getInstance().resumeCachedUpdate());
             MsgBean offered = EventBus.getDefault().getStickyEvent(MsgBean.class);
-            assertNotNull("返回前台应消费有效缓存", offered);
+            assertNotNull("Returning to the foreground must consume a valid cached result", offered);
             assertEquals(Constants.CHECK_UPDATE, offered.msg);
             EventBus.getDefault().removeStickyEvent(offered);
             InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> FireBase.getInstance().resumeCachedUpdate());
-            assertNull("同一前台会话忽略过的版本不重复提示", EventBus.getDefault().getStickyEvent(MsgBean.class));
+            assertNull("Do not prompt again for a version ignored during the same foreground session", EventBus.getDefault().getStickyEvent(MsgBean.class));
         } finally {
             EventBus.getDefault().removeStickyEvent(MsgBean.class);
             PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean(Constants.AUTO_DOWNLOAD_UPDATE, auto).commit();

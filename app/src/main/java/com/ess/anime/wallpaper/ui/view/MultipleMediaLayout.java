@@ -265,7 +265,7 @@ public class MultipleMediaLayout extends FrameLayout implements RequestListener<
         EventBus.getDefault().unregister(this);
     }
 
-    // FullscreenActivity翻页后收到的通知，obj 为 [imageUrl, controllerVisible]
+    // Notification after FullscreenActivity changes pages; obj is [imageUrl, controllerVisible]
     @Subscribe
     public void startVideo(MsgBean msgBean) {
         if (msgBean.msg.equals(Constants.START_VIDEO)) {
@@ -280,7 +280,7 @@ public class MultipleMediaLayout extends FrameLayout implements RequestListener<
         }
     }
 
-    // FullscreenActivity触发onResume()后收到的通知，obj 为 image url
+    // Notification after FullscreenActivity receives onResume(); obj is the image URL
     @Subscribe
     public void resumeVideo(MsgBean msgBean) {
         if (msgBean.msg.equals(Constants.RESUME_VIDEO)) {
@@ -291,7 +291,7 @@ public class MultipleMediaLayout extends FrameLayout implements RequestListener<
         }
     }
 
-    // FullscreenActivity触发onPause()后收到的通知，obj 为 image url
+    // Notification after FullscreenActivity receives onPause(); obj is the image URL
     @Subscribe
     public void pauseVideo(MsgBean msgBean) {
         if (msgBean.msg.equals(Constants.PAUSE_VIDEO)) {
@@ -302,7 +302,7 @@ public class MultipleMediaLayout extends FrameLayout implements RequestListener<
         }
     }
 
-    // FullscreenActivity单击页面后收到的通知，obj 为 visibility
+    // Notification after a single tap in FullscreenActivity; obj is visibility
     @Subscribe
     public void toggleVideoController(MsgBean msgBean) {
         if (msgBean.msg.equals(Constants.TOGGLE_VIDEO_CONTROLLER)) {

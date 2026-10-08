@@ -9,104 +9,104 @@ import com.google.gson.annotations.SerializedName;
 
 public class PostBean implements Parcelable {
 
-    public String id;  //K站图片id
+    public String id;  //Konachan image ID
 
-    public String tags;  //图片标签
+    public String tags;  //Image tags
 
     @SerializedName(value = "createdTime", alternate = "created_at")
-    public long createdTime;  //上传时间（格式：mills，单位：second）
+    public long createdTime;  //Upload time (timestamp in seconds)
 
     @SerializedName(value = "creatorId", alternate = "creator_id")
-    public String creatorId;  //上传者id
+    public String creatorId;  //Uploader ID
 
-    public String author;  //上传者用户名
+    public String author;  //Uploader username
 
-    public String change;  //（未知用处）
+    public String change;  //(Purpose unknown)
 
-    public String source;  //图片源址
+    public String source;  //Image source URL
 
-    public int score;  //图片评分
+    public int score;  //Image score
 
-    public String md5;  //md5加密码
+    public String md5;  //MD5 hash
 
     @SerializedName(value = "fileSize", alternate = "file_size")
-    public long fileSize;  //大图页面显示的尺寸，图片文件大小（作为原图备用值）
+    public long fileSize;  //File size displayed on the large-image page, also used as the original-image fallback
 
     @SerializedName(value = "fileUrl", alternate = "file_url")
-    public String fileUrl;  //大图页面显示的尺寸，图片地址（作为原图备用值）
+    public String fileUrl;  //Image URL displayed on the large-image page, also used as the original-image fallback
 
     @SerializedName(value = "isShownInIndex", alternate = "is_shown_in_index")
-    public boolean isShownInIndex;  //（未知用处）
+    public boolean isShownInIndex;  //(Purpose unknown)
 
     @SerializedName(value = "previewUrl", alternate = "preview_url")
-    public String previewUrl;  //thumb尺寸，图片地址
+    public String previewUrl;  //Thumbnail URL
 
     @SerializedName(value = "previewWidth", alternate = "preview_width")
-    public int previewWidth;  //thumb尺寸，图片比例宽度
+    public int previewWidth;  //Proportional thumbnail width
 
     @SerializedName(value = "previewHeight", alternate = "preview_height")
-    public int previewHeight;  //thumb尺寸，图片比例高度
+    public int previewHeight;  //Proportional thumbnail height
 
     @SerializedName(value = "actualPreviewWidth", alternate = "actual_preview_width")
-    public int actualPreviewWidth;  //thumb尺寸，图片实际宽度
+    public int actualPreviewWidth;  //Actual thumbnail width
 
     @SerializedName(value = "actualPreviewHeight", alternate = "actual_preview_height")
-    public int actualPreviewHeight;  //thumb尺寸，图片实际高度
+    public int actualPreviewHeight;  //Actual thumbnail height
 
     @SerializedName(value = "sampleUrl", alternate = "sample_url")
-    public String sampleUrl;  //sample尺寸，图片地址
+    public String sampleUrl;  //Sample image URL
 
     @SerializedName(value = "sampleWidth", alternate = "sample_width")
-    public int sampleWidth;  //sample尺寸，图片实际宽度
+    public int sampleWidth;  //Actual sample width
 
     @SerializedName(value = "sampleHeight", alternate = "sample_height")
-    public int sampleHeight;  //sample尺寸，图片实际高度
+    public int sampleHeight;  //Actual sample height
 
     @SerializedName(value = "sampleFileSize", alternate = "sample_file_size")
-    public long sampleFileSize;  //sample尺寸，图片文件大小
+    public long sampleFileSize;  //Sample file size
 
     @SerializedName(value = "jpegUrl", alternate = "jpeg_url")
-    public String jpegUrl;  //real尺寸，图片地址
+    public String jpegUrl;  //Original image URL
 
     @SerializedName(value = "jpegWidth", alternate = "jpeg_width")
-    public int jpegWidth;  //real尺寸，图片实际宽度
+    public int jpegWidth;  //Actual original width
 
     @SerializedName(value = "jpegHeight", alternate = "jpeg_height")
-    public int jpegHeight;  //real尺寸，图片实际高度
+    public int jpegHeight;  //Actual original height
 
     @SerializedName(value = "jpegFileSize", alternate = "jpeg_file_size")
-    public long jpegFileSize;  //real尺寸，图片文件大小（若此处值为0，则使用上面的fileSize）
+    public long jpegFileSize;  //Original file size; use fileSize above when this value is zero
 
-    public String rating;  //安全等级：s（safe_mode），e（R18），q（questionable）
+    public String rating;  //Content rating: s (safe_mode), e (R18), q (questionable)
 
     @SerializedName(value = "hasChildren", alternate = "has_children")
-    public boolean hasChildren;  //是否有相关子图片
+    public boolean hasChildren;  //Whether related child images exist
 
     @SerializedName(value = "parentId", alternate = "parent_id")
-    public String parentId;  //相关父图片id（内容相同，只有背景或部分装饰不同的那种图组）
+    public String parentId;  //Related parent image ID for variants with different backgrounds or decorations
 
-    public String status;  //（未知用处）
+    public String status;  //(Purpose unknown)
 
-    public int width;  //图片宽度（使用jpegWidth）
+    public int width;  //Image width (uses jpegWidth)
 
-    public int height;  //图片高度（使用jpegHeight）
+    public int height;  //Image height (uses jpegHeight)
 
     @SerializedName(value = "isHeld", alternate = "is_held")
-    public boolean isHeld;  //（未知用处）
+    public boolean isHeld;  //(Purpose unknown)
 
     @SerializedName(value = "framesPendingString", alternate = "frames_pending_string")
-    public String framesPendingString;  //（未知用处）
+    public String framesPendingString;  //(Purpose unknown)
 
     @SerializedName(value = "framesPending", alternate = "frames_pending")
-    public Object[] framesPending;  //（未知用处）（数组格式，类型不明）
+    public Object[] framesPending;  //(Purpose unknown; array with an unknown element type)
 
     @SerializedName(value = "framesString", alternate = "frames_string")
-    public String framesString;  //（未知用处）
+    public String framesString;  //(Purpose unknown)
 
-    public Object[] frames;  //（未知用处）（数组格式，类型不明）
+    public Object[] frames;  //(Purpose unknown; array with an unknown element type)
 
     @SerializedName(value = "flagDetail", alternate = "flag_detail")
-    public String flagDetail;  //（未知用处）（只有一部分有这个key）
+    public String flagDetail;  //(Purpose unknown; this key appears only in some records)
 
     public PostBean() {
     }
@@ -150,7 +150,7 @@ public class PostBean implements Parcelable {
     }
 
     /**
-     * 用newPost中的非null和0的数据替换掉原有数据
+     * Replace existing values with non-null, nonzero data from newPost
      *
      * @param newPost
      */
@@ -267,7 +267,7 @@ public class PostBean implements Parcelable {
     }
 
     /**
-     * 获取fileSize最小的图片url，以便快速加载预览图
+     * Get the image URL with the smallest fileSize for faster previews
      *
      * @return
      */

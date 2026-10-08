@@ -36,7 +36,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
-/** 使用生成的测试媒体，不读取或删除用户媒体。 */
+/** Use generated test media; do not read or delete user media. */
 @RunWith(AndroidJUnit4.class)
 public class MediaPublishingTest {
 
@@ -53,7 +53,7 @@ public class MediaPublishingTest {
             removeOwnPublishedItems(file.getName(), false);
             removeOwnPublishedItems(file.getName(), true);
             if (file.exists()) {
-                assertTrue("仅清理测试生成的文件", file.delete());
+                assertTrue("Clean up only test-generated files", file.delete());
             }
         }
     }
@@ -67,10 +67,10 @@ public class MediaPublishingTest {
         assertTrue(BitmapUtils.insertToMediaStore(context, source));
 
         Uri uri = findOwnPublishedItem(source.getName(), false);
-        assertNotNull("公开发布后必须得到真实媒体项", uri);
+        assertNotNull("Public publication must return a real media item", uri);
         testUris.add(uri);
         assertArrayEquals(expected, readUri(uri));
-        assertEquals("公开发布不能删除本地收藏文件", expected.length, source.length());
+        assertEquals("Public publication must not delete the local favorite file", expected.length, source.length());
     }
 
     @Test
@@ -116,7 +116,7 @@ public class MediaPublishingTest {
         assertFalse(BitmapUtils.insertToMediaStore(context, missing));
         File empty = createFixture(".png", new byte[0]);
         assertFalse(BitmapUtils.insertToMediaStore(context, empty));
-        assertTrue("失败不能删除本地源文件", empty.isFile());
+        assertTrue("Failure must not delete the local source file", empty.isFile());
     }
 
     @Test
@@ -124,8 +124,8 @@ public class MediaPublishingTest {
         assumeTrue(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q);
         File source = createFixture(".png", imageBytes());
         assertFalse(BitmapUtils.insertToMediaStore(rejectPublicationRecordWrites(), source));
-        assertTrue("发布失败必须保留本地完整源文件", source.isFile() && source.length() > 0);
-        assertEquals("本次发布失败不应留下 pending 或完成项", 0, ownPublishedCount(source.getName(), false));
+        assertTrue("Publication failure must preserve the complete local source file", source.isFile() && source.length() > 0);
+        assertEquals("Failed publication must not leave pending or completed entries", 0, ownPublishedCount(source.getName(), false));
     }
 
     @Test
@@ -173,9 +173,9 @@ public class MediaPublishingTest {
         String[] columns = {MediaStore.MediaColumns._ID, MediaStore.MediaColumns.IS_PENDING};
         try (Cursor cursor = context.getContentResolver().query(collection, columns, selection, args, null)) {
             assertNotNull(cursor);
-            assertEquals("测试自己的媒体应只发布一次", 1, cursor.getCount());
+            assertEquals("Test-owned media must be published exactly once", 1, cursor.getCount());
             assertTrue(cursor.moveToFirst());
-            assertEquals("文件完整复制后才应解除 pending", 0, cursor.getInt(1));
+            assertEquals("Clear pending only after the file is fully copied", 0, cursor.getInt(1));
             return ContentUris.withAppendedId(collection, cursor.getLong(0));
         }
     }
@@ -213,7 +213,7 @@ public class MediaPublishingTest {
                 selection, new String[]{name, folder, context.getPackageName()}, null);
     }
 
-    /** 只注入发布记录提交失败；媒体写入和回滚仍使用模拟器的真实 ContentResolver。 */
+    /** Inject only publication-record commit failure; media writes and rollback still use the emulator ContentResolver. */
     private Context rejectPublicationRecordWrites() {
         return new ContextWrapper(context) {
             @Override

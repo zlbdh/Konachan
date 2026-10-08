@@ -26,11 +26,11 @@ public class PermissionHelper {
     public final static int REQ_CODE_PERMISSION = 1000;
 
     /**
-     * 检测组件是否拥有某权限
+     * Check whether the component has a permission
      *
-     * @param context     上下文
-     * @param permissions 需检测的权限
-     * @return 是否拥有该权限
+     * @param context     Context
+     * @param permissions Permissions to check
+     * @return Whether the permission is granted
      */
     public static boolean hasPermissions(Context context, @NonNull String... permissions) {
 //        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return true;
@@ -49,11 +49,11 @@ public class PermissionHelper {
     }
 
     /**
-     * 判断该应用程序是否缺少所需权限
+     * Check whether the app lacks required permissions
      *
-     * @param context     上下文
-     * @param permissions 所需权限集合
-     * @return 是否缺少所需权限
+     * @param context     Context
+     * @param permissions Required permissions
+     * @return Whether any required permission is missing
      */
     public static List<String> lackPermissions(Context context, String... permissions) {
         ArrayList<String> lacks = new ArrayList<>();
@@ -66,13 +66,13 @@ public class PermissionHelper {
     }
 
     /**
-     * 检查权限
-     * 在Activity中重写onActivityResult，case REQ_CODE_PERMISSION，并重新调用hasPermissions()判断是否有权限
+     * Check permissions
+     * Override onActivityResult in the Activity, handle REQ_CODE_PERMISSION, and call hasPermissions() again
      *
-     * @param context     上下文
-     * @param dialogMsg   弹窗请求提示文字
-     * @param listener    事件监听器
-     * @param permissions 要检查的权限组
+     * @param context     Context
+     * @param dialogMsg   Permission request dialog message
+     * @param listener    Event listener
+     * @param permissions Permission group to check
      */
     public static void checkPermissions(Context context, String dialogTitle, String dialogMsg, RequestListener listener, String... permissions) {
         if (AndPermission.hasPermissions(context, permissions)) {
@@ -118,11 +118,11 @@ public class PermissionHelper {
     }
 
     /**
-     * 权限是否被永久拒绝
+     * Whether permissions have been permanently denied
      *
-     * @param context     上下文
-     * @param permissions 权限组
-     * @return 是否被永久拒绝
+     * @param context     Context
+     * @param permissions Permission group
+     * @return Whether permission was permanently denied
      */
     public static boolean hasAlwaysDeniedPermission(Context context, String... permissions) {
         List<String> lackList = lackPermissions(context, permissions);
@@ -143,10 +143,10 @@ public class PermissionHelper {
     }
 
     /**
-     * 检查是否有悬浮窗权限
+     * Check overlay permission
      *
-     * @param context 上下文
-     * @return 是否有悬浮窗权限
+     * @param context Context
+     * @return Whether overlay permission is granted
      */
     public static boolean hasOverlayPermission(Context context) {
         return canDrawOverlays(context) && tryDisplayDialog(context);
@@ -194,7 +194,7 @@ public class PermissionHelper {
     }
 
     public static void checkStoragePermissions(Context context, RequestListener listener) {
-        // 自有下载、缓存和收藏在 scoped-storage 下无需读取其他应用媒体的权限。
+        // App-owned downloads, caches, and favorites need no permission to read other apps' media under scoped storage.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             if (listener != null) listener.onGranted();
             return;
@@ -205,7 +205,7 @@ public class PermissionHelper {
     }
 
     /**
-     * 自有存储的权限门禁；Android 10+ 自有目录和自有 MediaStore 项不要求存储权限。
+     * Permission gate for app-owned storage; Android 10+ requires no storage permission for owned directories and MediaStore items.
      */
     public static String[] getStoragePermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -220,7 +220,7 @@ public class PermissionHelper {
         return hasPermissions(context, getStoragePermissions());
     }
 
-    /** 仅供需要读取其他应用媒体的入口使用，不能作为自有下载的写入门禁。 */
+    /** Use only for entry points that read other apps' media; do not gate writes to app-owned downloads with this check. */
     public static String[] getExternalMediaReadPermissions(boolean includeVideo) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             return includeVideo ? new String[]{android.Manifest.permission.READ_MEDIA_IMAGES,

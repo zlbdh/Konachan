@@ -134,7 +134,7 @@ public class CollectionActivity extends BaseActivity implements LocalCollections
         mCollectionAdapter = new RecyclerCollectionAdapter();
         mCollectionAdapter.bindToRecyclerView(mRvCollection);
 
-        // 长按进入编辑模式监听器
+        // Long-press listener for entering edit mode
         mCollectionAdapter.setOnItemChildLongClickListener((adapter, view, position) -> {
             if (view.getId() == R.id.iv_collection && !mCollectionAdapter.isEditMode()) {
                 CollectionBean collectionBean = mCollectionAdapter.getItem(position);
@@ -146,7 +146,7 @@ public class CollectionActivity extends BaseActivity implements LocalCollections
             return false;
         });
 
-        // 切换选中/非选中监听器
+        // Selection toggle listener
         mCollectionAdapter.setOnSelectChangedListener((selectCount, allSelected) -> {
             mTvChooseCount.setText(String.valueOf(selectCount));
             mCbChooseAll.setChecked(allSelected);
@@ -190,7 +190,7 @@ public class CollectionActivity extends BaseActivity implements LocalCollections
                 for (CollectionBean collectionBean : deleteList) {
                     String path = collectionBean.url.replace("file://", "");
                     FileUtils.deleteFile(path);
-                    // 从媒体库删除图片（刷新相册）
+                    // Remove the image from the media library and refresh the gallery
                     BitmapUtils.deleteFromMediaStore(CollectionActivity.this, path);
                 }
             }
@@ -250,7 +250,7 @@ public class CollectionActivity extends BaseActivity implements LocalCollections
             mCollectionAdapter.addData(0, collectionBean);
         }
         mRvCollection.scrollToPosition(0);
-        // 发送通知到FullscreenActivity
+        // Notify FullscreenActivity
         EventBus.getDefault().post(new MsgBean(Constants.LOCAL_FILES_CHANGED, null));
     }
 
@@ -261,7 +261,7 @@ public class CollectionActivity extends BaseActivity implements LocalCollections
         }
         CollectionBean collectionBean = CollectionBean.createCollectionFromFile(file);
         mCollectionAdapter.removeData(collectionBean);
-        // 发送通知到FullscreenActivity
+        // Notify FullscreenActivity
         EventBus.getDefault().post(new MsgBean(Constants.LOCAL_FILES_CHANGED, null));
     }
 
@@ -269,14 +269,14 @@ public class CollectionActivity extends BaseActivity implements LocalCollections
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PermissionHelper.REQ_CODE_PERMISSION) {
-            // 进入系统设置界面请求权限后的回调
+            // Callback after requesting permission in system settings
             if (PermissionHelper.hasStoragePermissions(this)) {
                 initWhenPermissionGranted();
             } else {
                 finish();
             }
         } else if (resultCode == Constants.FULLSCREEN_CODE && data != null) {
-            // 退出全屏回调
+            // Exit full-screen callback
             int position = ImageDataHolder.getCollectionCurrentItem();
             mRvCollection.scrollToPosition(position);
         }

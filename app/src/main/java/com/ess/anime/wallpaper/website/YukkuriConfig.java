@@ -3,7 +3,7 @@ package com.ess.anime.wallpaper.website;
 import com.ess.anime.wallpaper.R;
 
 /**
- * Yukkuri (yukkuri.shiteitte.net) - Danbooru 兼容站
+ * Yukkuri (yukkuri.shiteitte.net): Danbooru-compatible site
  */
 public class YukkuriConfig extends DanbooruConfig {
 

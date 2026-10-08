@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assume.assumeTrue;
 
-/** 只创建测试自己的文件，覆盖 scoped-storage 的真实应用 UID 写入。 */
+/** Create only test-owned files to exercise real scoped-storage writes under the app UID. */
 @RunWith(AndroidJUnit4.class)
 public class StorageCompatibilityTest {
 
@@ -38,9 +38,9 @@ public class StorageCompatibilityTest {
     public void ownStorageDoesNotRequireReadMediaPermission() {
         assumeTrue(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q);
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertTrue("自有下载和收藏不应被媒体读取权限卡住",
+        assertTrue("Media-read permission must not block app-owned downloads and favorites",
                 PermissionHelper.hasStoragePermissions(context));
-        assertEquals("自有存储不应要求外部媒体读取权限", 0,
+        assertEquals("App-owned storage must not require external media-read permission", 0,
                 PermissionHelper.getStoragePermissions().length);
     }
 
@@ -50,26 +50,26 @@ public class StorageCompatibilityTest {
         File probe = new File(Environment.getExternalStorageDirectory(),
                 "Konachan/konachan-compat-test-" + UUID.randomUUID());
         try {
-            assertFalse("target 34 应用不能靠读媒体权限创建旧共享根目录", probe.mkdirs());
+            assertFalse("An app targeting API 34 must not rely on media-read permission to create a legacy shared root directory", probe.mkdirs());
         } finally {
             if (probe.exists()) {
-                assertTrue("若系统允许写入，仅清理本次探测目录", probe.delete());
+                assertTrue("If the system allows writing, clean up only this probe directory", probe.delete());
             }
         }
     }
 
     private void assertWritable(File directory) throws Exception {
-        assertTrue("目录应能在应用 UID 下创建: " + directory,
+        assertTrue("The directory must be creatable under the app UID: " + directory,
                 directory.isDirectory() || directory.mkdirs());
         File file = new File(directory, "konachan-storage-test-" + UUID.randomUUID() + ".tmp");
         try {
             try (FileOutputStream output = new FileOutputStream(file)) {
                 output.write(new byte[]{1, 2, 3});
             }
-            assertTrue("测试文件应完整写入", file.length() == 3);
+            assertTrue("The test file must be written completely", file.length() == 3);
         } finally {
             if (file.exists()) {
-                assertTrue("应只清理测试自己的文件", file.delete());
+                assertTrue("Clean up only test-owned files", file.delete());
             }
         }
     }

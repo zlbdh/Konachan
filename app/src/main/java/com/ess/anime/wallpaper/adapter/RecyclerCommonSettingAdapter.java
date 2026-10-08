@@ -43,11 +43,11 @@ public class RecyclerCommonSettingAdapter extends BaseQuickAdapter<CommonSetting
     }
 
     private void bindUI(BaseViewHolder holder, CommonSettingItem commonSettingItem) {
-        // 标题
+        // Title
         holder.setGone(R.id.tv_title, !TextUtils.isEmpty(commonSettingItem.getTitle()));
         holder.setText(R.id.tv_title, commonSettingItem.getTitle());
 
-        // 描述
+        // Description
         holder.setGone(R.id.tv_desc, !TextUtils.isEmpty(commonSettingItem.getDesc()));
         holder.setText(R.id.tv_desc, commonSettingItem.getDesc());
 
@@ -67,10 +67,10 @@ public class RecyclerCommonSettingAdapter extends BaseQuickAdapter<CommonSetting
             }
         });
 
-        // 分割线
+        // Divider
         holder.setGone(R.id.view_divide_line, commonSettingItem.isDividerShown());
 
-        // 点击事件
+        // Click event
         MaterialRippleLayout rippleLayout = holder.getView(R.id.ripple_layout);
         rippleLayout.setRippleDelayClick(commonSettingItem.isRippleDelayClick());
         holder.getView(R.id.layout_content).setOnClickListener(v -> {

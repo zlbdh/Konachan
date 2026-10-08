@@ -1,4 +1,4 @@
-"""发布经过校验的 APK，并在最后更新应用版本文件。"""
+"""Publish a verified APK and update the app version file as the final step."""
 
 import argparse
 import base64
@@ -20,16 +20,16 @@ def read_latest(client):
         document = json.loads(base64.b64decode(response["content"]))
         blob_sha = response["sha"]
     except (KeyError, TypeError, ValueError, binascii.Error) as error:
-        raise ReleaseError("远端版本文件不可解析，禁止覆盖") from error
+        raise ReleaseError("The remote version file cannot be parsed; refusing to overwrite it") from error
     if not isinstance(document, dict) or not isinstance(blob_sha, str) or not blob_sha:
-        raise ReleaseError("远端版本文件缺少有效 JSON 或 blob SHA")
+        raise ReleaseError("The remote version file has no valid JSON or blob SHA")
     return document, blob_sha
 
 
 def version_is_current(artifact, latest):
     code = latest.get("versionCode", 0)
     if type(code) is not int or code < 0:
-        raise ReleaseError("远端 versionCode 无效，禁止覆盖")
+        raise ReleaseError("The remote versionCode is invalid; refusing to overwrite it")
     if code > artifact.version_code:
         return False
     if code == artifact.version_code:
@@ -37,7 +37,7 @@ def version_is_current(artifact, latest):
                 and latest.get("apkSha256") == artifact.sha256
                 and latest.get("signingCertificateSha256") == artifact.certificate_sha256)
         if not same:
-            raise ReleaseError("相同 versionCode 对应不同源码、APK 或证书；必须增加版本码")
+            raise ReleaseError("The same versionCode refers to different source, APK, or certificate; increment the version code")
     return True
 
 
@@ -59,38 +59,38 @@ def ensure_tag(artifact, client):
         tag = client.api("GET", f"repos/{client.repo}/git/tags/{target.get('sha', '')}")
         target = tag.get("object", {})
     if target.get("type") != "commit" or target.get("sha") != artifact.source_sha:
-        raise ReleaseError("版本标签已指向其他源码提交；禁止移动或强制覆盖")
+        raise ReleaseError("The version tag points to a different source commit; moving or force-overwriting it is not allowed")
 
 
 def find_release(artifact, client):
     release = client.api("GET", f"repos/{client.repo}/releases/tags/{quote(artifact.tag, safe='')}", missing_ok=True)
     if release is not None:
         return release
-    # 兼容按标签查询未返回草稿的情形；只检索版本公开元数据。
+    # Handle draft releases omitted by tag lookup; retrieve only public release metadata.
     for page in range(1, 101):
         items = client.api("GET", f"repos/{client.repo}/releases?per_page=100&page={page}")
         matches = [item for item in items if item.get("tag_name") == artifact.tag]
         if len(matches) > 1:
-            raise ReleaseError("同标签存在多个 Release，需先明确冲突")
+            raise ReleaseError("Multiple releases use the same tag; resolve the conflict first")
         if matches:
             return matches[0]
         if len(items) < 100:
             return None
-    raise ReleaseError("Release 列表超出核验范围，禁止盲目创建重复版本")
+    raise ReleaseError("The release list exceeds the verification limit; refusing to create a potentially duplicate release")
 
 
 def matching_asset(artifact, release):
     assets = [item for item in release.get("assets", []) if item.get("name") == artifact.apk.name]
     if len(assets) > 1:
-        raise ReleaseError("同名 APK 资产不唯一")
+        raise ReleaseError("Multiple APK assets have the same name")
     return assets[0] if assets else None
 
 
 def verify_asset(artifact, client, asset, allow_draft=False):
     if not asset or asset.get("state") != "uploaded" or asset.get("size") != artifact.size:
-        raise ReleaseError("远端 APK 资产不完整或大小不一致，禁止发布版本文件")
+        raise ReleaseError("The remote APK asset is incomplete or has a different size; refusing to publish the version file")
     if str(asset.get("digest", "")).lower() != "sha256:" + artifact.sha256:
-        raise ReleaseError("远端 APK SHA-256 与最终签名 APK 不一致")
+        raise ReleaseError("The remote APK SHA-256 does not match the final signed APK")
     url = asset.get("browser_download_url", "")
     parsed = urlparse(url)
     prefix = f"/{client.repo}/releases/download/"
@@ -100,7 +100,7 @@ def verify_asset(artifact, client, asset, allow_draft=False):
                 (allow_draft and re.fullmatch(r"untagged-[0-9a-fA-F]+", parts[0]) is not None))
     if (parsed.scheme != "https" or parsed.netloc != "github.com" or parsed.query or parsed.fragment
             or not valid_tag or parts[1] != artifact.apk.name):
-        raise ReleaseError("APK 下载地址不是当前仓库、标签和文件的固定资产地址")
+        raise ReleaseError("The APK download URL is not the fixed asset URL for this repository, tag, and file")
     return url
 
 
@@ -109,7 +109,7 @@ def latest_document(artifact, url, previous):
             "apkName": artifact.apk.name, "apkSize": artifact.size, "apkUrl": url,
             "apkSha256": artifact.sha256, "signingCertificateSha256": artifact.certificate_sha256,
             "sourceSha": artifact.source_sha, "releaseTag": artifact.tag,
-            "updatedContentZh": previous.get("updatedContentZh", "自动构建版本"),
+            "updatedContentZh": previous.get("updatedContentZh", "Automated build"),
             "updatedContentEn": previous.get("updatedContentEn", "Automated build")}
 
 
@@ -122,11 +122,11 @@ def publish_release(artifact, client):
     if release is None:
         release = client.api("POST", f"repos/{client.repo}/releases", {
             "tag_name": artifact.tag, "target_commitish": artifact.source_sha,
-            "name": f"Konachan {artifact.version_name}（构建 {artifact.run_number}）",
-            "body": f"自动构建 APK。\n源码提交：{artifact.source_sha}\nAPK SHA-256：{artifact.sha256}",
+            "name": f"Konachan {artifact.version_name} (build {artifact.run_number})",
+            "body": f"Automatically built APK.\nSource commit: {artifact.source_sha}\nAPK SHA-256: {artifact.sha256}",
             "draft": True, "prerelease": True, "make_latest": "false"})
     if not isinstance(release, dict) or type(release.get("draft")) is not bool or not release.get("id"):
-        raise ReleaseError("GitHub 未返回有效 Release 状态")
+        raise ReleaseError("GitHub did not return a valid release status")
     asset = matching_asset(artifact, release)
     if release["draft"]:
         if asset and asset.get("state") == "starter":
@@ -143,17 +143,17 @@ def publish_release(artifact, client):
                    {"draft": False, "prerelease": True, "make_latest": "false"})
         release = client.api("GET", f"repos/{client.repo}/releases/{release['id']}")
         if release.get("draft") is not False or release.get("prerelease") is not True:
-            raise ReleaseError("GitHub 未确认 APK 预发布成功")
+            raise ReleaseError("GitHub did not confirm that the APK prerelease was published successfully")
     url = verify_asset(artifact, client, matching_asset(artifact, release))
     client.verify_download(artifact, url)
-    # 发布完成后重新读最新 blob，阻止旧运行覆盖刚产生的更高版本。
+    # Read the latest blob after publishing to prevent an older run from overwriting a newer version.
     current, blob_sha = read_latest(client)
     if not version_is_current(artifact, current):
         return {"status": "superseded", "tag": artifact.tag, "versionCode": artifact.version_code}
     document = latest_document(artifact, url, current)
     if document == current:
         return {"status": "unchanged", "tag": artifact.tag, "apkUrl": url}
-    body = {"message": f"构建：更新版本 {artifact.version_name} 信息 [skip ci]", "branch": "master",
+    body = {"message": f"build: update version {artifact.version_name} metadata [skip ci]", "branch": "master",
             "content": base64.b64encode((json.dumps(document, ensure_ascii=False, indent=2) + "\n").encode()).decode()}
     if blob_sha is not None:
         body["sha"] = blob_sha
@@ -176,7 +176,7 @@ def main():
         result = publish_release(artifact, GhClient(args.repo))
         print(json.dumps(result, ensure_ascii=False))
     except (ReleaseError, OSError) as error:
-        print(f"发布失败：{error}", file=sys.stderr)
+        print(f"Release failed: {error}", file=sys.stderr)
         return 1
     return 0
 

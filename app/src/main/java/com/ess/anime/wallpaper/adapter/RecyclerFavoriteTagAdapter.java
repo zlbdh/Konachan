@@ -29,7 +29,7 @@ public class RecyclerFavoriteTagAdapter extends BaseRecyclerEditAdapter<Favorite
 
     @Override
     protected void convert(BaseViewHolder holder, FavoriteTagBean tagBean) {
-        // 编辑模式选择框
+        // Selection checkbox in edit mode
         holder.setChecked(R.id.cb_choose, isSelected(tagBean));
         holder.setGone(R.id.cb_choose, isEditMode());
         holder.itemView.setOnClickListener(v -> {
@@ -44,10 +44,10 @@ public class RecyclerFavoriteTagAdapter extends BaseRecyclerEditAdapter<Favorite
             }
         });
 
-        // 标签内容
+        // Tag text
         holder.setText(R.id.tv_tag, tagBean.getTag());
 
-        // 标签备注
+        // Tag note
         TextView tvAnnotation = holder.getView(R.id.tv_annotation);
         if (TextUtils.isEmpty(tagBean.getAnnotation())) {
             tvAnnotation.setText(R.string.favorite_tag_annotation_empty);
@@ -57,11 +57,11 @@ public class RecyclerFavoriteTagAdapter extends BaseRecyclerEditAdapter<Favorite
             tvAnnotation.setActivated(true);
         }
 
-        // 标签收藏时间
+        // Time the tag was added to favorites
         String date = TimeFormat.dateFormat(tagBean.getFavoriteTime(), "yyyy-MM-dd  HH:mm:ss");
         holder.setText(R.id.tv_favorite_time, mContext.getString(R.string.favorite_tag_favorite_at_time, date));
 
-        // 编辑备注
+        // Edit note
         holder.getView(R.id.iv_edit).setOnClickListener(v -> {
             CustomDialog.showEditTagAnnotationDialog(mContext, tagBean.getTag(), true, new CustomDialog.SimpleDialogActionListener() {
                 @Override
@@ -71,17 +71,17 @@ public class RecyclerFavoriteTagAdapter extends BaseRecyclerEditAdapter<Favorite
             });
         });
 
-        // 搜索标签
+        // Search tag
         holder.getView(R.id.iv_search).setOnClickListener(v -> {
             TagOperationHelper.searchTag((Activity) mContext, tagBean.getTag());
         });
 
-        // 复制到剪贴板
+        // Copy to clipboard
         holder.getView(R.id.iv_copy).setOnClickListener(v -> {
             TagOperationHelper.copyTagToClipboard((Activity) mContext, tagBean.getTag());
         });
 
-        // 追加到剪贴板
+        // Append to clipboard
         holder.getView(R.id.iv_append).setOnClickListener(v -> {
             TagOperationHelper.appendTagToClipboard((Activity) mContext, tagBean.getTag());
         });
@@ -92,7 +92,7 @@ public class RecyclerFavoriteTagAdapter extends BaseRecyclerEditAdapter<Favorite
         super.convertPayloads(holder, tagBean, payloads);
         for (Object payload : payloads) {
             if (payload.equals(TOGGLE_EDIT_MODE)) {
-                // 编辑模式选择框
+                // Selection checkbox in edit mode
                 holder.setChecked(R.id.cb_choose, isSelected(tagBean));
                 holder.setGone(R.id.cb_choose, isEditMode());
             }

@@ -53,7 +53,7 @@ public class RecyclerPixivGifDlAdapter extends BaseQuickAdapter<PixivGifBean, Ba
     }
 
     private void updateItemState(@NonNull BaseViewHolder holder, PixivGifBean pixivGifBean) {
-        // 预览图
+        // Preview image
         Object url = TextUtils.isEmpty(pixivGifBean.thumbUrl) ? null
                 : MyGlideModule.makeGlideUrlWithReferer(pixivGifBean.thumbUrl, pixivGifBean.getRefererUrl());
         Glide.with(mContext)
@@ -65,7 +65,7 @@ public class RecyclerPixivGifDlAdapter extends BaseQuickAdapter<PixivGifBean, Ba
         // id
         holder.setText(R.id.tv_id, "#" + pixivGifBean.id);
 
-        // 下载状态
+        // Download status
         CircleProgressView progressView = holder.getView(R.id.progress_view);
         progressView.setVisibility((pixivGifBean.isError || pixivGifBean.state == PixivGifBean.PixivDlState.CONNECT_PIXIV) ? View.GONE : View.VISIBLE);
         progressView.setMaxValue(104);
@@ -125,13 +125,13 @@ public class RecyclerPixivGifDlAdapter extends BaseQuickAdapter<PixivGifBean, Ba
         }
         holder.setText(R.id.tv_state, state);
 
-        // 重新下载按钮
+        // Retry download button
         holder.setGone(R.id.btn_restart, pixivGifBean.isError && pixivGifBean.state != PixivGifBean.PixivDlState.NOT_GIF);
         holder.getView(R.id.btn_restart).setOnClickListener(v -> {
             PixivGifDlManager.getInstance().execute(pixivGifBean.id);
         });
 
-        // 删除按钮
+        // Delete button
         boolean isLoading = !pixivGifBean.isError && pixivGifBean.state != PixivGifBean.PixivDlState.FINISH;
         holder.getView(R.id.iv_delete).setOnClickListener(v -> {
             if (isLoading) {

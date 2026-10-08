@@ -1,4 +1,4 @@
-"""发布事务、幂等和版本回退保护的纯 Python 测试。"""
+"""Pure Python tests for release transactions, idempotency, and version rollback protection."""
 
 import tempfile
 import unittest
@@ -39,7 +39,7 @@ class PublishReleaseTest(unittest.TestCase):
         self.assertEqual(latest["sourceSha"], self.item.source_sha)
         self.assertEqual(latest["releaseTag"], "v1.9.6-7")
         self.assertIn("/releases/download/v1.9.6-7/", latest["apkUrl"])
-        self.assertEqual(latest["updatedContentZh"], "12 个站点")
+        self.assertEqual(latest["updatedContentZh"], "12 sites")
         self.assertEqual(latest["updatedContentEn"], "12 sites")
         request = self.client.calls[-1][2]
         self.assertEqual(request["branch"], "master")

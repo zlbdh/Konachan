@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 属性式 dapi XML 解析器（Xbooru / TBIB 等站）。
- * 与 Gelbooru 不同，这些站的 dapi 把字段放在 <post> 标签的属性里（自闭合），
- * 而不是子元素，因此 GelbooruParser 无法解析。
- * 详情页 / 评论 / 图集沿用 Gelbooru 引擎的 HTML 结构，直接继承 GelbooruParser 的实现。
+ * Attribute-based dapi XML parser for sites such as Xbooru and TBIB.
+ * Unlike Gelbooru, these sites store fields in attributes of self-closing <post> elements
+ * rather than child elements, so GelbooruParser cannot parse them.
+ * Details, comments, and albums use the Gelbooru engine HTML structure and inherit its parser implementation.
  */
 public class AttrDapiParser extends GelbooruParser {
 

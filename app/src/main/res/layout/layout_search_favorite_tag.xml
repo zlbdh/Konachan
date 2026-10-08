@@ -21,13 +21,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:scaleX="0.8"
-            android:scaleY="0.8"
-            android:src="@drawable/ic_empty_bilibili"
+            android:text="@string/empty_favorite_tags"
+            android:textSize="18sp"
+            android:textColor="@color/color_text_unselected"
+            android:gravity="center"
+            android:padding="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

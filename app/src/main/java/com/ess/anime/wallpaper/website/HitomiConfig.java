@@ -10,11 +10,11 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Hitomi.la (hitomi.la) - 大型本子站，CDN 静态文件 API
+ * Hitomi.la (hitomi.la): gallery site using static CDN files as an API
  *
- * 列表：nozomi 索引 (4 字节小端 gallery id 数组，倒序) + Range 分页
- * 画廊详情：https://ltn.gold-usergeneratedcontent.net/galleries/{id}.js
- * 图片：https://{sub}.gold-usergeneratedcontent.net/images/{c}/{b}/{hash}.webp
+ * List: nozomi index (reverse-ordered array of four-byte little-endian gallery IDs) with Range pagination
+ * Gallery details: https://ltn.gold-usergeneratedcontent.net/galleries/{id}.js
+ * Images: https://{sub}.gold-usergeneratedcontent.net/images/{c}/{b}/{hash}.webp
  */
 public class HitomiConfig extends WebsiteConfig<HitomiParser> {
 
@@ -30,8 +30,8 @@ public class HitomiConfig extends WebsiteConfig<HitomiParser> {
     private List<String> mCurrentTags = new ArrayList<>();
 
     /**
-     * 二级继承时父类构造函数的泛型反射拿不到 ParameterizedType，
-     * 这里直接创建 parser，绕过反射。
+     * With two-level inheritance, generic reflection in the parent constructor cannot get a ParameterizedType;
+     * create the parser directly here to bypass reflection.
      */
     @Override
     public HtmlParser getHtmlParser() {
@@ -41,7 +41,7 @@ public class HitomiConfig extends WebsiteConfig<HitomiParser> {
         return mParser;
     }
 
-    /** 当前请求的页码（Parser 用它做 nozomi Range 分页） */
+    /** Current request page; the Parser uses it for nozomi Range pagination */
     public int getCurrentPage() {
         return mCurrentPage;
     }
@@ -63,16 +63,16 @@ public class HitomiConfig extends WebsiteConfig<HitomiParser> {
     }
 
     /**
-     * 根据 gallery id 算图片 CDN 子域名（hitomi gg.js 算法简化版）
+     * Compute the image CDN subdomain from the gallery ID using a simplified Hitomi gg.js algorithm
      */
     public static String getSubdomain(int galleryId) {
         int o = galleryId % 2;
-        return (char) ('a' + o) + "a";  // "aa" 或 "ba"
+        return (char) ('a' + o) + "a";  // "aa" or "ba"
     }
 
     /**
-     * 根据 hash 拼图片直链（hitomi gg.js full_path_from_hash）
-     * 格式：images/{末1位}/{末2位}/{完整hash}.webp
+     * Build a direct image URL from its hash using Hitomi gg.js full_path_from_hash
+     * Format: images/{last digit}/{last two digits}/{full hash}.webp
      */
     public static String getImageUrl(int galleryId, String hash) {
         if (TextUtils.isEmpty(hash) || hash.length() < 3) {
@@ -116,9 +116,9 @@ public class HitomiConfig extends WebsiteConfig<HitomiParser> {
 
     @Override
     public String getPostUrl(int page, List<String> tagList) {
-        // 真实请求由 HitomiParser 用 OkHttp.execute + Range 头完成，
-        // 这里返回一个会快速 404 的占位 URL（Parser 会忽略它的 Document）。
-        // 404 在 PostFragment 里被当作"无搜索结果"处理，不会弹网络错误。
+        // HitomiParser makes the actual request with OkHttp.execute and a Range header;
+        // return a placeholder URL that quickly produces 404 here. The Parser ignores its Document.
+        // PostFragment treats 404 as no search results rather than a network error.
         mCurrentPage = Math.max(1, page);
         mCurrentTags = tagList == null ? new ArrayList<>() : new ArrayList<>(tagList);
         return "https://" + CDN_HOST + "/hitomi-placeholder-page-" + mCurrentPage;

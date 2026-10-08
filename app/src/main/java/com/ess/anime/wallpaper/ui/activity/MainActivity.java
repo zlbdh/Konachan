@@ -192,7 +192,7 @@ public class MainActivity extends BaseActivity {
             navMenu.setVerticalScrollBarEnabled(false);
         }
 
-        // 临时解决切换fragment导致侧拉栏上移的问题
+        // Temporary fix for the navigation drawer shifting upward after fragment changes
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
             mNavigation.setOnApplyWindowInsetsListener(null);
         }
@@ -201,7 +201,7 @@ public class MainActivity extends BaseActivity {
     private void initNavHeaderLayout() {
         View navHeader = mNavigation.getHeaderView(0);
 
-        // 切换搜图网站
+        // Switch image search sites
         Button btnFunny = navHeader.findViewById(R.id.btn_funny);
         btnFunny.setOnClickListener(v -> {
             SoundHelper.getInstance().playToggleR18ModeSound(MainActivity.this);
@@ -214,7 +214,7 @@ public class MainActivity extends BaseActivity {
             });
         });
 
-        // 图片对应一周7天
+        // Images correspond to the seven days of the week
         ImageView ivExtra = navHeader.findViewById(R.id.iv_extra);
         Glide.with(this).load(getExtraImageSrcId()).into(ivExtra);
     }
@@ -291,7 +291,7 @@ public class MainActivity extends BaseActivity {
         FireBase.getInstance().cancelAll();
     }
 
-    // 检查到新版本后收到的通知, obj 为 ApkBean
+    // Notification when an update is found; obj is ApkBean
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void showUpdateDialog(MsgBean msgBean) {
         if (msgBean.msg.equals(Constants.CHECK_UPDATE) && SystemUtils.isActivityActive(this) && hasWindowFocus()) {

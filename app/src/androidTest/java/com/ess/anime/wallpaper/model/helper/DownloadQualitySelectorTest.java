@@ -17,7 +17,7 @@ import static org.junit.Assert.assertSame;
 public class DownloadQualitySelectorTest {
     private DownloadBean item(int type) {
         return new DownloadBean(type, "https://example.com/" + type + ".jpg", 10,
-                "测试", "", "/unused/" + type + ".jpg", false, "");
+                "Test", "", "/unused/" + type + ".jpg", false, "");
     }
 
     @Test public void sparseCandidatesSelectByTypeInsteadOfPosition() {

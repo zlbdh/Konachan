@@ -1,6 +1,6 @@
 package com.ess.anime.wallpaper.http;
 
-/** 版本、用户开关与前台状态共同决定检查后的动作。 */
+/** Version, user preferences, and foreground state determine the action after checking. */
 public final class UpdateDecision {
     private UpdateDecision() { }
     public enum Action { NONE, PROMPT, DOWNLOAD, DEFER }
