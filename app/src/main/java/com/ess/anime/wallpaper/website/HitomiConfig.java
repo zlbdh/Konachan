@@ -54,6 +54,45 @@ public class HitomiConfig extends WebsiteConfig<HitomiParser> {
         return INDEX_URL;
     }
 
+    /**
+     * Build a tag search nozomi URL, e.g. n/tag/female:anal-all.nozomi
+     * Tag format is "{type}:{name}"; the name part is URL-encoded, colon preserved.
+     */
+    public static String getTagNozomiUrl(String tag) {
+        if (TextUtils.isEmpty(tag)) {
+            return null;
+        }
+        String encoded = encodeTagForNozomi(tag.trim());
+        if (TextUtils.isEmpty(encoded)) {
+            return null;
+        }
+        return "https://" + CDN_HOST + "/n/tag/" + encoded + "-all.nozomi";
+    }
+
+    private static String encodeTagForNozomi(String tag) {
+        try {
+            // URLEncoder encodes space as '+', which is wrong in a path; also keep ':' unencoded
+            String e = java.net.URLEncoder.encode(tag, "UTF-8").replace("+", "%20").replace("%3A", ":");
+            return e;
+        } catch (Exception ex) {
+            return tag;
+        }
+    }
+
+    /**
+     * Nozomi URL for the current request: tag search nozomi when tags are present,
+     * otherwise the global index. Both share the same format (4-byte big-endian IDs, newest first).
+     */
+    public String getNozomiUrl() {
+        if (mCurrentTags != null && !mCurrentTags.isEmpty()) {
+            String url = getTagNozomiUrl(mCurrentTags.get(0));
+            if (!TextUtils.isEmpty(url)) {
+                return url;
+            }
+        }
+        return INDEX_URL;
+    }
+
     public static String getGalleryJsUrl(int galleryId) {
         return "https://" + CDN_HOST + "/galleries/" + galleryId + ".js";
     }

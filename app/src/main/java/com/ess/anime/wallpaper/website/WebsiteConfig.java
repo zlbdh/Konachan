@@ -170,6 +170,11 @@ public abstract class WebsiteConfig<T extends HtmlParser> {
     // Whether random browsing is supported
     public abstract boolean isSupportRandomPost();
 
+    // Whether to disable Glide disk cache (for signed URLs that expire, e.g. tube sites)
+    public boolean isDisableDiskCache() {
+        return false;
+    }
+
     // Whether advanced search is supported
     public abstract boolean isSupportAdvancedSearch();
 

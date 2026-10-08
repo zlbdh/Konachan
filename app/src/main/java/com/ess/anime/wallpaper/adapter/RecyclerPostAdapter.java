@@ -62,12 +62,20 @@ public class RecyclerPostAdapter extends BaseQuickAdapter<ThumbBean, BaseViewHol
         //thumbnail
         Map<String, String> headerMap = WebsiteManager.getInstance().getRequestHeaders();
         ivThumb.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        Glide.with(mContext)
+        com.bumptech.glide.RequestBuilder<Drawable> glideRequest = Glide.with(mContext)
                 .load(MyGlideModule.makeGlideUrl(thumbBean.thumbUrl, headerMap))
                 .placeholder(R.drawable.ic_placeholder_post)
                 .priority(Priority.HIGH)
-                .override(thumbBean.thumbWidth, thumbBean.thumbHeight)
-                .listener(new RequestListener<Drawable>() {
+                .override(thumbBean.thumbWidth, thumbBean.thumbHeight);
+        // tube 站缩略图 URL 带时效签名，禁用磁盘缓存避免过期后加载失败
+        try {
+            if (WebsiteManager.getInstance().getWebsiteConfig().isDisableDiskCache()) {
+                glideRequest = glideRequest.diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.NONE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        glideRequest.listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         return false;

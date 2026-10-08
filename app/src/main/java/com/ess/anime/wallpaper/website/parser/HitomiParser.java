@@ -33,9 +33,6 @@ import java.util.regex.Pattern;
  */
 public class HitomiParser extends HtmlParser {
 
-    /** Cache the latest gallery ID to avoid requesting it for every page */
-    private static volatile int sNewestId = 0;
-
     public HitomiParser(WebsiteConfig websiteConfig) {
         super(websiteConfig);
     }
@@ -71,46 +68,33 @@ public class HitomiParser extends HtmlParser {
     }
 
     /**
-     * Get the gallery IDs for this page.
-     * The nozomi index is ordered newest first; take PAGE_SIZE entries per page.
-     * Reduce requests by estimating latest ID minus offset; IDs increase sequentially and deleted galleries return 404 and are skipped.
+     * Get the gallery IDs for this page by Range-requesting the nozomi index directly.
+     * Both index-all.nozomi and tag nozomi share the same format:
+     * 4-byte big-endian gallery IDs, newest first.
      */
     private List<Integer> getGalleryIdsForPage(int page) {
         List<Integer> ids = new ArrayList<>();
         try {
-            int newest = getNewestGalleryId();
-            if (newest <= 0) {
+            String nozomiUrl = getHitomiConfig().getNozomiUrl();
+            int pageSize = HitomiConfig.getPageSize();
+            long start = (long) (page - 1) * pageSize * 4;
+            long end = (long) page * pageSize * 4 - 1;
+            byte[] data = fetchRange(nozomiUrl, start, end);
+            if (data == null || data.length < 4) {
                 return ids;
             }
-            int pageSize = HitomiConfig.getPageSize();
-            int start = newest - (page - 1) * pageSize;
-            for (int i = 0; i < pageSize && start - i > 0; i++) {
-                ids.add(start - i);
+            // Nozomi stores 4-byte big-endian unsigned gallery IDs
+            ByteBuffer buf = ByteBuffer.wrap(data).order(ByteOrder.BIG_ENDIAN);
+            while (buf.remaining() >= 4) {
+                int id = buf.getInt();
+                if (id > 0) {
+                    ids.add(id);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return ids;
-    }
-
-    /** Range-request the first four nozomi bytes to obtain the latest gallery ID as a little-endian int */
-    private int getNewestGalleryId() {
-        if (sNewestId > 0) {
-            return sNewestId;
-        }
-        try {
-            byte[] data = fetchRange(HitomiConfig.getIndexUrl(), 0, 3);
-            if (data != null && data.length >= 4) {
-                int id = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).getInt();
-                if (id > 0) {
-                    sNewestId = id;
-                }
-                return id;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
     }
 
     /** Synchronous request with a Range header, returning raw bytes */

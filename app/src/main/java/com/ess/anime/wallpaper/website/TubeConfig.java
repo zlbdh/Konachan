@@ -137,6 +137,12 @@ public abstract class TubeConfig extends WebsiteConfig<TubeParser> {
     }
 
     @Override
+    public boolean isDisableDiskCache() {
+        // tube 站缩略图 URL 带 24h 签名，磁盘缓存过期后无法加载
+        return true;
+    }
+
+    @Override
     public boolean isSupportAdvancedSearch() {
         return false;
     }
