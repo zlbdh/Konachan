@@ -89,7 +89,7 @@ public class GelbooruConfig extends WebsiteConfig<GelbooruParser> {
             if (TextUtils.equals(tag, "order:random")) {
                 tag = "sort:random";
             }
-            tags.append(tag).append("+");
+            tags.append(encodeTag(tag)).append("+");
         }
 
         return getBaseUrl() + "index.php?page=dapi&s=post&q=index&pid=" + (page - 1) + "&tags=" + tags + "&limit=42" + getApiKeySuffix();

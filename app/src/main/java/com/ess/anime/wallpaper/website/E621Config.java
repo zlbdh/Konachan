@@ -59,7 +59,7 @@ public class E621Config extends WebsiteConfig<E621Parser> {
 
         StringBuilder tags = new StringBuilder();
         for (String tag : tagList) {
-            tags.append(tag).append("+");
+            tags.append(encodeTag(tag)).append("+");
         }
 
         return getBaseUrl() + "posts.json?limit=42&page=" + page + "&tags=" + tags;

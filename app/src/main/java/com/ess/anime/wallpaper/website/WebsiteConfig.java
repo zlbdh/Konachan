@@ -104,6 +104,15 @@ public abstract class WebsiteConfig<T extends HtmlParser> {
     // 通过tags搜索图片
     public abstract String getPostUrl(int page, List<String> tagList);
 
+    // 搜索标签 URL 编码（中文/特殊字符不编码会构造出非法 URL）
+    protected static String encodeTag(String tag) {
+        try {
+            return java.net.URLEncoder.encode(tag, "UTF-8");
+        } catch (Exception e) {
+            return tag;
+        }
+    }
+
     // 搜索日榜图片
     public abstract String getPopularDailyUrl(int year, int month, int day, int page);
 

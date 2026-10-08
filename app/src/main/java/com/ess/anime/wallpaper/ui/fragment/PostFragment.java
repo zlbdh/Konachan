@@ -343,7 +343,7 @@ public class PostFragment extends BaseFragment implements
                     // 404按成功处理，UI显示无搜索结果而不是访问失败
                     onSuccessful(errorMessage);
                 } else {
-                    checkNetwork();
+                    checkNetwork(errorCode, errorMessage);
                 }
             }
 
@@ -498,7 +498,7 @@ public class PostFragment extends BaseFragment implements
                     // 404按成功处理，UI显示无搜索结果而不是访问失败
                     onSuccessful(errorMessage);
                 } else {
-                    checkNetwork();
+                    checkNetwork(errorCode, errorMessage);
                 }
             }
 
@@ -548,7 +548,7 @@ public class PostFragment extends BaseFragment implements
                     // 404按成功处理，UI显示无搜索结果而不是访问失败
                     onSuccessful(errorMessage);
                 } else {
-                    checkNetwork();
+                    checkNetwork(errorCode, errorMessage);
                 }
             }
 
@@ -629,9 +629,31 @@ public class PostFragment extends BaseFragment implements
 
     //访问网络失败
     private void checkNetwork() {
+        checkNetwork(-1, null);
+    }
+
+    private void checkNetwork(int errorCode, String errorMessage) {
         mSwipeRefresh.setRefreshing(false);
         if (mPostAdapter.getData().isEmpty()) {
             mPostAdapter.setEmptyView(R.layout.layout_load_no_network, mRvPosts);
+            // 根据错误码给出更具体的提示
+            try {
+                android.view.View emptyView = mPostAdapter.getEmptyView();
+                if (emptyView != null) {
+                    android.widget.TextView tv = emptyView.findViewById(R.id.tv_load_no_network_tip);
+                    if (tv != null) {
+                        if (errorCode == 403) {
+                            tv.setText("被服务器拒绝（403），试试切换网络或 VPN 节点");
+                        } else if (errorCode == 503) {
+                            tv.setText("服务器暂时不可用（503），稍后下拉重试");
+                        } else if (errorCode == -1) {
+                            tv.setText("连接超时，请检查网络后下拉刷新重试");
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             SoundHelper.getInstance().playLoadNoNetworkSound(getActivity());
         } else {
             mPostAdapter.loadMoreFail();

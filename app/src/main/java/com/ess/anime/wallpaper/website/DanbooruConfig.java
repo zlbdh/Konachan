@@ -87,7 +87,7 @@ public class DanbooruConfig extends WebsiteConfig<DanbooruParser> {
                 page = 1;
                 break;
             } else {
-                tags.append(tag).append("+");
+                tags.append(encodeTag(tag)).append("+");
             }
         }
 

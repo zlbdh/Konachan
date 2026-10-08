@@ -61,7 +61,7 @@ public class SankakuConfig extends WebsiteConfig<SankakuParser> {
 
         StringBuilder tags = new StringBuilder();
         for (String tag : tagList) {
-            tags.append(tag).append("+");
+            tags.append(encodeTag(tag)).append("+");
         }
 
         return getBaseUrl() + "posts?page=" + page + "&tags=" + tags + "&limit=60";

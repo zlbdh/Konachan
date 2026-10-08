@@ -59,7 +59,7 @@ public class KonachanEConfig extends WebsiteConfig<GeneralParser> {
 
         StringBuilder tags = new StringBuilder();
         for (String tag : tagList) {
-            tags.append(tag).append("+");
+            tags.append(encodeTag(tag)).append("+");
         }
 
         return getBaseUrl() + "post?page=" + page + "&tags=" + tags;
