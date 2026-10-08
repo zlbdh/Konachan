@@ -101,6 +101,9 @@ public class WebsiteManager {
                 case WebsiteConfig.BASE_URL_YUKKURI:
                     websiteConfig = new YukkuriConfig();
                     break;
+                case WebsiteConfig.BASE_URL_AIBOORU:
+                    websiteConfig = new AIbooruConfig();
+                    break;
             }
 
             if (mWebsiteConfig != websiteConfig) {
