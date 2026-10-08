@@ -63,7 +63,6 @@ public abstract class WordPressConfig extends WebsiteConfig<WordPressParser> {
         return Collections.emptyList();
     }
 
-    @Override
     protected String getPostsPath() {
         return "posts?";
     }
