@@ -18,10 +18,13 @@ public class PriorityStringRequest extends StringRequest {
 
     public PriorityStringRequest(int method, String url, Response.Listener<String> listener, @Nullable Response.ErrorListener errorListener) {
         super(method, url, listener, errorListener);
+        // VPN 下延迟高，Volley 默认 2.5s 超时太短，提到 15s
+        setRetryPolicy(new com.android.volley.DefaultRetryPolicy(15000, 1, 1.0f));
     }
 
     public PriorityStringRequest(String url, Response.Listener<String> listener, @Nullable Response.ErrorListener errorListener) {
         super(url, listener, errorListener);
+        setRetryPolicy(new com.android.volley.DefaultRetryPolicy(15000, 1, 1.0f));
     }
 
     @Override
