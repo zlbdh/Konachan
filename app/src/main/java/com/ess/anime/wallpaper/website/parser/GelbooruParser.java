@@ -37,8 +37,20 @@ public class GelbooruParser extends HtmlParser {
                 int thumbWidth = Integer.parseInt(e.getElementsByTag("preview_width").first().text());
                 int thumbHeight = Integer.parseInt(e.getElementsByTag("preview_height").first().text());
                 String thumbUrl = e.getElementsByTag("preview_url").first().text();
+                if (thumbUrl == null || thumbUrl.trim().isEmpty()) {
+                    // preview_url 为空时用 sample_url 兜底
+                    try {
+                        thumbUrl = e.getElementsByTag("sample_url").first().text();
+                    } catch (Exception ex) {
+                        thumbUrl = "";
+                    }
+                }
                 if (!thumbUrl.startsWith("http")) {
-                    thumbUrl = "https:" + thumbUrl;
+                    if (thumbUrl.startsWith("//")) {
+                        thumbUrl = "https:" + thumbUrl;
+                    } else if (!thumbUrl.isEmpty()) {
+                        thumbUrl = "https://" + thumbUrl;
+                    }
                 }
                 String realSize = e.getElementsByTag("width").first().text() + " x " + e.getElementsByTag("height").first().text();
                 String linkToShow = mWebsiteConfig.getPostDetailUrl(id);
