@@ -26,4 +26,9 @@ public class SonoharaConfig extends DanbooruConfig {
     public String getSavedImageHead() {
         return "Sonohara-";
     }
+
+    @Override
+    public com.ess.anime.wallpaper.website.parser.DanbooruParser getHtmlParser() {
+        return new com.ess.anime.wallpaper.website.parser.DanbooruParser(this);
+    }
 }
