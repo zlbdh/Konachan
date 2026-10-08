@@ -17,6 +17,23 @@ public class FourkhdConfig extends WordPressConfig {
     }
 
     @Override
+    public String getPostUrl(int page, java.util.List<String> tagList) {
+        // rest_route 模式：参数用 & 连接，不能再加 ?
+        if (tagList == null) {
+            tagList = new java.util.ArrayList<>();
+        }
+        StringBuilder tags = new StringBuilder();
+        for (String tag : tagList) {
+            if (!android.text.TextUtils.isEmpty(tag)) {
+                tags.append(encodeTag(tag)).append(" ");
+            }
+        }
+        return getRestBase() + "posts&per_page=42&page=" + page
+                + "&search=" + tags.toString().trim()
+                + "&_embed=wp:featuredmedia";
+    }
+
+    @Override
     public String getMediaUrl(int mediaId) {
         return getRestBase() + "media/" + mediaId;
     }

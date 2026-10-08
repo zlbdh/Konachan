@@ -116,9 +116,6 @@ public class WebsiteManager {
                 case WebsiteConfig.BASE_URL_FOURKHD:
                     websiteConfig = new FourkhdConfig();
                     break;
-                case WebsiteConfig.BASE_URL_COSBLAY:
-                    websiteConfig = new CosblayConfig();
-                    break;
                 case WebsiteConfig.BASE_URL_NUDECOSPLAYGIRLS:
                     websiteConfig = new NudeCosplayGirlsConfig();
                     break;

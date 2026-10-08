@@ -31,7 +31,6 @@ public abstract class WebsiteConfig<T extends HtmlParser> {
     public final static String BASE_URL_HIJIRIBE = "https://hijiribe.donmai.us/";
     public final static String BASE_URL_MISSKON = "https://misskon.com/";
     public final static String BASE_URL_FOURKHD = "https://www.4khd.com/";
-    public final static String BASE_URL_COSBLAY = "https://cosblay.com/";
     public final static String BASE_URL_NUDECOSPLAYGIRLS = "https://nudecosplaygirls.com/";
     public final static String BASE_URL_COSPLAY3X = "https://cosplay3x.com/";
     public final static String BASE_URL_ASIANPINK = "https://asianpink.net/";
@@ -53,7 +52,6 @@ public abstract class WebsiteConfig<T extends HtmlParser> {
             BASE_URL_XBOORU, BASE_URL_TBIB, BASE_URL_E621,
             BASE_URL_RULE34, BASE_URL_HYPNO, BASE_URL_YUKKURI,
             BASE_URL_AIBOORU, BASE_URL_SONOHARA, BASE_URL_HIJIRIBE,
-            BASE_URL_MISSKON, BASE_URL_FOURKHD, BASE_URL_COSBLAY,
             BASE_URL_NUDECOSPLAYGIRLS, BASE_URL_COSPLAY3X, BASE_URL_ASIANPINK,
             BASE_URL_ADULTCOMIXXX, BASE_URL_CIVITAI, BASE_URL_PORNHUB,
             BASE_URL_REDTUBE, BASE_URL_EPORNER, BASE_URL_NHENTAI,
