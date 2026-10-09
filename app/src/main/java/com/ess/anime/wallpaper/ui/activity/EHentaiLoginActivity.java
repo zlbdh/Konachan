@@ -40,6 +40,8 @@ public class EHentaiLoginActivity extends BaseActivity {
     protected void init(Bundle savedInstanceState) {
         setTitle("EHentai Login");
         mWebView = findViewById(R.id.webview);
+        android.widget.Button btnImport = findViewById(R.id.btn_import_cookie);
+        btnImport.setOnClickListener(v -> showImportCookieDialog());
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.getSettings().setDomStorageEnabled(true);
         mWebView.getSettings().setUserAgentString(EHentaiRequest.UA);
