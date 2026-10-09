@@ -97,15 +97,7 @@ public class CoomerConfig extends WebsiteConfig<CoomerParser> {
         return "Coomer-";
     }
 
-    @Override
-    public boolean hasTagJson() {
-        return false;
-    }
 
-    @Override
-    public String getTagJsonUrl() {
-        return null;
-    }
 
     @Override
     public List<String> parseSearchAutoCompleteListFromTagJson(String search) {
@@ -162,13 +154,5 @@ public class CoomerConfig extends WebsiteConfig<CoomerParser> {
         return false;
     }
 
-    @Override
-    public boolean isSupportRandomPost() {
-        return false;
-    }
 
-    @Override
-    public boolean isSupportAdvancedSearch() {
-        return false;
-    }
 }
