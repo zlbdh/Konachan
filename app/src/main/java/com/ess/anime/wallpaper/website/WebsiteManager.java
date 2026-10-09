@@ -146,6 +146,12 @@ public class WebsiteManager {
                 case WebsiteConfig.BASE_URL_HITOMI:
                     websiteConfig = new HitomiConfig();
                     break;
+                case WebsiteConfig.BASE_URL_EHENTAI:
+                    websiteConfig = new EHentaiConfig();
+                    break;
+                case WebsiteConfig.BASE_URL_EXHENTAI:
+                    websiteConfig = new ExHentaiConfig();
+                    break;
             }
 
             if (mWebsiteConfig != websiteConfig) {

@@ -91,6 +91,11 @@
             android:screenOrientation="behind" />
 
         <activity
+            android:name=".ui.activity.EHentaiLoginActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:screenOrientation="behind" />
+
+        <activity
             android:name=".ui.activity.SearchActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:screenOrientation="behind"

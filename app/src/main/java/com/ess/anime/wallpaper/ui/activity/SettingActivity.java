@@ -109,6 +109,7 @@ public class SettingActivity extends BaseActivity {
         items.add(getGelbooruApiKeyItem());
         items.add(getRule34ApiKeyItem());
         items.add(getDanbooruApiKeyItem());
+        items.add(getEHentaiLoginItem());
         items.add(getBatchDownloadQualityItem());
         items.add(getAutoDownloadUpdateItem());
         items.add(getCheckUpdateItem());
@@ -134,6 +135,13 @@ public class SettingActivity extends BaseActivity {
                 .setTitle(R.string.setting_danbooru_api_key_title)
                 .setDesc(R.string.setting_danbooru_api_key_desc)
                 .setOnClickListener(v -> showDanbooruApiKeyDialog());
+    }
+
+    private CommonSettingItem getEHentaiLoginItem() {
+        return new CommonSettingItem()
+                .setTitle(R.string.setting_ehentai_login_title)
+                .setDesc(R.string.setting_ehentai_login_desc)
+                .setOnClickListener(v -> EHentaiLoginActivity.launch(this));
     }
 
     private void showDanbooruApiKeyDialog() {
