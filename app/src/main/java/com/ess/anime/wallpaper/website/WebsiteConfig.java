@@ -43,6 +43,8 @@ public abstract class WebsiteConfig<T extends HtmlParser> {
     public final static String BASE_URL_HITOMI = "https://hitomi.la/";
     public final static String BASE_URL_EHENTAI = "https://e-hentai.org/";
     public final static String BASE_URL_EXHENTAI = "https://exhentai.org/";
+    public final static String BASE_URL_COOMER = "https://coomer.st/";
+    public final static String BASE_URL_REDGIFS = "https://www.redgifs.com/";
 
     public final static String TAG_JSON_URL_KONACHAN_S = "https://konachan.net/tag/summary.json";
     public final static String TAG_JSON_URL_KONACHAN_E = "https://konachan.com/tag/summary.json";
@@ -58,7 +60,8 @@ public abstract class WebsiteConfig<T extends HtmlParser> {
             BASE_URL_NUDECOSPLAYGIRLS, BASE_URL_COSPLAY3X, BASE_URL_ASIANPINK,
             BASE_URL_ADULTCOMIXXX, BASE_URL_CIVITAI, BASE_URL_PORNHUB,
             BASE_URL_REDTUBE, BASE_URL_EPORNER, BASE_URL_NHENTAI,
-            BASE_URL_HITOMI, BASE_URL_EHENTAI, BASE_URL_EXHENTAI
+            BASE_URL_HITOMI, BASE_URL_EHENTAI, BASE_URL_EXHENTAI,
+            BASE_URL_COOMER, BASE_URL_REDGIFS
     };
 
     protected String mTagJson;
@@ -192,6 +195,13 @@ public abstract class WebsiteConfig<T extends HtmlParser> {
     // Whether to disable Glide disk cache (for signed URLs that expire, e.g. tube sites)
     public boolean isDisableDiskCache() {
         return false;
+    }
+
+    // Whether the "jump to page" button is supported.
+    // Sites with cursor-based pagination (e.g. Civitai) cannot jump to an
+    // arbitrary page, so the button is hidden for them.
+    public boolean isSupportPageJump() {
+        return true;
     }
 
     // Referer header for image loading (for sites with hotlink protection, e.g. MissKon).

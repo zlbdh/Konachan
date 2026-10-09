@@ -152,6 +152,7 @@ public class PostFragment extends BaseFragment implements
         mRootView.findViewById(R.id.iv_page).setOnClickListener(view -> {
             gotoPage(view);
         });
+        updatePageJumpButton();
         mRootView.findViewById(R.id.iv_search).setOnClickListener(view -> {
             openSearch();
         });
@@ -222,6 +223,19 @@ public class PostFragment extends BaseFragment implements
         mPopupPage.showAsDropDown(view);
         mEtGoto.selectAll();
         mEtGoto.post(() -> UIUtils.showSoftInput(mActivity, mEtGoto));
+    }
+
+    /**
+     * Hide the "jump to page" button for sites that don't support it
+     * (e.g. Civitai's cursor-based pagination).
+     */
+    private void updatePageJumpButton() {
+        try {
+            boolean support = WebsiteManager.getInstance().getWebsiteConfig().isSupportPageJump();
+            mRootView.findViewById(R.id.iv_page).setVisibility(support ? View.VISIBLE : View.GONE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //Search
@@ -344,6 +358,10 @@ public class PostFragment extends BaseFragment implements
     // Scroll to load more
     @Override
     public void onLoadMoreRequested() {
+        if (isExHentaiLoginRequired()) {
+            mPostAdapter.loadMoreFail();
+            return;
+        }
         String url = WebsiteManager.getInstance().getWebsiteConfig().getPostUrl(++mCurrentPage, mCurrentTagList);
         Map<String, String> headerMap = WebsiteManager.getInstance().getRequestHeaders();
         OkHttp.connect(url, TAG, headerMap, new OkHttp.OkHttpCallback() {
@@ -499,6 +517,10 @@ public class PostFragment extends BaseFragment implements
     }
 
     private void getNewPosts(int page) {
+        if (isExHentaiLoginRequired()) {
+            showLoginRequired();
+            return;
+        }
         String url = WebsiteManager.getInstance().getWebsiteConfig().getPostUrl(page, mCurrentTagList);
         Map<String, String> headerMap = WebsiteManager.getInstance().getRequestHeaders();
         OkHttp.connect(url, TAG, headerMap, new OkHttp.OkHttpCallback() {
@@ -599,6 +621,7 @@ public class PostFragment extends BaseFragment implements
     public void onWebsiteChanged(String baseUrl) {
         if (mBatchDownloadController != null) mBatchDownloadController.cancel();
         mToolbar.setNavigationIcon(WebsiteManager.getInstance().getWebsiteConfig().getWebsiteLogoRes());
+        updatePageJumpButton();
         resetAll(1);
         getNewPosts(mCurrentPage);
         changeFromPage(mCurrentPage);
@@ -667,6 +690,51 @@ public class PostFragment extends BaseFragment implements
             SoundHelper.getInstance().playLoadNoNetworkSound(getActivity());
         } else {
             mPostAdapter.loadMoreFail();
+        }
+    }
+
+    /** ExHentai requires login; show a friendly prompt instead of an empty list. */
+    private boolean isExHentaiLoginRequired() {
+        try {
+            com.ess.anime.wallpaper.website.WebsiteConfig config =
+                    com.ess.anime.wallpaper.website.WebsiteManager.getInstance().getWebsiteConfig();
+            if (config instanceof com.ess.anime.wallpaper.website.ExHentaiConfig) {
+                android.content.Context ctx = getActivity();
+                if (ctx == null) {
+                    ctx = mActivity;
+                }
+                if (ctx != null) {
+                    return !com.ess.anime.wallpaper.website.EHentaiRequest
+                            .getInstance(ctx.getApplicationContext())
+                            .hasLoginCookies("exhentai.org");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private void showLoginRequired() {
+        mSwipeRefresh.setRefreshing(false);
+        mPostAdapter.setEmptyView(R.layout.layout_exhentai_login_required, mRvPosts);
+        mPostAdapter.setNewData(null);
+        try {
+            android.view.View emptyView = mPostAdapter.getEmptyView();
+            if (emptyView != null) {
+                android.view.View btn = emptyView.findViewById(R.id.btn_go_login);
+                if (btn != null) {
+                    btn.setOnClickListener(v -> {
+                        try {
+                            com.ess.anime.wallpaper.ui.activity.EHentaiLoginActivity.launch(mActivity);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

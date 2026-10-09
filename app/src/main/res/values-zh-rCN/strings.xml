@@ -348,4 +348,6 @@
     <string name="language_changed">语言已切换，正在重启…</string>
     <string name="setting_ehentai_login_title">EHentai 登录</string>
     <string name="setting_ehentai_login_desc">登录 E-Hentai/ExHentai 以使用收藏和 ExHentai</string>
+    <string name="exhentai_login_required_tip">ExHentai 需要登录才能浏览。\n点击下方按钮去登录。</string>
+    <string name="exhentai_go_login">去登录</string>
 </resources>

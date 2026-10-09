@@ -21,7 +21,9 @@ import java.util.List;
  * Pagination: Civitai uses metadata.nextCursor rather than a traditional page parameter.
  * Maintain a cursor list for sequential paging: mCursors.get(i) is the cursor for page i+2,
  * returned as nextCursor by page i+1. Reset the list for page=1, a new search, or refresh.
- * Nonsequential navigation, such as jumps or reentry, falls back to a request without a cursor and returns page one; this is a known limitation.
+ * Nonsequential navigation is not supported: isSupportPageJump() returns false so the
+ * "jump to page" button is hidden in PostFragment; without a cursor the API would
+ * silently return page one, which is confusing.
  */
 public class CivitaiConfig extends WebsiteConfig<CivitaiParser> {
 
@@ -184,6 +186,13 @@ public class CivitaiConfig extends WebsiteConfig<CivitaiParser> {
 
     @Override
     public boolean isSupportRandomPost() {
+        return false;
+    }
+
+    @Override
+    public boolean isSupportPageJump() {
+        // Cursor-based pagination: jumping to an arbitrary page has no
+        // corresponding cursor, so the jump button is hidden in the UI.
         return false;
     }
 

@@ -45,6 +45,8 @@
         <item>@string/base_hitomi</item>
         <item>@string/base_ehentai</item>
         <item>@string/base_exhentai</item>
+        <item>@string/base_coomer</item>
+        <item>@string/base_redgifs</item>
     </string-array>
 
     <string-array name="screen_orientation_list_item">

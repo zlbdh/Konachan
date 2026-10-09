@@ -15,6 +15,10 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -77,7 +81,16 @@ public class EHentaiParser extends HtmlParser {
                             : "https://e-hentai.org/";
                     // Cap at 500 pages to avoid runaway requests on huge galleries
                     int count = Math.min(detail.pageCount, 500);
-                    pageUrls = fetchAllImageUrls(req, detail.firstImagePageUrl, count, baseUrl);
+                    if (detail.allImagePageUrls != null && !detail.allImagePageUrls.isEmpty()) {
+                        // Parallel: use thumbnail links collected from div#gdt
+                        List<String> parallelUrls = detail.allImagePageUrls.size() > count
+                                ? detail.allImagePageUrls.subList(0, count)
+                                : detail.allImagePageUrls;
+                        pageUrls = fetchImageUrlsParallel(req, parallelUrls, baseUrl);
+                    } else {
+                        // Fallback: sequential "next" chain
+                        pageUrls = fetchAllImageUrls(req, detail.firstImagePageUrl, count, baseUrl);
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -188,6 +201,8 @@ public class EHentaiParser extends HtmlParser {
         public String firstImagePageUrl = "";
         public String thumbUrl = "";
         public double rating = 0;
+        /** All image-page URLs found in div#gdt (may be fewer than pageCount if thumbnails are paginated). */
+        public List<String> allImagePageUrls = new ArrayList<>();
     }
 
     public GalleryDetail parseGalleryDetail(Document doc) {
@@ -230,6 +245,18 @@ public class EHentaiParser extends HtmlParser {
             if (firstImg != null) {
                 d.firstImagePageUrl = firstImg.attr("href");
             }
+            // Collect all image-page URLs for parallel fetching (avoids sequential "next" chain)
+            try {
+                Elements thumbLinks = doc.select("div#gdt a[href]");
+                for (Element a : thumbLinks) {
+                    String href = a.attr("href");
+                    if (!TextUtils.isEmpty(href) && !d.allImagePageUrls.contains(href)) {
+                        d.allImagePageUrls.add(href);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             Element cover = doc.selectFirst("div#gd1 img[src]");
             if (cover != null) {
                 d.thumbUrl = cover.attr("src");
@@ -242,6 +269,8 @@ public class EHentaiParser extends HtmlParser {
 
     /**
      * Fetch every image page and extract the direct image URL.
+     * Parallel implementation: 8 threads, per-page retry (2x), 5-min total timeout.
+     * Results are kept in page order via array indexing.
      * This is N requests for N pages; callers run it on a background thread.
      */
     public List<String> fetchAllImageUrls(EHentaiRequest req, String firstImagePageUrl,
@@ -250,9 +279,9 @@ public class EHentaiParser extends HtmlParser {
         if (req == null || TextUtils.isEmpty(firstImagePageUrl) || pageCount <= 0) {
             return urls;
         }
+        // Fallback: sequential "next" chain when we only have the first URL.
+        // (Parallel path is used when caller provides the full URL list.)
         try {
-            // Derive URL template: .../s/{imgtoken}/{gid}-{pagenum}
-            // The imgtoken changes per page, so we follow the "next" link instead.
             String url = firstImagePageUrl;
             for (int i = 0; i < pageCount; i++) {
                 try {
@@ -265,7 +294,6 @@ public class EHentaiParser extends HtmlParser {
                             urls.add(src);
                         }
                     }
-                    // follow "next" (last link in #i3)
                     Element next = doc.selectFirst("div#i3 a:last-child[href]");
                     if (next == null) {
                         break;
@@ -284,6 +312,82 @@ public class EHentaiParser extends HtmlParser {
             e.printStackTrace();
         }
         return urls;
+    }
+
+    /**
+     * Parallel version: fetch all image-page URLs concurrently (8 threads).
+     * @param imagePageUrls list of image-page URLs in page order
+     * @return direct image URLs in the same order; failed pages are skipped
+     */
+    public List<String> fetchImageUrlsParallel(EHentaiRequest req, List<String> imagePageUrls,
+                                               String referer) {
+        List<String> result = new ArrayList<>();
+        if (req == null || imagePageUrls == null || imagePageUrls.isEmpty()) {
+            return result;
+        }
+        final int n = imagePageUrls.size();
+        final String[] out = new String[n]; // index = page order; thread-safe via distinct indices
+        final CountDownLatch latch = new CountDownLatch(n);
+        ExecutorService executor = Executors.newFixedThreadPool(8);
+        try {
+            for (int i = 0; i < n; i++) {
+                final int index = i;
+                final String pageUrl = imagePageUrls.get(i);
+                executor.submit(() -> {
+                    try {
+                        String imgUrl = fetchSingleImageUrl(req, pageUrl, referer);
+                        if (!TextUtils.isEmpty(imgUrl)) {
+                            out[index] = imgUrl;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        latch.countDown();
+                    }
+                });
+            }
+            // Total timeout: 5 minutes
+            latch.await(5, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
+        } finally {
+            executor.shutdownNow();
+        }
+        for (String s : out) {
+            if (!TextUtils.isEmpty(s)) {
+                result.add(s);
+            }
+        }
+        return result;
+    }
+
+    /** Fetch one image page and extract the direct image URL, with 2 retries. */
+    private String fetchSingleImageUrl(EHentaiRequest req, String pageUrl, String referer) {
+        for (int attempt = 0; attempt < 3; attempt++) {
+            try {
+                String html = req.get(pageUrl, referer);
+                if (TextUtils.isEmpty(html)) {
+                    continue;
+                }
+                Document doc = Jsoup.parse(html);
+                Element img = doc.selectFirst("img#img[src]");
+                if (img != null) {
+                    String src = img.attr("src");
+                    if (!TextUtils.isEmpty(src)) {
+                        return src;
+                    }
+                }
+                // Empty src on last attempt -> give up
+                if (attempt == 2) {
+                    break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                // retry on next loop iteration
+            }
+        }
+        return "";
     }
 
     /** Extract the direct image URL from a single image page document. */

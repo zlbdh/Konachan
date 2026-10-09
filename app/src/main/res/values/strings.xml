@@ -69,6 +69,8 @@
     <string name="base_hitomi" translatable="false">hitomi</string>
     <string name="base_ehentai" translatable="false">EHentai</string>
     <string name="base_exhentai" translatable="false">ExHentai</string>
+    <string name="base_coomer" translatable="false">Coomer</string>
+    <string name="base_redgifs" translatable="false">Redgifs</string>
     <string name="setting_gelbooru_api_key_title">Gelbooru API Key Settings</string>
     <string name="setting_gelbooru_api_key_desc">If the built-in key stops working, enter your own key from your Gelbooru account page. Leave blank to use the built-in key.</string>
     <string name="setting_gelbooru_api_key_hint">api_key</string>
@@ -356,4 +358,6 @@
     <string name="language_changed">Language changed, restarting…</string>
     <string name="setting_ehentai_login_title">EHentai Login</string>
     <string name="setting_ehentai_login_desc">Log in to E-Hentai/ExHentai for favorites and ExHentai access</string>
+    <string name="exhentai_login_required_tip">ExHentai requires login to browse.\nTap below to log in.</string>
+    <string name="exhentai_go_login">Go to Login</string>
 </resources>

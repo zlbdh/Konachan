@@ -152,6 +152,12 @@ public class WebsiteManager {
                 case WebsiteConfig.BASE_URL_EXHENTAI:
                     websiteConfig = new ExHentaiConfig();
                     break;
+                case WebsiteConfig.BASE_URL_COOMER:
+                    websiteConfig = new CoomerConfig();
+                    break;
+                case WebsiteConfig.BASE_URL_REDGIFS:
+                    websiteConfig = new RedgifsConfig();
+                    break;
             }
 
             if (mWebsiteConfig != websiteConfig) {
