@@ -90,8 +90,12 @@ public class EHentaiLoginActivity extends BaseActivity {
                                 com.ess.anime.wallpaper.website.EHentaiRequest.getInstance(this);
                         req.injectCookies("e-hentai.org", cookies);
                         req.injectCookies("exhentai.org", cookies);
-                        if (req.hasLoginCookies("e-hentai.org")) {
-                            android.widget.Toast.makeText(this, "Cookie 导入成功", android.widget.Toast.LENGTH_SHORT).show();
+                        boolean hasEh = req.hasLoginCookies("e-hentai.org");
+                        boolean hasEx = req.hasLoginCookies("exhentai.org");
+                        if (hasEh) {
+                            String msg = "Cookie 导入成功 (EH:" + (hasEh ? "✓" : "✗")
+                                    + " EX:" + (hasEx ? "✓" : "✗") + ")";
+                            android.widget.Toast.makeText(this, msg, android.widget.Toast.LENGTH_LONG).show();
                             finish();
                         } else {
                             android.widget.Toast.makeText(this, "未找到登录 Cookie，请检查格式", android.widget.Toast.LENGTH_LONG).show();
