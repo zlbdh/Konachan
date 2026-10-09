@@ -8,8 +8,8 @@ android {
         applicationId "com.ess.anime.wallpaper"
         minSdkVersion 24
         targetSdkVersion 34
-        versionCode 53
-        versionName "2.0.6"
+        versionCode 54
+        versionName "3.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resConfigs('en', 'en-rUS', 'zh', 'zh-rCN')
         vectorDrawables.useSupportLibrary = true
