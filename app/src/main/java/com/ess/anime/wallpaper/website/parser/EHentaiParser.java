@@ -149,8 +149,8 @@ public class EHentaiParser extends HtmlParser {
                         thumbUrl = img.attr("data-src");
                     }
 
-                    Element titleEl = item.selectFirst(".glink");
-                    String title = titleEl != null ? titleEl.text() : gid;
+                    // Note: title not stored (ThumbBean has no title field;
+                    // detail page shows title via ImageBean)
 
                     Element pagesEl = item.selectFirst(".gl5t");
                     String realSize = "";
