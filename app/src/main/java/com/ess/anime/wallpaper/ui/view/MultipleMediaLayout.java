@@ -124,7 +124,23 @@ public class MultipleMediaLayout extends FrameLayout implements RequestListener<
             hideLoadingView();
         }
 
-        Object url = isWebPath() ? MyGlideModule.makeGlideUrl(mMediaPath, WebsiteManager.getInstance().getRequestHeaders()) : mMediaPath;
+        Object url;
+        if (isWebPath()) {
+            java.util.Map<String, String> headerMap = WebsiteManager.getInstance().getRequestHeaders();
+            String referer = null;
+            try {
+                referer = WebsiteManager.getInstance().getWebsiteConfig().getImageReferer();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (!android.text.TextUtils.isEmpty(referer)) {
+                url = MyGlideModule.makeGlideUrlWithReferer(mMediaPath, referer, headerMap);
+            } else {
+                url = MyGlideModule.makeGlideUrl(mMediaPath, headerMap);
+            }
+        } else {
+            url = mMediaPath;
+        }
         Activity activity = (Activity) getContext();
         if (SystemUtils.isActivityActive(activity)) {
             Glide.with(getContext())

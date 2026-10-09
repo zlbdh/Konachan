@@ -65,14 +65,30 @@ public class RecyclerPostAdapter extends BaseQuickAdapter<ThumbBean, BaseViewHol
         //thumbnail
         Map<String, String> headerMap = WebsiteManager.getInstance().getRequestHeaders();
         ivThumb.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        com.bumptech.glide.load.model.GlideUrl glideUrl;
+        String referer = null;
+        try {
+            referer = WebsiteManager.getInstance().getWebsiteConfig().getImageReferer();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (!android.text.TextUtils.isEmpty(referer)) {
+            glideUrl = MyGlideModule.makeGlideUrlWithReferer(thumbBean.thumbUrl, referer, headerMap);
+        } else {
+            glideUrl = MyGlideModule.makeGlideUrl(thumbBean.thumbUrl, headerMap);
+        }
         com.bumptech.glide.RequestBuilder<Drawable> glideRequest = Glide.with(mContext)
-                .load(MyGlideModule.makeGlideUrl(thumbBean.thumbUrl, headerMap))
+                .load(glideUrl)
                 .placeholder(R.drawable.ic_placeholder_post)
                 .priority(Priority.HIGH)
                 .override(thumbBean.thumbWidth, thumbBean.thumbHeight);
         // Tube thumbnail URLs have time-limited signatures; disable disk caching to avoid failures after expiration.
-        if (WebsiteManager.getInstance().getWebsiteConfig().isDisableDiskCache()) {
-            glideRequest = glideRequest.diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.NONE);
+        try {
+            if (WebsiteManager.getInstance().getWebsiteConfig().isDisableDiskCache()) {
+                glideRequest = glideRequest.diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.NONE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         glideRequest.listener(new RequestListener<Drawable>() {
                     @Override

@@ -11,7 +11,7 @@ android {
         versionCode 51
         versionName "2.0.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        resConfigs('en', 'en-rUS')
+        resConfigs('en', 'en-rUS', 'zh', 'zh-rCN')
         vectorDrawables.useSupportLibrary = true
         aaptOptions {
             ignoreAssetsPattern "!x86:!*ffprobe"

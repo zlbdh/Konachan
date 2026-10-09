@@ -68,6 +68,12 @@ public abstract class WordPressConfig extends WebsiteConfig<WordPressParser> {
     }
 
     @Override
+    public String getImageReferer() {
+        // WordPress 站点图片可能有防盗链，带 Referer
+        return getBaseUrl();
+    }
+
+    @Override
     public String getPostUrl(int page, List<String> tagList) {
         if (tagList == null) {
             tagList = new ArrayList<>();

@@ -192,6 +192,12 @@ public abstract class WebsiteConfig<T extends HtmlParser> {
         return false;
     }
 
+    // Referer header for image loading (for sites with hotlink protection, e.g. MissKon).
+    // Return null to not send Referer.
+    public String getImageReferer() {
+        return null;
+    }
+
     // Whether advanced search is supported
     public abstract boolean isSupportAdvancedSearch();
 

@@ -30,8 +30,9 @@ public final class LocaleHelper {
     }
 
     public static void saveLanguage(Context context, String lang) {
+        // 用 commit() 同步写入：调用方紧接着 kill 进程，apply() 的异步写入可能丢失
         PreferenceManager.getDefaultSharedPreferences(context)
-                .edit().putString(PREF_KEY, lang).apply();
+                .edit().putString(PREF_KEY, lang).commit();
     }
 
     /**
@@ -88,7 +89,14 @@ public final class LocaleHelper {
         } else if (LANG_ZH_CN.equals(lang)) {
             return "简体中文";
         }
-        return context.getString(
-                context.getResources().getIdentifier("language_system", "string", context.getPackageName()));
+        try {
+            int resId = context.getResources().getIdentifier("language_system", "string", context.getPackageName());
+            if (resId != 0) {
+                return context.getString(resId);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "System default";
     }
 }
