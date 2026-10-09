@@ -290,7 +290,8 @@ public class SettingActivity extends BaseActivity {
                                 android.content.Intent intent = getPackageManager()
                                         .getLaunchIntentForPackage(getPackageName());
                                 if (intent != null) {
-                                    intent.addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+                                            | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(intent);
                                     Runtime.getRuntime().exit(0);
                                 }
