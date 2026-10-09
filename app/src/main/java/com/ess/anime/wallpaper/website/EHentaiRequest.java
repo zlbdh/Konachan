@@ -2,14 +2,25 @@ package com.ess.anime.wallpaper.website;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
+import com.ess.anime.wallpaper.http.OkHttp;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cookie;
@@ -29,9 +40,15 @@ import okhttp3.Response;
  *
  * Cookies (ipb_member_id / ipb_pass_hash) are persisted in SharedPreferences
  * so login survives process restarts.
+ *
+ * Pages are loaded by EHentaiWebFetcher (a hidden WebView) so Cloudflare sees a real
+ * browser; the OkHttp client below is only the fallback when no WebView is available.
+ * The jar stays the source of truth for login cookies and is mirrored into the
+ * WebView cookie store.
  */
 public class EHentaiRequest {
 
+    /** User-Agent of the OkHttp fallback only; the WebView keeps its own. */
     public static final String UA =
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                     + "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
@@ -40,8 +57,15 @@ public class EHentaiRequest {
 
     private static volatile EHentaiRequest sInstance;
 
+    private static final ExecutorService sAsyncExecutor = Executors.newFixedThreadPool(3);
+    private static final Handler sMainHandler = new Handler(Looper.getMainLooper());
+    // Pending enqueue() calls; removing one cancels its callback.
+    private static final List<AsyncCall> sAsyncCalls = new ArrayList<>();
+
     private final OkHttpClient mClient;
     private final Context mAppContext;
+    // Hosts whose jar cookies were copied into the WebView store in this process.
+    private final Set<String> mWebViewCookieHosts = Collections.synchronizedSet(new HashSet<>());
 
     private EHentaiRequest(Context context) {
         mAppContext = context.getApplicationContext();
@@ -185,6 +209,8 @@ public class EHentaiRequest {
             }
             if (url != null && !cookies.isEmpty()) {
                 mClient.cookieJar().saveFromResponse(url, cookies);
+                // An explicit login / import replaces what the WebView client holds.
+                EHentaiWebFetcher.copyCookiesToWebView(host, cookies, true);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -232,19 +258,112 @@ public class EHentaiRequest {
         return h;
     }
 
+    /**
+     * Blocking GET; call it off the main thread. e-hentai.org / exhentai.org pages are
+     * loaded by EHentaiWebFetcher; OkHttp is only used when no WebView is available.
+     */
     public String get(String url, String referer) throws IOException {
+        HttpUrl httpUrl = HttpUrl.parse(url);
+        if (httpUrl != null && EHentaiWebFetcher.isSupportedHost(httpUrl.host())
+                && EHentaiWebFetcher.isAvailable()) {
+            if (mWebViewCookieHosts.add(httpUrl.host())) {
+                // Logins saved before the WebView client existed are only in the jar.
+                EHentaiWebFetcher.copyCookiesToWebView(httpUrl.host(),
+                        mClient.cookieJar().loadForRequest(httpUrl), false);
+            }
+            try {
+                return EHentaiWebFetcher.getInstance(mAppContext).fetch(url, referer);
+            } catch (EHentaiWebFetcher.WebViewUnavailableException e) {
+                e.printStackTrace();
+            }
+        }
+        return getWithOkHttp(url, referer);
+    }
+
+    private String getWithOkHttp(String url, String referer) throws IOException {
         Request.Builder b = new Request.Builder().url(url).get();
         for (Map.Entry<String, String> e : defaultHeaders(referer).entrySet()) {
             b.header(e.getKey(), e.getValue());
         }
         Response resp = mClient.newCall(b.build()).execute();
         try {
+            String body = resp.body() != null ? resp.body().string() : "";
             if (!resp.isSuccessful()) {
-                throw new IOException("HTTP " + resp.code() + " for " + url);
+                throw new EHentaiWebFetcher.HttpException(resp.code(), body, url);
             }
-            return resp.body() != null ? resp.body().string() : "";
+            return body;
         } finally {
             resp.close();
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // Async entry for OkHttp.connect()
+    // ------------------------------------------------------------------
+
+    /** True for e-hentai.org / exhentai.org pages; OkHttp.connect() hands these to {@link #enqueue}. */
+    public static boolean isEHentaiUrl(String url) {
+        HttpUrl httpUrl = url == null ? null : HttpUrl.parse(url);
+        return httpUrl != null && EHentaiWebFetcher.isSupportedHost(httpUrl.host());
+    }
+
+    /**
+     * Async {@link #get} with OkHttp.connect() semantics: the callback runs on the main
+     * thread, onFailure gets the HTTP status (-1 for network errors), and nothing is
+     * delivered after {@link #cancel} with the same tag.
+     */
+    public void enqueue(String url, Object tag, OkHttp.OkHttpCallback callback) {
+        AsyncCall call = new AsyncCall(tag);
+        synchronized (sAsyncCalls) {
+            sAsyncCalls.add(call);
+        }
+        sAsyncExecutor.execute(() -> {
+            String body = null;
+            int errorCode = -1;
+            String errorBody = "";
+            try {
+                body = get(url, null);
+            } catch (EHentaiWebFetcher.HttpException e) {
+                errorCode = e.code;
+                errorBody = e.body;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            String result = body;
+            int code = errorCode;
+            String failure = errorBody;
+            sMainHandler.post(() -> {
+                synchronized (sAsyncCalls) {
+                    if (!sAsyncCalls.remove(call)) {
+                        return; // cancelled
+                    }
+                }
+                if (result != null) {
+                    callback.onSuccessful(result);
+                } else {
+                    callback.onFailure(code, failure);
+                }
+            });
+        });
+    }
+
+    /** Drops pending {@link #enqueue} callbacks for this tag (called from OkHttp.cancel()). */
+    public static void cancel(Object tag) {
+        synchronized (sAsyncCalls) {
+            Iterator<AsyncCall> it = sAsyncCalls.iterator();
+            while (it.hasNext()) {
+                if (Objects.equals(it.next().tag, tag)) {
+                    it.remove();
+                }
+            }
+        }
+    }
+
+    private static class AsyncCall {
+        final Object tag;
+
+        AsyncCall(Object tag) {
+            this.tag = tag;
         }
     }
 

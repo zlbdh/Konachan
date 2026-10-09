@@ -14,7 +14,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,13 +30,13 @@ import java.util.regex.Pattern;
  * Reference: JHenTai (Flutter, Apache 2.0) lib/src/utils/eh_spider_parser.dart
  * Only the core gallery-list / detail / image-page parsing is ported.
  *
- * Gallery list uses the "thumbnail" view (div.glthumb):
- *   <div class="glthumb">
- *     <div><a href="https://e-hentai.org/g/{gid}/{token}/"><img src="{ehgt.org thumb}"></a></div>
- *     <div class="glink">title</div>
- *     <div class="cs">category</div>
- *     <div class="gl5t">... rating, pages, time ...</div>
- *   </div>
+ * Gallery list, default "Compact" view (table.itg.gltc, one gallery per row):
+ *   <tr>
+ *     <td class="gl2c"><div class="glthumb"><div><img data-src="{ehgt.org thumb}" src="data:..."></div>
+ *       ... <div>NN pages</div></div></td>
+ *     <td class="gl3c glname"><a href="https://e-hentai.org/g/{gid}/{token}/"><div class="glink">title</div></a></td>
+ *   </tr>
+ * Minimal / Extended views are tables too; "Thumbnail" view uses div.itg > div.gl1t.
  *
  * Detail page: h1#gn title, "NNN pages", image page links /s/{imgtoken}/{gid}-{pagenum}
  * Image page: img#img[src] is the direct full-size URL.
@@ -42,7 +44,13 @@ import java.util.regex.Pattern;
 public class EHentaiParser extends HtmlParser {
 
     private static final Pattern GID_TOKEN = Pattern.compile("/g/(\\d+)/([0-9a-f]+)/");
-    private static final Pattern PAGES = Pattern.compile("(\\d+)\\s+pages");
+    // "1 page" / "24 pages"
+    private static final Pattern PAGES = Pattern.compile("(\\d+)\\s+pages?");
+    private static final Pattern GID_VAR = Pattern.compile("var gid\\s*=\\s*(\\d+);");
+    private static final Pattern IMAGE_PAGE_GID = Pattern.compile("/s/[0-9a-f]+/(\\d+)-\\d+");
+    private static final Pattern CSS_URL = Pattern.compile("url\\(['\"]?([^'\")]+)['\"]?\\)");
+    // Image pages fetched at once when a gallery opens; kept low so it reads like a browser.
+    private static final int IMAGE_PAGE_CONCURRENCY = 4;
 
     public EHentaiParser(WebsiteConfig websiteConfig) {
         super(websiteConfig);
@@ -104,7 +112,9 @@ public class EHentaiParser extends HtmlParser {
             String fileUrl = pageUrls.isEmpty() ? detail.thumbUrl : pageUrls.get(0);
             String previewUrl = TextUtils.isEmpty(detail.thumbUrl) ? fileUrl : detail.thumbUrl;
 
-            builder.id(detail.firstImagePageUrl)
+            // The id must equal ThumbBean.id (the gid) or ThumbBean.checkImageBelongs()
+            // never matches and the detail screen keeps waiting.
+            builder.id(TextUtils.isEmpty(detail.gid) ? detail.firstImagePageUrl : detail.gid)
                     .author("")
                     .tags("")
                     .fileUrl(fileUrl)
@@ -133,52 +143,57 @@ public class EHentaiParser extends HtmlParser {
     // Gallery list
     // ------------------------------------------------------------------
 
-    /** Parse the thumbnail-view gallery list into ThumbBeans. */
+    /**
+     * Parse a gallery list (any view mode) into ThumbBeans. The thumbnail block (div.glthumb)
+     * holds no gallery link in Compact view, so each row / card is matched by its
+     * /g/{gid}/{token}/ link instead.
+     */
     public List<ThumbBean> parseGalleryList(Document doc) {
         List<ThumbBean> list = new ArrayList<>();
         if (doc == null) {
             return list;
         }
         try {
-            Elements items = doc.select("div.glthumb");
+            Elements items = doc.select("table.itg > tbody > tr, div.itg > div.gl1t");
+            Set<String> seen = new HashSet<>();
             for (Element item : items) {
                 try {
-                    Element a = item.selectFirst("a[href]");
-                    if (a == null) {
-                        continue;
+                    Matcher m = null;
+                    for (Element a : item.select("a[href]")) {
+                        Matcher candidate = GID_TOKEN.matcher(a.attr("href"));
+                        if (candidate.find()) {
+                            m = candidate;
+                            break;
+                        }
                     }
-                    String href = a.attr("href");
-                    Matcher m = GID_TOKEN.matcher(href);
-                    if (!m.find()) {
+                    // Header rows have no gallery link
+                    if (m == null || !seen.add(m.group(1))) {
                         continue;
                     }
                     String gid = m.group(1);
                     String token = m.group(2);
 
-                    Element img = item.selectFirst("img[src]");
-                    String thumbUrl = img != null ? img.attr("src") : "";
-                    // JHenTai sometimes uses data-src for lazy loading
-                    if (TextUtils.isEmpty(thumbUrl) && img != null) {
-                        thumbUrl = img.attr("data-src");
-                    }
-
                     // Note: title not stored (ThumbBean has no title field;
                     // detail page shows title via ImageBean)
 
-                    Element pagesEl = item.selectFirst(".gl5t");
                     String realSize = "";
-                    if (pagesEl != null) {
-                        Matcher pm = PAGES.matcher(pagesEl.text());
+                    for (Element info : item.select(".gl4c, .gl5t, .gl3e, .glthumb")) {
+                        Matcher pm = PAGES.matcher(info.text());
                         if (pm.find()) {
                             realSize = pm.group(1) + "P";
+                            break;
                         }
                     }
 
                     // linkToShow must be the absolute detail URL: consumers
                     // (ThumbBean.getImageDetailIfNeed, BatchDownloadHelper) fetch it directly.
                     ThumbBean bean = new ThumbBean(
-                            gid, 0, 0, thumbUrl, realSize,
+                            gid, 0, 0, findThumbUrl(item), realSize,
                             mWebsiteConfig.getPostDetailUrl(gid + "/" + token));
+                    // Loading a gallery's details fetches all of its image pages; doing that for
+                    // every list item up front is a request burst that gets the client
+                    // rate-limited. Details load when the gallery is opened instead.
+                    bean.needPreloadImageDetail = false;
                     list.add(bean);
                 } catch (Exception ignore) {
                 }
@@ -189,12 +204,26 @@ public class EHentaiParser extends HtmlParser {
         return list;
     }
 
+    /** Thumbnail URL of a list item; lazily loaded rows keep it in data-src. */
+    private static String findThumbUrl(Element item) {
+        Element img = item.selectFirst(".glthumb img, .gl3t img, .gl1e img");
+        if (img == null) {
+            return "";
+        }
+        String url = img.attr("data-src");
+        if (TextUtils.isEmpty(url)) {
+            url = img.attr("src");
+        }
+        return url.startsWith("data:") ? "" : url;
+    }
+
     // ------------------------------------------------------------------
     // Gallery detail
     // ------------------------------------------------------------------
 
     /** Result of detail parsing: title, page count, and first image-page link. */
     public static class GalleryDetail {
+        public String gid = "";
         public String title = "";
         public String titleJpn = "";
         public int pageCount = 0;
@@ -257,9 +286,30 @@ public class EHentaiParser extends HtmlParser {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            for (Element script : doc.select("script")) {
+                Matcher gm = GID_VAR.matcher(script.data());
+                if (gm.find()) {
+                    d.gid = gm.group(1);
+                    break;
+                }
+            }
+            if (TextUtils.isEmpty(d.gid)) {
+                Matcher gm = IMAGE_PAGE_GID.matcher(d.firstImagePageUrl);
+                if (gm.find()) {
+                    d.gid = gm.group(1);
+                }
+            }
             Element cover = doc.selectFirst("div#gd1 img[src]");
             if (cover != null) {
                 d.thumbUrl = cover.attr("src");
+            } else {
+                // Current layout draws the cover as a CSS background:
+                // <div id="gd1"><div style="... background:transparent url(https://ehgt.org/...) ..."></div></div>
+                Element coverDiv = doc.selectFirst("div#gd1 div[style]");
+                Matcher um = coverDiv != null ? CSS_URL.matcher(coverDiv.attr("style")) : null;
+                if (um != null && um.find()) {
+                    d.thumbUrl = um.group(1);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -269,8 +319,7 @@ public class EHentaiParser extends HtmlParser {
 
     /**
      * Fetch every image page and extract the direct image URL.
-     * Parallel implementation: 8 threads, per-page retry (2x), 5-min total timeout.
-     * Results are kept in page order via array indexing.
+     * Sequential fallback: follows each page's "next" link starting from the first image page.
      * This is N requests for N pages; callers run it on a background thread.
      */
     public List<String> fetchAllImageUrls(EHentaiRequest req, String firstImagePageUrl,
@@ -315,7 +364,7 @@ public class EHentaiParser extends HtmlParser {
     }
 
     /**
-     * Parallel version: fetch all image-page URLs concurrently (8 threads).
+     * Parallel version: fetch all image-page URLs concurrently (IMAGE_PAGE_CONCURRENCY threads).
      * @param imagePageUrls list of image-page URLs in page order
      * @return direct image URLs in the same order; failed pages are skipped
      */
@@ -328,7 +377,7 @@ public class EHentaiParser extends HtmlParser {
         final int n = imagePageUrls.size();
         final String[] out = new String[n]; // index = page order; thread-safe via distinct indices
         final CountDownLatch latch = new CountDownLatch(n);
-        ExecutorService executor = Executors.newFixedThreadPool(8);
+        ExecutorService executor = Executors.newFixedThreadPool(IMAGE_PAGE_CONCURRENCY);
         try {
             for (int i = 0; i < n; i++) {
                 final int index = i;

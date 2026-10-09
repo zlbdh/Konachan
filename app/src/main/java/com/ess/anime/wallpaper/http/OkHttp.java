@@ -6,7 +6,9 @@ import android.app.Application;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.ess.anime.wallpaper.MyApp;
 import com.ess.anime.wallpaper.download.BaseDownloadProgressListener;
+import com.ess.anime.wallpaper.website.EHentaiRequest;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.db.DownloadManager;
 import com.lzy.okgo.model.Progress;
@@ -108,6 +110,12 @@ public class OkHttp {
     }
 
     public static void connect(String url, Object tag, Map<String, String> headerMap, OkHttpCallback callback, Request.Priority priority) {
+        if (EHentaiRequest.isEHentaiUrl(url)) {
+            // E-Hentai / ExHentai are behind Cloudflare and need the EH login cookies:
+            // load them through the WebView-backed client instead of Volley
+            EHentaiRequest.getInstance(MyApp.getInstance()).enqueue(url, tag, callback);
+            return;
+        }
         connectWithRetry(url, tag, headerMap, callback, priority, 0);
     }
 
@@ -194,6 +202,7 @@ public class OkHttp {
     public static void cancel(Object tag) {
         sRequestQueue.cancelAll(tag);
         OkGo.getInstance().cancelTag(tag);
+        EHentaiRequest.cancel(tag);
     }
 
     /***********************  callback  ***********************/

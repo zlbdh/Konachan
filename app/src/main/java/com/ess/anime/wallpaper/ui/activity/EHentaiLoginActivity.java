@@ -44,7 +44,9 @@ public class EHentaiLoginActivity extends BaseActivity {
         btnImport.setOnClickListener(v -> showImportCookieDialog());
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.getSettings().setDomStorageEnabled(true);
-        mWebView.getSettings().setUserAgentString(EHentaiRequest.UA);
+        // Keep the WebView's own User-Agent: it is the one EHentaiWebFetcher uses, and
+        // Cloudflare ties clearance cookies to the UA, so a challenge passed here also
+        // unblocks the in-app loading.
         CookieManager.getInstance().setAcceptCookie(true);
 
         mWebView.setWebViewClient(new WebViewClient() {

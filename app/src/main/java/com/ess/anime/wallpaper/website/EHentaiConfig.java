@@ -72,7 +72,9 @@ public class EHentaiConfig extends WebsiteConfig<EHentaiParser> {
 
     @Override
     public boolean isSupportSearchAutoCompleteFromNetwork() {
-        return true;
+        // tagsuggest.php returns 404, and SearchAutoCompleteManager retries a failed
+        // suggestion request endlessly, which hammers the site while the user types.
+        return false;
     }
 
     @Override
