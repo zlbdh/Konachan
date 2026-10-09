@@ -70,10 +70,14 @@ public class ThumbBean implements Parcelable {
         if (imageBean == null) {
             String url = linkToShow;
             Map<String, String> headerMap = WebsiteManager.getInstance().getRequestHeaders();
-            OkHttp.connect(url, httpTag, headerMap, new OkHttp.OkHttpCallback() {
+            final int[] attempts = {0};
+            OkHttp.OkHttpCallback callback = new OkHttp.OkHttpCallback() {
                 @Override
                 public void onFailure(int errorCode, String errorMessage) {
-                    OkHttp.connect(url, httpTag, headerMap, this, Request.Priority.NORMAL);
+                    // Retry at most twice; a permanently broken URL must not loop forever.
+                    if (++attempts[0] <= 2) {
+                        OkHttp.connect(url, httpTag, headerMap, this, Request.Priority.NORMAL);
+                    }
                 }
 
                 @Override
@@ -91,7 +95,8 @@ public class ThumbBean implements Parcelable {
                                 EventBus.getDefault().post(new MsgBean(Constants.GET_IMAGE_DETAIL, json));
                             });
                 }
-            }, Request.Priority.NORMAL);
+            };
+            OkHttp.connect(url, httpTag, headerMap, callback, Request.Priority.NORMAL);
         }
     }
 
@@ -148,6 +153,6 @@ public class ThumbBean implements Parcelable {
 
     @Override
     public int hashCode() {
-        return linkToShow.hashCode();
+        return linkToShow == null ? 0 : linkToShow.hashCode();
     }
 }

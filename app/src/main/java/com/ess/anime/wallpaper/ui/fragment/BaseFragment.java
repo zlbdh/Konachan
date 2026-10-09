@@ -57,6 +57,7 @@ public abstract class BaseFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        mRootView = null;
         super.onDestroyView();
     }
 

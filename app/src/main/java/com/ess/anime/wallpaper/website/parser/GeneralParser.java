@@ -128,12 +128,14 @@ public class GeneralParser extends HtmlParser {
                         poolListBean = new PoolListBean();
                         line = line.substring(line.indexOf("{"), line.lastIndexOf(")"));
                         JsonObject json = new JsonParser().parse(line).getAsJsonObject();
-                        String thumbUrl = json.get("sample_url").getAsString();
-                        thumbUrl = thumbUrl.replace("\\/", "/");
-                        if (!thumbUrl.startsWith("http")) {
-                            thumbUrl = "https:" + thumbUrl;
+                        if (json.has("sample_url") && !json.get("sample_url").isJsonNull()) {
+                            String thumbUrl = json.get("sample_url").getAsString();
+                            thumbUrl = thumbUrl.replace("\\/", "/");
+                            if (!thumbUrl.startsWith("http")) {
+                                thumbUrl = "https:" + thumbUrl;
+                            }
+                            poolListBean.thumbUrl = thumbUrl;
                         }
-                        poolListBean.thumbUrl = thumbUrl;
                     } else if (line.startsWith("var hover_row = $")) {
                         line = line.substring(line.indexOf("\"") + 1, line.lastIndexOf("\""));
                         poolListBean.id = line;

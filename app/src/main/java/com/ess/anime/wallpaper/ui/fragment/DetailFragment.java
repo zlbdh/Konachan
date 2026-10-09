@@ -64,6 +64,21 @@ public class DetailFragment extends BaseFragment {
     }
 
     @Override
+    public void onDetach() {
+        mActivity = null;
+        super.onDetach();
+    }
+
+    @Override
+    public void onDestroyView() {
+        dismissMoreMenu();
+        mTouchView = null;
+        mSwipeRefresh = null;
+        mLayoutDetailContainer = null;
+        super.onDestroyView();
+    }
+
+    @Override
     int layoutRes() {
         return R.layout.fragment_detail;
     }

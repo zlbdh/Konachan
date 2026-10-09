@@ -56,10 +56,7 @@ public class YandeConfig extends WebsiteConfig<GeneralParser> {
             tagList = new ArrayList<>();
         }
 
-        StringBuilder tags = new StringBuilder();
-        for (String tag : tagList) {
-            tags.append(tag).append("+");
-        }
+        String tags = joinTagsPlus(tagList);
 
         return getBaseUrl() + "post?page=" + page + "&tags=" + tags;
     }

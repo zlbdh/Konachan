@@ -14,8 +14,8 @@ import com.ess.anime.wallpaper.ui.activity.DownloadImageManagerActivity;
 
 public class MyNotification {
 
-    private static final String NOTIFY_CHANNEL_ID = "notification";
-    private static final String NOTIFY_CHANNEL_NAME = "notification";
+    private static final String NOTIFY_CHANNEL_ID = "image_download_foreground";
+    private static final String NOTIFY_CHANNEL_NAME = "Download Service";
     private static final int NOTIFY_ID = 123;
 
     private Service mService;
@@ -28,9 +28,10 @@ public class MyNotification {
 
     private void createNotifyChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Do NOT use IMPORTANCE_NONE here: this channel must stay visible,
+            // and it must not share an ID with the download-progress channel.
             NotificationChannel channel = new NotificationChannel(NOTIFY_CHANNEL_ID,
                     NOTIFY_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
-            channel.setImportance(NotificationManager.IMPORTANCE_NONE);
             NotificationManager notifyManager = (NotificationManager) mService.getSystemService(Context.NOTIFICATION_SERVICE);
             notifyManager.createNotificationChannel(channel);
         }

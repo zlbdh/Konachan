@@ -50,6 +50,9 @@ public class RecyclerPostAdapter extends BaseQuickAdapter<ThumbBean, BaseViewHol
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) ivThumb.getLayoutParams();
         if (mIsRectangular) {
             layoutParams.dimensionRatio = "165:130";
+        } else if (thumbBean.thumbWidth <= 0 || thumbBean.thumbHeight <= 0) {
+            // Guard against malformed metadata to avoid ArithmeticException
+            layoutParams.dimensionRatio = "1:1";
         } else if (thumbBean.thumbHeight / thumbBean.thumbWidth >= 3) {
             layoutParams.dimensionRatio = "1:3";
         } else if (thumbBean.thumbWidth / thumbBean.thumbHeight >= 2) {
@@ -68,12 +71,8 @@ public class RecyclerPostAdapter extends BaseQuickAdapter<ThumbBean, BaseViewHol
                 .priority(Priority.HIGH)
                 .override(thumbBean.thumbWidth, thumbBean.thumbHeight);
         // Tube thumbnail URLs have time-limited signatures; disable disk caching to avoid failures after expiration.
-        try {
-            if (WebsiteManager.getInstance().getWebsiteConfig().isDisableDiskCache()) {
-                glideRequest = glideRequest.diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.NONE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (WebsiteManager.getInstance().getWebsiteConfig().isDisableDiskCache()) {
+            glideRequest = glideRequest.diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.NONE);
         }
         glideRequest.listener(new RequestListener<Drawable>() {
                     @Override
@@ -135,8 +134,17 @@ public class RecyclerPostAdapter extends BaseQuickAdapter<ThumbBean, BaseViewHol
 
     private boolean addDatas(int position, List<ThumbBean> thumbList) {
         synchronized (this) {
-            //Remove duplicate thumbList entries caused by new site images during refresh
-            thumbList.removeAll(mData);
+            //Remove duplicate thumbList entries caused by new site images during refresh.
+            //Use a HashSet for O(n) dedup instead of List.removeAll's O(n*m).
+            if (!mData.isEmpty() && !thumbList.isEmpty()) {
+                java.util.Set<ThumbBean> existing = new java.util.HashSet<>(mData);
+                java.util.Iterator<ThumbBean> it = thumbList.iterator();
+                while (it.hasNext()) {
+                    if (existing.contains(it.next())) {
+                        it.remove();
+                    }
+                }
+            }
             if (!thumbList.isEmpty()) {
                 addData(position, thumbList);
                 preloadImageDetail(thumbList);

@@ -101,4 +101,10 @@ public class SplashActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
     }
+
+    @Override
+    protected void onDestroy() {
+        mHandler.removeCallbacksAndMessages(null);
+        super.onDestroy();
+    }
 }

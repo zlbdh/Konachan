@@ -134,6 +134,23 @@ public abstract class WebsiteConfig<T extends HtmlParser> {
         }
     }
 
+    /**
+     * Join tags with "+" separator, URL-encoded. Used by booru-style sites.
+     * e.g. ["a b", "c"] -> "a+b+c" (with encoding)
+     */
+    protected static String joinTagsPlus(java.util.List<String> tagList) {
+        if (tagList == null) {
+            return "";
+        }
+        StringBuilder tags = new StringBuilder();
+        for (String tag : tagList) {
+            if (!android.text.TextUtils.isEmpty(tag)) {
+                tags.append(encodeTag(tag)).append("+");
+            }
+        }
+        return tags.toString();
+    }
+
     // Search daily rankings
     public abstract String getPopularDailyUrl(int year, int month, int day, int page);
 

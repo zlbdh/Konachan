@@ -28,9 +28,22 @@ public class TagBean implements Parcelable {
     }
 
     public TagBean(JsonObject tagArray) {
+        if (tagArray == null) {
+            return;
+        }
         for (Entry<String, JsonElement> entry : tagArray.entrySet()) {
             String key = entry.getKey();
-            String value = entry.getValue().getAsString();
+            JsonElement element = entry.getValue();
+            // Skip non-primitive values instead of crashing and discarding the whole bean
+            if (element == null || !element.isJsonPrimitive()) {
+                continue;
+            }
+            String value;
+            try {
+                value = element.getAsString();
+            } catch (Exception ignored) {
+                continue;
+            }
             switch (value) {
                 case "copyright":
                     copyright.add(key);

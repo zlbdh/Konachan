@@ -94,6 +94,12 @@ public class PostFragment extends BaseFragment implements
     }
 
     @Override
+    public void onDetach() {
+        mActivity = null;
+        super.onDetach();
+    }
+
+    @Override
     int layoutRes() {
         return R.layout.fragment_post;
     }
@@ -249,12 +255,16 @@ public class PostFragment extends BaseFragment implements
             if (actionId == EditorInfo.IME_ACTION_GO) {
                 String num = mEtGoto.getText().toString();
                 if (!TextUtils.isEmpty(num)) {
-                    int newPage = Integer.parseInt(num);
-                    if (newPage > 0) {
-                        resetAll(newPage);
-                        getNewPosts(mCurrentPage);
-                        changeFromPage(mCurrentPage);
-                        changeToPage(mCurrentPage);
+                    try {
+                        int newPage = Integer.parseInt(num);
+                        if (newPage > 0) {
+                            resetAll(newPage);
+                            getNewPosts(mCurrentPage);
+                            changeFromPage(mCurrentPage);
+                            changeToPage(mCurrentPage);
+                        }
+                    } catch (NumberFormatException e) {
+                        // Ignore invalid or out-of-range input
                     }
                 }
                 mPopupPage.dismiss();

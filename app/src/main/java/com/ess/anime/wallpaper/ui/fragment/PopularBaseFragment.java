@@ -74,6 +74,12 @@ public abstract class PopularBaseFragment extends BaseFragment implements
     }
 
     @Override
+    public void onDetach() {
+        mActivity = null;
+        super.onDetach();
+    }
+
+    @Override
     int layoutRes() {
         return R.layout.fragment_popular_base;
     }

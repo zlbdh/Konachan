@@ -15,8 +15,13 @@ import com.ess.anime.wallpaper.utils.FileUtils;
 
 public abstract class BaseDownloadProgressListener<T> {
 
-    private static final String NOTIFY_CHANNEL_ID = "notification";
-    private static final String NOTIFY_CHANNEL_NAME = "notification";
+    // New channel ID: the old "notification" channel may have been poisoned to
+    // IMPORTANCE_NONE on existing installs; a fresh ID restores visibility.
+    private static final String NOTIFY_CHANNEL_ID = "download_progress";
+    private static final String NOTIFY_CHANNEL_NAME = "Downloads";
+
+    private static final java.util.concurrent.atomic.AtomicInteger sNotifyId =
+            new java.util.concurrent.atomic.AtomicInteger(1000);
 
     protected Context mContext;
     protected String mFileAvailable;
@@ -40,7 +45,7 @@ public abstract class BaseDownloadProgressListener<T> {
     private void createNotifyChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(NOTIFY_CHANNEL_ID,
-                    NOTIFY_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
+                    NOTIFY_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager notifyManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             notifyManager.createNotificationChannel(channel);
         }
@@ -54,7 +59,7 @@ public abstract class BaseDownloadProgressListener<T> {
             } else {
                 mNotifyBuilder = new Notification.Builder(mContext);
             }
-            mNotifyId = (int) System.currentTimeMillis();
+            mNotifyId = sNotifyId.getAndIncrement();
             mNotifyManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
             String title = getNotifyTitle();
@@ -123,7 +128,7 @@ public abstract class BaseDownloadProgressListener<T> {
     private void createReloadPendingIntent(Intent intent) {
         Intent reloadIntent = new Intent(mContext, getClassToReload());
         reloadIntent.putExtras(intent);
-        mReloadIntent = PendingIntent.getService(mContext, (int) System.currentTimeMillis(),
+        mReloadIntent = PendingIntent.getService(mContext, sNotifyId.getAndIncrement(),
                 reloadIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 

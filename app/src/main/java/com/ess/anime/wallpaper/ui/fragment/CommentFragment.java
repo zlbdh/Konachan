@@ -54,6 +54,12 @@ public class CommentFragment extends BaseFragment {
     }
 
     @Override
+    public void onDetach() {
+        mActivity = null;
+        super.onDetach();
+    }
+
+    @Override
     int layoutRes() {
         return R.layout.fragment_comment;
     }

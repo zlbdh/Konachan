@@ -94,6 +94,7 @@ public class ImageDetailActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
+        mHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
         OkHttp.cancel(TAG);
     }

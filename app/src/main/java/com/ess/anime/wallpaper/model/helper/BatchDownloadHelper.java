@@ -176,7 +176,7 @@ public final class BatchDownloadHelper {
                 completed.countDown();
             }
         });
-        completed.await();
+        completed.await(30, java.util.concurrent.TimeUnit.SECONDS);
         return outcome.get();
     }
 }

@@ -54,6 +54,12 @@ public class ImageFragment extends BaseFragment {
     }
 
     @Override
+    public void onDetach() {
+        mActivity = null;
+        super.onDetach();
+    }
+
+    @Override
     int layoutRes() {
         return R.layout.fragment_image;
     }
@@ -94,7 +100,16 @@ public class ImageFragment extends BaseFragment {
 
     @Override
     public void onDestroyView() {
-        mMediaLayout.reset();
+        if (mMediaLayout != null) {
+            mMediaLayout.reset();
+        }
+        mTouchView = null;
+        mSwipeRefresh = null;
+        mMediaLayout = null;
+        mLayoutPageNav = null;
+        mTvPageIndicator = null;
+        mIvPagePrev = null;
+        mIvPageNext = null;
         super.onDestroyView();
     }
 
@@ -154,8 +169,18 @@ public class ImageFragment extends BaseFragment {
         mTvPageIndicator = mRootView.findViewById(R.id.tv_page_indicator);
         mIvPagePrev = mRootView.findViewById(R.id.iv_page_prev);
         mIvPageNext = mRootView.findViewById(R.id.iv_page_next);
-        mIvPagePrev.setOnClickListener(v -> goToPage(mImageBean.currentPage - 1));
-        mIvPageNext.setOnClickListener(v -> goToPage(mImageBean.currentPage + 1));
+        if (mLayoutPageNav == null || mTvPageIndicator == null
+                || mIvPagePrev == null || mIvPageNext == null) {
+            // Layout without page navigation; multi-page UI stays disabled
+            mLayoutPageNav = null;
+            return;
+        }
+        mIvPagePrev.setOnClickListener(v -> {
+            if (mImageBean != null) goToPage(mImageBean.currentPage - 1);
+        });
+        mIvPageNext.setOnClickListener(v -> {
+            if (mImageBean != null) goToPage(mImageBean.currentPage + 1);
+        });
         updatePageNav();
     }
 
