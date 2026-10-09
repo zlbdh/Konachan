@@ -31,8 +31,11 @@ import java.util.Locale;
  */
 public class NHentaiParser extends HtmlParser {
 
-    /** Image CDN; i1 through i4 are available */
+    /** Full-size image CDN; i1 through i4 are available */
     private static final String IMG_HOST = "https://i3.nhentai.net/";
+
+    /** Thumbnail CDN; t1 through t3 are available (i-hosts do NOT serve thumbnails) */
+    private static final String THUMB_HOST = "https://t3.nhentai.net/";
 
     public NHentaiParser(WebsiteConfig websiteConfig) {
         super(websiteConfig);
@@ -100,7 +103,8 @@ public class NHentaiParser extends HtmlParser {
                     if (TextUtils.isEmpty(thumbPath)) {
                         continue;
                     }
-                    String thumbUrl = imgUrl(thumbPath);
+                    // Thumbnails must use the t-host; i-hosts refuse thumbnail paths
+                    String thumbUrl = THUMB_HOST + thumbPath;
                     int thumbWidth = optInt(g, "thumbnail_width");
                     int thumbHeight = optInt(g, "thumbnail_height");
 

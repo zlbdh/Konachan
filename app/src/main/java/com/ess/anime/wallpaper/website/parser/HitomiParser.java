@@ -177,10 +177,19 @@ public class HitomiParser extends HtmlParser {
             }
             String tagStr = (title + " " + tags.toString()).trim();
 
-            // Use the first image as the thumbnail
+            // Use the first image as the thumbnail; extension from the "name" field
             JsonObject first = files.get(0).getAsJsonObject();
             String firstHash = first.get("hash").getAsString();
-            String thumbUrl = HitomiConfig.getImageUrl(galleryId, firstHash);
+            String firstName = "";
+            try {
+                firstName = first.get("name").getAsString();
+            } catch (Exception ignore) {
+            }
+            String ext = "webp";
+            if (!TextUtils.isEmpty(firstName) && firstName.contains(".")) {
+                ext = firstName.substring(firstName.lastIndexOf('.') + 1);
+            }
+            String thumbUrl = HitomiConfig.getImageUrl(galleryId, firstHash, ext);
             if (TextUtils.isEmpty(thumbUrl)) {
                 return null;
             }

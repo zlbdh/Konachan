@@ -111,16 +111,31 @@ public class HitomiConfig extends WebsiteConfig<HitomiParser> {
 
     /**
      * Build a direct image URL from its hash using Hitomi gg.js full_path_from_hash
-     * Format: images/{last digit}/{last two digits}/{full hash}.webp
+     * Format: images/{last digit}/{last two digits}/{full hash}.{ext}
+     * The extension comes from the file's "name" field (e.g. "001.jpg" -> "jpg").
      */
-    public static String getImageUrl(int galleryId, String hash) {
+    public static String getImageUrl(int galleryId, String hash, String ext) {
         if (TextUtils.isEmpty(hash) || hash.length() < 3) {
             return "";
+        }
+        if (TextUtils.isEmpty(ext)) {
+            ext = "webp";
+        }
+        // Strip leading dot if present
+        if (ext.startsWith(".")) {
+            ext = ext.substring(1);
         }
         char last = hash.charAt(hash.length() - 1);
         String middle = hash.substring(hash.length() - 3, hash.length() - 1);
         return "https://" + getSubdomain(galleryId) + ".gold-usergeneratedcontent.net"
-                + "/images/" + last + "/" + middle + "/" + hash + ".webp";
+                + "/images/" + last + "/" + middle + "/" + hash + "." + ext;
+    }
+
+    /**
+     * Legacy overload; defaults to webp for callers that don't have the file name.
+     */
+    public static String getImageUrl(int galleryId, String hash) {
+        return getImageUrl(galleryId, hash, "webp");
     }
 
     @Override
