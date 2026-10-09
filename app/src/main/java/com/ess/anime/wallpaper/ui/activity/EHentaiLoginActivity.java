@@ -55,6 +55,51 @@ public class EHentaiLoginActivity extends BaseActivity {
         mWebView.loadUrl(LOGIN_URL);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        menu.add(0, 1, 0, "导入 Cookie（跳过人机验证）");
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        if (item.getItemId() == 1) {
+            showImportCookieDialog();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showImportCookieDialog() {
+        final android.widget.EditText et = new android.widget.EditText(this);
+        et.setHint("粘贴 Cookie 字符串，如：\nipb_member_id=123; ipb_pass_hash=abc...");
+        et.setMinLines(4);
+        et.setGravity(android.view.Gravity.TOP);
+        int pad = (int) (16 * getResources().getDisplayMetrics().density);
+        et.setPadding(pad, pad, pad, pad);
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("从浏览器导入 Cookie")
+                .setMessage("在电脑/手机浏览器登录 e-hentai.org 后，按 F12 → Application → Cookies，复制 Cookie 字符串粘贴到这里。")
+                .setView(et)
+                .setPositiveButton("导入", (d, w) -> {
+                    String cookies = et.getText().toString().trim();
+                    if (!cookies.isEmpty()) {
+                        com.ess.anime.wallpaper.website.EHentaiRequest req =
+                                new com.ess.anime.wallpaper.website.EHentaiRequest(this);
+                        req.injectCookies("e-hentai.org", cookies);
+                        req.injectCookies("exhentai.org", cookies);
+                        if (req.hasLoginCookies("e-hentai.org")) {
+                            android.widget.Toast.makeText(this, "Cookie 导入成功", android.widget.Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            android.widget.Toast.makeText(this, "未找到登录 Cookie，请检查格式", android.widget.Toast.LENGTH_LONG).show();
+                        }
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
+
     private void checkLogin(String url) {
         try {
             // Still on the login page -> not logged in yet
