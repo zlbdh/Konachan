@@ -186,4 +186,9 @@ public class RedgifsConfig extends WebsiteConfig<RedgifsParser> {
     public String getSearchAutoCompleteUrl(String tag) {
         return null;
     }
+
+    @Override
+    public boolean isSupportSearchAutoCompleteFromNetwork() {
+        return false;
+    }
 }

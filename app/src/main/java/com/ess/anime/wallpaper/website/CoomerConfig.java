@@ -88,13 +88,7 @@ public class CoomerConfig extends WebsiteConfig<CoomerParser> {
     }
 
     @Override
-    public java.util.Map<String, String> getRequestHeaders() {
-        java.util.Map<String, String> headers = super.getRequestHeaders();
-        if (headers == null) {
-            headers = new java.util.HashMap<>();
-        }
-        // Required by Coomer API anti-bot measure
-        headers.put("Accept", "text/css");
-        return headers;
+    public boolean isSupportSearchAutoCompleteFromNetwork() {
+        return false;
     }
 }
