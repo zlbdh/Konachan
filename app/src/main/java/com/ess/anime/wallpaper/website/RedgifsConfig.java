@@ -183,4 +183,79 @@ public class RedgifsConfig extends WebsiteConfig<RedgifsParser> {
     public String getSavedImageHead() {
         return "Redgifs-";
     }
+
+    @Override
+    public boolean hasTagJson() {
+        return false;
+    }
+
+    @Override
+    public String getTagJsonUrl() {
+        return null;
+    }
+
+    @Override
+    public List<String> parseSearchAutoCompleteListFromTagJson(String search) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public String getPopularDailyUrl(int year, int month, int day, int page) {
+        return getPostUrl(page, null);
+    }
+
+    @Override
+    public String getPopularWeeklyUrl(int year, int month, int day, int page) {
+        return getPostUrl(page, null);
+    }
+
+    @Override
+    public String getPopularMonthlyUrl(int year, int month, int day, int page) {
+        return getPostUrl(page, null);
+    }
+
+    @Override
+    public String getPopularOverallUrl(int year, int month, int day, int page) {
+        return getPostUrl(page, null);
+    }
+
+    @Override
+    public String getPostDetailUrl(String id) {
+        return getBaseUrl();
+    }
+
+    @Override
+    public String getCommentUrl(String id) {
+        return null;
+    }
+
+    @Override
+    public boolean hasPool() {
+        return false;
+    }
+
+    @Override
+    public String getPoolUrl(int page, String name) {
+        return null;
+    }
+
+    @Override
+    public String getPoolPostUrl(String linkToShow, int page) {
+        return null;
+    }
+
+    @Override
+    public boolean needReloadDetailByIdForPoolPost() {
+        return false;
+    }
+
+    @Override
+    public boolean isSupportRandomPost() {
+        return false;
+    }
+
+    @Override
+    public boolean isSupportAdvancedSearch() {
+        return false;
+    }
 }
