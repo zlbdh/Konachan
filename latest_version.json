@@ -1,13 +1,13 @@
 {
-  "versionCode": 49,
-  "versionName": "2.0.2",
-  "apkName": "kanimeG2.0.2-debug.apk",
-  "apkSize": 74319742,
-  "apkUrl": "https://github.com/zlbdh/Konachan/releases/download/v2.0.2-42/kanimeG2.0.2-debug.apk",
-  "apkSha256": "20e48dc7073bd3b46d75056da668b6e43a6f96466e039fbef8e2c7ccc3cbe26a",
+  "versionCode": 50,
+  "versionName": "2.0.3",
+  "apkName": "kanimeG2.0.3-debug.apk",
+  "apkSize": 74659710,
+  "apkUrl": "https://github.com/zlbdh/Konachan/releases/download/v2.0.3-46/kanimeG2.0.3-debug.apk",
+  "apkSha256": "e6af5c0a3941d3dbd9f013f11001cb45c49d83a5ceec3e09ada47b48da4000b0",
   "signingCertificateSha256": "1f3ed26b24f63125cb1cf946277bafaccff424293bc3438e9c2fe1710d2422f2",
-  "sourceSha": "af46895d9e415f418ecb61d3d3b6cbac1be6861e",
-  "releaseTag": "v2.0.2-42",
+  "sourceSha": "1a3f329f8b7573620ac827f44484ec7f65374cac",
+  "releaseTag": "v2.0.3-46",
   "updatedContentZh": "Automatic update downloads; stable project signing; APK integrity, version and certificate validation. The first signing transition requires replacing older differently signed installations.",
   "updatedContentEn": "Automatic update downloads; stable project signing; APK integrity, version and certificate validation. The first signing transition requires replacing older differently signed installations."
 }
