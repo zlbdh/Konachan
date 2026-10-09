@@ -134,19 +134,6 @@ public class RedgifsConfig extends WebsiteConfig<RedgifsParser> {
     }
 
     @Override
-    public java.util.Map<String, String> getRequestHeaders() {
-        java.util.Map<String, String> headers = super.getRequestHeaders();
-        if (headers == null) {
-            headers = new java.util.HashMap<>();
-        }
-        String token = getToken();
-        if (token != null) {
-            headers.put("Authorization", "Bearer " + token);
-        }
-        return headers;
-    }
-
-    @Override
     public List<String> parseSearchAutoCompleteListFromTagJson(String search) {
         return Collections.emptyList();
     }
@@ -190,5 +177,10 @@ public class RedgifsConfig extends WebsiteConfig<RedgifsParser> {
     @Override
     public boolean isSupportSearchAutoCompleteFromNetwork() {
         return false;
+    }
+
+    @Override
+    public String getSavedImageHead() {
+        return "Redgifs-";
     }
 }

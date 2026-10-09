@@ -91,4 +91,9 @@ public class CoomerConfig extends WebsiteConfig<CoomerParser> {
     public boolean isSupportSearchAutoCompleteFromNetwork() {
         return false;
     }
+
+    @Override
+    public String getSavedImageHead() {
+        return "Coomer-";
+    }
 }
