@@ -79,7 +79,7 @@ public class EHentaiLoginActivity extends BaseActivity {
         et.setGravity(android.view.Gravity.TOP);
         int pad = (int) (16 * getResources().getDisplayMetrics().density);
         et.setPadding(pad, pad, pad, pad);
-        new androidx.appcompat.app.AlertDialog.Builder(this)
+        androidx.appcompat.app.AlertDialog dialog = new androidx.appcompat.app.AlertDialog.Builder(this)
                 .setTitle("从浏览器导入 Cookie")
                 .setMessage("在电脑/手机浏览器登录 e-hentai.org 后，按 F12 → Application → Cookies，复制 Cookie 字符串粘贴到这里。")
                 .setView(et)
@@ -99,7 +99,13 @@ public class EHentaiLoginActivity extends BaseActivity {
                     }
                 })
                 .setNegativeButton("取消", null)
-                .show();
+                .create();
+        dialog.show();
+        // 按钮文字加深，确保可见
+        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(android.graphics.Color.parseColor("#1976D2"));
+        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE)
+                .setTextColor(android.graphics.Color.parseColor("#757575"));
     }
 
     private void checkLogin(String url) {
