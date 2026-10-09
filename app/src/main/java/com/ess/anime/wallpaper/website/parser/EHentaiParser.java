@@ -161,9 +161,11 @@ public class EHentaiParser extends HtmlParser {
                         }
                     }
 
-                    // linkToShow carries "gid/token" so the detail step can rebuild URLs
+                    // linkToShow must be the absolute detail URL: consumers
+                    // (ThumbBean.getImageDetailIfNeed, BatchDownloadHelper) fetch it directly.
                     ThumbBean bean = new ThumbBean(
-                            gid, 0, 0, thumbUrl, realSize, gid + "/" + token);
+                            gid, 0, 0, thumbUrl, realSize,
+                            mWebsiteConfig.getPostDetailUrl(gid + "/" + token));
                     list.add(bean);
                 } catch (Exception ignore) {
                 }
