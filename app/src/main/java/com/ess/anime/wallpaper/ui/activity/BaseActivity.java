@@ -23,6 +23,11 @@ import androidx.fragment.app.FragmentManager;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
+    @Override
+    protected void attachBaseContext(android.content.Context newBase) {
+        super.attachBaseContext(com.ess.anime.wallpaper.global.LocaleHelper.wrap(newBase));
+    }
+
     public final static Integer[] SUPPORT_SCREEN_ORIENTATIONS = {
             ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT,
             ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE,

@@ -349,7 +349,4 @@
     <string name="empty_downloads">No downloads yet</string>
     <string name="empty_favorite_tags">No favorite tags yet</string>
     <string name="empty_search_history">No search history yet</string>
-    <string name="setting_language">Language</string>
-    <string name="language_system">System default</string>
-    <string name="language_changed">Language changed, restarting…</string>
 </resources>

@@ -99,6 +99,7 @@ public class SettingActivity extends BaseActivity {
 
     private List<CommonSettingItem> getSettingItems() {
         List<CommonSettingItem> items = new ArrayList<>();
+        items.add(getLanguageItem());
         items.add(getAllowPlaySoundItem());
         items.add(getPreloadImageOnlyWifiItem());
         items.add(getHelpTagTypeItem());
@@ -268,6 +269,34 @@ public class SettingActivity extends BaseActivity {
                     } else {
                         SoundHelper.getInstance().playSoundDisabled();
                     }
+                });
+    }
+
+    private CommonSettingItem getLanguageItem() {
+        String lang = com.ess.anime.wallpaper.global.LocaleHelper.getSavedLanguage(this);
+        String desc = com.ess.anime.wallpaper.global.LocaleHelper.getDisplayName(this, lang);
+        return new CommonSettingItem()
+                .setTitle(R.string.setting_language)
+                .setDesc(desc)
+                .setOnClickListener(v -> {
+                    CustomDialog.showChangeLanguageDialog(this, new CustomDialog.SimpleDialogActionListener() {
+                        @Override
+                        public void onPositive() {
+                            super.onPositive();
+                            // Restart to apply new locale
+                            android.widget.Toast.makeText(SettingActivity.this,
+                                    R.string.language_changed, android.widget.Toast.LENGTH_SHORT).show();
+                            new android.os.Handler().postDelayed(() -> {
+                                android.content.Intent intent = getPackageManager()
+                                        .getLaunchIntentForPackage(getPackageName());
+                                if (intent != null) {
+                                    intent.addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                    Runtime.getRuntime().exit(0);
+                                }
+                            }, 800);
+                        }
+                    });
                 });
     }
 

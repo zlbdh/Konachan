@@ -316,6 +316,41 @@ public class CustomDialog extends MaterialDialog.Builder {
      * @param context  Context
      * @param listener Event listener
      */
+    public static void showChangeLanguageDialog(Context context, OnDialogActionListener listener) {
+        com.ess.anime.wallpaper.global.LocaleHelper LH =
+                null; // placeholder to avoid import issues
+        String cur = com.ess.anime.wallpaper.global.LocaleHelper.getSavedLanguage(context);
+        String[] langValues = {
+                com.ess.anime.wallpaper.global.LocaleHelper.LANG_SYSTEM,
+                com.ess.anime.wallpaper.global.LocaleHelper.LANG_EN,
+                com.ess.anime.wallpaper.global.LocaleHelper.LANG_ZH_CN,
+        };
+        java.util.List<String> displayNames = new java.util.ArrayList<>();
+        int checked = 0;
+        for (int i = 0; i < langValues.length; i++) {
+            displayNames.add(com.ess.anime.wallpaper.global.LocaleHelper.getDisplayName(context, langValues[i]));
+            if (langValues[i].equals(cur)) {
+                checked = i;
+            }
+        }
+        new CustomDialog(context)
+                .title(R.string.setting_language)
+                .negativeText(R.string.dialog_change_base_url_cancel)
+                .items(displayNames)
+                .itemsCallbackSingleChoice(checked, (dialog1, itemView, which, text) -> {
+                    String selected = langValues[which];
+                    if (!selected.equals(cur)) {
+                        com.ess.anime.wallpaper.global.LocaleHelper.saveLanguage(context, selected);
+                    }
+                    if (listener != null) {
+                        listener.onPositive();
+                    }
+                    return true;
+                })
+                .alwaysCallSingleChoiceCallback()
+                .show();
+    }
+
     public static void showChangeBaseUrlDialog(Context context, OnDialogActionListener listener) {
         String baseUrl = WebsiteManager.getInstance().getWebsiteConfig().getBaseUrl();
         List<String> baseList = Arrays.asList(WebsiteConfig.BASE_URLS);
