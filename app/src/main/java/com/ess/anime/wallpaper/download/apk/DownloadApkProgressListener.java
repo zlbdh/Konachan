@@ -71,15 +71,15 @@ public class DownloadApkProgressListener extends BaseDownloadProgressListener<Ap
     }
 
     @Override public void onFinish() {
-        super.onFinish();
-        mNotifyBuilder.setContentText("Update downloaded and verified. Tap to install.");
-        mNotifyManager.notify(mNotifyId, mNotifyBuilder.build());
+        // 由 DownloadApkService 的前台通知统一显示，不再单独发通知（避免双通知）
+    }
+
+    @Override public void onProgress(int progress, long currentSize, long totalSize, long speed) {
+        // 由 DownloadApkService 的前台通知统一更新进度，不再单独发通知（避免双通知）
     }
 
     public void verificationFailed(String message) {
-        super.onError();
-        mNotifyBuilder.setContentText(message);
-        mNotifyManager.notify(mNotifyId, mNotifyBuilder.build());
+        // 由 DownloadApkService 的前台通知统一显示，不再单独发通知（避免双通知）
     }
 
 }
