@@ -78,7 +78,7 @@ public class CoomerConfig extends WebsiteConfig<CoomerParser> {
     }
 
     @Override
-    public List<String> parseSearchAutoCompleteListFromTagJson(String search) {
+    public List<String> parseSearchAutoCompleteListFromNetwork(String promptResult, String search) {
         return Collections.emptyList();
     }
 

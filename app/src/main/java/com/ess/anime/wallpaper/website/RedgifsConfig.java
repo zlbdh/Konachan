@@ -176,4 +176,9 @@ public class RedgifsConfig extends WebsiteConfig<RedgifsParser> {
         // for posters (parser uses poster for thumbs). Default false is fine.
         return false;
     }
+
+    @Override
+    public java.util.List<String> parseSearchAutoCompleteListFromNetwork(String promptResult, String search) {
+        return java.util.Collections.emptyList();
+    }
 }

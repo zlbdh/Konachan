@@ -85,7 +85,7 @@ public class EHentaiLoginActivity extends BaseActivity {
                     String cookies = et.getText().toString().trim();
                     if (!cookies.isEmpty()) {
                         com.ess.anime.wallpaper.website.EHentaiRequest req =
-                                new com.ess.anime.wallpaper.website.EHentaiRequest(this);
+                                com.ess.anime.wallpaper.website.EHentaiRequest.getInstance(this);
                         req.injectCookies("e-hentai.org", cookies);
                         req.injectCookies("exhentai.org", cookies);
                         if (req.hasLoginCookies("e-hentai.org")) {

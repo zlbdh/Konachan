@@ -111,4 +111,9 @@ public class RedgifsParser extends HtmlParser {
         }
         return "";
     }
+
+    @Override
+    public java.util.List<com.ess.anime.wallpaper.bean.PoolListBean> getPoolListList(org.jsoup.nodes.Document doc) {
+        return new java.util.ArrayList<>();
+    }
 }
