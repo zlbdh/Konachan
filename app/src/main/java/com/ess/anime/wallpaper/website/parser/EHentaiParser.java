@@ -164,7 +164,6 @@ public class EHentaiParser extends HtmlParser {
                     // linkToShow carries "gid/token" so the detail step can rebuild URLs
                     ThumbBean bean = new ThumbBean(
                             gid, 0, 0, thumbUrl, realSize, gid + "/" + token);
-                    bean.title = title;
                     list.add(bean);
                 } catch (Exception ignore) {
                 }
