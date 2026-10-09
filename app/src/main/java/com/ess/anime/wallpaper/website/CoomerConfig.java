@@ -83,6 +83,11 @@ public class CoomerConfig extends WebsiteConfig<CoomerParser> {
     }
 
     @Override
+    public String getSearchAutoCompleteUrl(String tag) {
+        return null;
+    }
+
+    @Override
     public java.util.Map<String, String> getRequestHeaders() {
         java.util.Map<String, String> headers = super.getRequestHeaders();
         if (headers == null) {

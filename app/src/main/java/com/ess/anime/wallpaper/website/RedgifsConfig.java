@@ -181,4 +181,9 @@ public class RedgifsConfig extends WebsiteConfig<RedgifsParser> {
     public java.util.List<String> parseSearchAutoCompleteListFromNetwork(String promptResult, String search) {
         return java.util.Collections.emptyList();
     }
+
+    @Override
+    public String getSearchAutoCompleteUrl(String tag) {
+        return null;
+    }
 }

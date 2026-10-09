@@ -132,6 +132,11 @@ public class CoomerParser extends HtmlParser {
         return new java.util.ArrayList<>();
     }
 
+    @Override
+    public java.util.List<com.ess.anime.wallpaper.bean.CommentBean> getCommentList(org.jsoup.nodes.Document doc) {
+        return new java.util.ArrayList<>();
+    }
+
     private static String getAsString(JsonObject obj, String key) {
         try {
             if (obj.has(key) && !obj.get(key).isJsonNull()) {
